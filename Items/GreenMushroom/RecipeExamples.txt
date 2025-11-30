@@ -1,0 +1,9 @@
+public override void AddRecipes()
+		{
+			CreateRecipe()
+			.AddIngredient(ItemID.JungleSpores, 15)
+			.AddIngredient(ItemID.CopperHammer)
+			.AddIngredient(ModContent.ItemType<GreenFungus>(), 35)
+            		.AddTile(TileID.Anvils)
+            		.Register();
+		}

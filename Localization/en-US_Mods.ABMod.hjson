@@ -1,0 +1,464 @@
+# This file will automatically update with entries for new content after a build and reload.
+
+Items: {
+	Orochi: {
+		DisplayName: Orochi
+		Tooltip: TWO SOULS UNITE
+	}
+
+	DirtInAJar: {
+		DisplayName: Dirt in a Jar
+		Tooltip: Bad comedy
+	}
+
+	MushroomSoilItem: {
+		DisplayName: Composted Soil
+		Tooltip: Perfect for mushrooms to grow
+	}
+
+	MushroomSeeds: {
+		DisplayName: Strange Mushroom Grass Seeds
+		Tooltip: Places strange mushroom grass on composted soil
+	}
+
+	FungusSword: {
+		DisplayName: Green Mushsword
+		Tooltip: Infects your foes with aggressive fungi, reducing their defense
+	}
+
+	FungusHammer: {
+		DisplayName: Green Mushammer
+		Tooltip: ""
+	}
+
+	FungusPick: {
+		DisplayName: Green Mushpick
+		Tooltip: ""
+	}
+
+	FungusPotion: {
+		DisplayName: Green Healing Potion
+		Tooltip: Gives a temporal boost of life regeneration
+	}
+
+	PreservedDirtItem: {
+		DisplayName: Peat Soil
+		Tooltip: Perfectly preserved soil from millions of years ago
+	}
+
+	ScaleWoodItem: {
+		DisplayName: Scalewood
+		Tooltip: ""
+	}
+
+	AncientStoneItem: {
+		DisplayName: Ancient Stone
+		Tooltip: Ancient and durable
+	}
+
+	GreenMushroomBathtubItem: {
+		DisplayName: Green Mushroom Bathtub
+		Tooltip: ""
+	}
+
+	GreenMushroomBedItem: {
+		DisplayName: Green Mushroom Bed
+		Tooltip: ""
+	}
+
+	GreenMushroomBookcaseItem: {
+		DisplayName: Green Mushroom Bookcase
+		Tooltip: ""
+	}
+
+	GreenMushroomCampfireItem: {
+		DisplayName: Green Mushroom Campfire
+		Tooltip: ""
+	}
+
+	GreenMushroomCandelabraItem: {
+		DisplayName: Green Mushroom Candelabra
+		Tooltip: ""
+	}
+
+	GreenMushroomCandleItem: {
+		DisplayName: Green Mushroom Candle
+		Tooltip: ""
+	}
+
+	GreenMushroomChairItem: {
+		DisplayName: Green Mushroom Chair
+		Tooltip: ""
+	}
+
+	GreenMushroomChandelierItem: {
+		DisplayName: Green Mushroom Chandelier
+		Tooltip: ""
+	}
+
+	GreenMushroomChestItem: {
+		DisplayName: Green Mushroom Chest
+		Tooltip: ""
+	}
+
+	GreenMushroomClockItem: {
+		DisplayName: Green Mushroom Clock
+		Tooltip: ""
+	}
+
+	GreenMushroomDoorItem: {
+		DisplayName: Green Mushroom Door
+		Tooltip: ""
+	}
+
+	GreenMushroomDresserItem: {
+		DisplayName: Green Mushroom Dresser
+		Tooltip: ""
+	}
+
+	GreenMushroomLampItem: {
+		DisplayName: Green Mushroom Lamp
+		Tooltip: ""
+	}
+
+	GreenMushroomLanternItem: {
+		DisplayName: Green Mushroom Lantern
+		Tooltip: ""
+	}
+
+	GreenMushroomPianoItem: {
+		DisplayName: Green Mushroom Piano
+		Tooltip: ""
+	}
+
+	GreenMushroomPlatformItem: {
+		DisplayName: Green Mushroom Platform
+		Tooltip: ""
+	}
+
+	GreenMushroomSinkItem: {
+		DisplayName: Green Mushroom Sink
+		Tooltip: ""
+	}
+
+	GreenMushroomSofaItem: {
+		DisplayName: Green Mushroom Sofa
+		Tooltip: ""
+	}
+
+	GreenMushroomTableItem: {
+		DisplayName: Green Mushroom Table
+		Tooltip: ""
+	}
+
+	GreenMushroomToiletItem: {
+		DisplayName: Green Mushroom Toilet
+		Tooltip: ""
+	}
+
+	GreenMushroomTorchItem: {
+		DisplayName: Green Mushroom Torch
+		Tooltip: Glows underwater too!
+	}
+
+	GreenMushroomWorkbenchItem: {
+		DisplayName: Green Mushroom Workbench
+		Tooltip: ""
+	}
+
+	ScaleBathtubItem: {
+		DisplayName: Scalewood Bathtub
+		Tooltip: ""
+	}
+
+	ScaleBedItem: {
+		DisplayName: Scalewood Bed
+		Tooltip: ""
+	}
+
+	ScaleBookcaseItem: {
+		DisplayName: Scalewood Bookcase
+		Tooltip: ""
+	}
+
+	ScaleCandelabraItem: {
+		DisplayName: Scalewood Candelabra
+		Tooltip: ""
+	}
+
+	ScaleCandleItem: {
+		DisplayName: Scalewood Candle
+		Tooltip: ""
+	}
+
+	ScaleChairItem: {
+		DisplayName: Scalewood Chair
+		Tooltip: ""
+	}
+
+	ScaleChandelierItem: {
+		DisplayName: Scalewood Chandelier
+		Tooltip: ""
+	}
+
+	ScaleChestItem: {
+		DisplayName: Scalewood Basket
+		Tooltip: ""
+	}
+
+	ScaleClockItem: {
+		DisplayName: Scalewood Clock
+		Tooltip: ""
+	}
+
+	ScaleDoorItem: {
+		DisplayName: Scalewood Door
+		Tooltip: ""
+	}
+
+	ScaleDresserItem: {
+		DisplayName: Scalewood Dresser
+		Tooltip: ""
+	}
+
+	ScaleLampItem: {
+		DisplayName: Scalewood Lamp
+		Tooltip: ""
+	}
+
+	ScaleLanternItem: {
+		DisplayName: Scalewood Lantern
+		Tooltip: ""
+	}
+
+	ScalePianoItem: {
+		DisplayName: Scalewood Xylophone
+		Tooltip: ""
+	}
+
+	ScalePlatformItem: {
+		DisplayName: Scalewood Platform
+		Tooltip: ""
+	}
+
+	ScaleSinkItem: {
+		DisplayName: Scalewood Sink
+		Tooltip: ""
+	}
+
+	ScaleSofaItem: {
+		DisplayName: Scalewood Sofa
+		Tooltip: ""
+	}
+
+	ScaleTableItem: {
+		DisplayName: Scalewood Table
+		Tooltip: ""
+	}
+
+	ScaleToiletItem: {
+		DisplayName: Scalewood Toilet
+		Tooltip: ""
+	}
+
+	ScaleWorkbenchItem: {
+		DisplayName: Scalewood Workbench
+		Tooltip: ""
+	}
+
+	ScaleWoodFenceItem: {
+		DisplayName: Scalewood Fence
+		Tooltip: ""
+	}
+
+	ScaleWoodWallItem: {
+		DisplayName: Scalewood Wall
+		Tooltip: ""
+	}
+
+	LepSapplingItem: {
+		Tooltip: Grows into a Lepidodendron when planted on prehistoric moss
+		DisplayName: Spore Pod
+	}
+
+	MossSpores: {
+		DisplayName: Prehistoric Moss Spores
+		Tooltip: Places prehistoric moss on preserved dirt
+	}
+
+	AsteroidRockItem: {
+		DisplayName: Hardened Asteroid Stone
+		Tooltip: Concentrated minerals crushed into this
+	}
+
+	AsteroidStoneItem: {
+		DisplayName: Asteroid Stone
+		Tooltip: Stone from outer space
+	}
+
+	TerminusCrystalItem: {
+		DisplayName: Terminus Crystal
+		Tooltip: Something about this crystal feels... odd
+	}
+
+	TerminusCrystalWallItem: {
+		DisplayName: Terminus Crystal Wall
+		Tooltip: ""
+	}
+
+	MushroomItem: {
+		DisplayName: Green Mushroom
+		Tooltip: Funny looking
+	}
+
+	MushroomStemItem: {
+		DisplayName: Mushroom Stem
+		Tooltip: ""
+	}
+
+	OddFungusWallItem: {
+		Tooltip: A silly looking wall
+		DisplayName: Odd Mushroom Wall
+	}
+
+	SubtleForeshadowingItem: {
+		Tooltip: CrimsonCB
+		DisplayName: How curious...
+	}
+
+	BadComedyItem: {
+		Tooltip: CrimsonCB
+		DisplayName: Bad Comedy
+	}
+
+	StarlightBlockItem: {
+		Tooltip: ""
+		DisplayName: Starlight Block
+	}
+
+	MeteoriteBrickItem: {
+		Tooltip: ""
+		DisplayName: Asteroid Brick
+	}
+
+	HardenedMeteoriteBrickItem: {
+		Tooltip: ""
+		DisplayName: Hardened Asteroid Brick
+	}
+
+	AsteroidRockWallItem: {
+		Tooltip: ""
+		DisplayName: Hardened Asteroid Stone Wall
+	}
+
+	StarlightBlockMinusItem: {
+		DisplayName: Starlight Block (-)
+		Tooltip: Doesn't merge with other blocks
+	}
+
+	AncientDirtItem: {
+		DisplayName: Ancient Dirt Item
+		Tooltip: ""
+	}
+
+	AncientDirtWallItem: {
+		DisplayName: Ancient Dirt Wall Item
+		Tooltip: ""
+	}
+
+	AncientStoneWallItem: {
+		DisplayName: Ancient Stone Wall Item
+		Tooltip: ""
+	}
+
+	PrehistoricMossWallItem: {
+		DisplayName: Prehistoric Moss Wall Item
+		Tooltip: ""
+	}
+
+	PreservedDirtWallItem: {
+		DisplayName: Preserved Dirt Wall Item
+		Tooltip: ""
+	}
+}
+
+Biomes: {
+	GreenMushroomBiome: {
+		DisplayName: Green Mushroom Caves
+		TownNPCDialogueName: the Green Mushroom Caves
+	}
+
+	AncientSwampBiome: {
+		DisplayName: Ancient Swamp Biome
+		TownNPCDialogueName: the Ancient Swamps
+	}
+
+	AsteroidBiome: {
+		DisplayName: Horizon's Edge
+		TownNPCDialogueName: the Horizon's Edge
+	}
+}
+
+Tiles: {
+	GreenFungusTree.MapEntry: Giant Green Mushroom
+	Lep_Trunk.MapEntry: Lepidodendron
+	GreenMushroomBathtub.MapEntry: Green Mushroom Bathtub
+	GreenMushroomBed.MapEntry: Green Mushroom Bed
+	GreenMushroomBookcase.MapEntry: Green Mushroom Bookcase
+	GreenMushroomCampfire.MapEntry: Green Mushroom Campfire
+	GreenMushroomCandelabra.MapEntry: Green Mushroom Candelabra
+	GreenMushroomCandle.MapEntry: Green Mushroom Candle
+	GreenMushroomChair.MapEntry: Green Mushroom Chair
+	GreenMushroomChandelier.MapEntry: Green Mushroom Chandelier
+	GreenMushroomChest.MapEntry: Green Mushroom Chest
+	GreenMushroomClock.MapEntry: Green Mushroom Clock
+	GreenMushroomDoorClosed.MapEntry: Green Mushroom Door Closed
+	GreenMushroomDoorOpen.MapEntry: Green Mushroom Door Open
+	GreenMushroomDresser.MapEntry: Mods.ABMod.Tiles.GreenMushroomDresser.MapEntry
+	GreenMushroomLamp.MapEntry: Green Mushroom Lamp
+	GreenMushroomLantern.MapEntry: Green Mushroom Lantern
+	GreenMushroomPiano.MapEntry: Green Mushroom Piano
+	GreenMushroomSink.MapEntry: Green Mushroom Sink
+	GreenMushroomSofa.MapEntry: Green Mushroom Sofa
+	GreenMushroomTable.MapEntry: Green Mushroom Table
+	GreenMushroomToilet.MapEntry: Green Mushroom Toilet
+	GreenMushroomWorkbench.MapEntry: Green Mushroom Workbench
+	ScaleBathtub.MapEntry: Scalewood Bathtub
+	ScaleBed.MapEntry: Scalewood Bed
+	ScaleBookcase.MapEntry: Scalewood Bookcase
+	ScaleCandelabra.MapEntry: Scalewood Candelabra
+	ScaleCandle.MapEntry: Scalewood Candle
+	ScaleChair.MapEntry: Scalewood Chair
+	ScaleChandelier.MapEntry: Scalewood Chandelier
+	ScaleChest.MapEntry: Scalewood Chest
+	ScaleClock.MapEntry: Scalewood Clock
+	ScaleDoorClosed.MapEntry: Scalewood Door Closed
+	ScaleDoorOpen.MapEntry: Scalewood Door Open
+	ScaleDresser.MapEntry: Mods.ABMod.Tiles.ScaleDresser.MapEntry
+	ScaleLamp.MapEntry: Scalewood Lamp
+	ScaleLantern.MapEntry: Scalewood Lantern
+	ScalePiano.MapEntry: Scalewood Piano
+	ScaleSink.MapEntry: Scalewood Sink
+	ScaleSofa.MapEntry: Scalewood Sofa
+	ScaleTable.MapEntry: Scalewood Table
+	ScaleToilet.MapEntry: Scalewood Toilet
+	ScaleWorkbench.MapEntry: Scalewood Workbench
+	LepSappling.MapEntry: Spore Pod
+	BluMossTree.MapEntry: Blu Moss Tree
+	OrgMossTree.MapEntry: Org Moss Tree
+	PurMossTree.MapEntry: Pur Moss Tree
+	RedMossTree.MapEntry: Red Moss Tree
+	VioMossTree.MapEntry: Vio Moss Tree
+}
+
+Buffs: {
+	Mushy: {
+		DisplayName: Mushy
+		Description: Friendly fungi increases your endurance!
+	}
+
+	EvilMushy: {
+		DisplayName: Mushroom Blight
+		Description: Aggressive fungi reduces your endurance!
+	}
+}
