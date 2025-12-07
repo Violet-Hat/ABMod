@@ -444,6 +444,7 @@ Tiles: {
 	ScaleToilet.MapEntry: Scalewood Toilet
 	ScaleWorkbench.MapEntry: Scalewood Workbench
 	LepSappling.MapEntry: Spore Pod
+	Lep.MapEntry: Lep
 	BluMossTree.MapEntry: Blu Moss Tree
 	OrgMossTree.MapEntry: Org Moss Tree
 	PurMossTree.MapEntry: Pur Moss Tree

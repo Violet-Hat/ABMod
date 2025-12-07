@@ -459,35 +459,94 @@ namespace ABMod.Generation
 
 			for(int X = StartX; X <= EndX; X++)
 			{
+				for(int Y = PlaceSwampY; Y <= Main.worldSurface; Y++)
+                {
+                    WorldGen.SpreadGrass(X, Y, ModContent.TileType<PreservedDirt>(), ModContent.TileType<PrehistoricMoss>());
+                }
+			}
+
+			for(int X = StartX; X <= EndX; X++)
+			{
 				for(int Y = PlaceSwampY; Y <= BiomeHeightLimit; Y++)
 				{
 					Tile tile = Main.tile[X, Y];
-					Tile above = Main.tile[X, Y - 1];
-					Tile below = Main.tile[X, Y + 1];
-					Tile left = Main.tile[X - 1, Y];
-					Tile right = Main.tile[X + 1, Y];
+					Tile tileRight = Main.tile[X + 1, Y];
+					Tile tileAbove = Main.tile[X, Y - 1];
 
-					WorldGen.SpreadGrass(X, Y, ModContent.TileType<PreservedDirt>(), ModContent.TileType<PrehistoricMoss>());
-				}
-			}
-			/*
-			for (int X = i - radiusX + 1; X < i + radiusX; X++)
-			{
-				for (int Y = j; Y < limitY; Y++)
-				{
-					if (Main.tile[X, Y].TileType == SwampMoss && Main.tile[X + 1, Y].TileType == SwampMoss)
+					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>())
 					{
-						if (WorldGen.genRand.NextBool(6))
+						//Tree
+						if(tileRight.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !IsSloped(X, Y) && !IsSloped(X + 1, Y))
 						{
-							if (WorldgenTools.GrowTreeCheck(X, Y, 6, 35, ModContent.TileType<Lep_Trunk>(), 1))
+							if (WorldGen.genRand.NextBool(6))
 							{
-								Lep_Trunk.Grow(X, Y - 1, 25, 30, false);
+								if (WorldgenTools.GrowTreeCheck(X, Y, 6, 35, ModContent.TileType<Lep>(), 1))
+								{
+									Lep.Grow(X, Y - 1, 25, 30, false);
+								}
 							}
 						}
+
+						//Ambient decorations
+						if (WorldGen.genRand.NextBool(5) && tileAbove.TileType != (ushort)ModContent.TileType<Lep>())
+                        {
+                            switch (WorldGen.genRand.Next(3))
+                            {
+								default: 
+									WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<LargeAmbientPlant>(), true, WorldGen.genRand.Next(9));
+									break;
+                                case 1:
+									WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<LargePrehistoricMossRock>(), true, WorldGen.genRand.Next(3));
+									break;
+								case 2:
+									WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<MediumAmbientPlant>(), true, WorldGen.genRand.Next(12));
+									break;
+                            }
+                        }
+
+						//Grass
+						if (WorldGen.genRand.NextBool(3) && tileAbove.TileType != (ushort)ModContent.TileType<Lep>())
+                        {
+                            WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<SwampGrass>(), true, WorldGen.genRand.Next(28));
+                        }
 					}
-				}
+
+					if(tile.TileType == (ushort)ModContent.TileType<AncientDirt>())
+                    {
+						if (WorldGen.genRand.NextBool(3))
+						{
+							WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<SmallAncientDirtRock>(), true, WorldGen.genRand.Next(3));
+						}
+						
+						if (WorldGen.genRand.NextBool(3))
+						{
+							WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<Cooksonia>(), true, WorldGen.genRand.Next(6));
+						}
+                    }
+
+					if(tile.TileType == (ushort)ModContent.TileType<AncientStone>())
+                    {
+                        //Ambient decorations
+						if (WorldGen.genRand.NextBool(5))
+                        {
+                            switch (WorldGen.genRand.Next(2))
+                            {
+								default: 
+									WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<LargeAncientStoneRock>(), true, WorldGen.genRand.Next(3));
+									break;
+                                case 1:
+									WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<MediumAncientStoneRock>(), true, WorldGen.genRand.Next(3));
+									break;
+                            }
+                        }
+
+						if (WorldGen.genRand.NextBool(3))
+                        {
+                            WorldGen.PlaceObject(X, Y - 1, (ushort)ModContent.TileType<SmallAncientStoneRock>(), true, WorldGen.genRand.Next(3));
+                        }
+                    }
+                }
 			}
-			*/
 		}
 
 		//Check if the tile is a swamptile
@@ -683,6 +742,15 @@ namespace ABMod.Generation
                 }
 			}
 		}
+
+		//Check if it's sloped
+		public static bool IsSloped(int X, int Y)
+        {
+            return Main.tile[X, Y].LeftSlope ||
+			Main.tile[X, Y].RightSlope ||
+			Main.tile[X, Y].TopSlope ||
+			Main.tile[X, Y].BottomSlope;
+        }
 
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 		{

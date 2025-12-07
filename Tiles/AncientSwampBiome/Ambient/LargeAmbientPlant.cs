@@ -2,7 +2,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ABMod.Tiles.AncientSwampBiome.Ambient
 {
@@ -27,14 +26,6 @@ namespace ABMod.Tiles.AncientSwampBiome.Ambient
             TileObjectData.addTile(Type);
             HitSound = SoundID.Grass;
             DustType = DustID.Grass;
-        }
-
-        public override void SetSpriteEffects(int i, int j, ref SpriteEffects spriteEffects)
-        {
-            if((i % 10) < 5)
-            {
-                spriteEffects = SpriteEffects.FlipHorizontally;
-            }
         }
 
         public override void NumDust(int i, int j, bool fail, ref int num)
