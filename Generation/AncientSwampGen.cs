@@ -31,7 +31,7 @@ namespace ABMod.Generation
 		{
 			progress.Message = "Creating a time anomaly";
 
-			//CLEAR THE TILES
+			//Clear tiles
 			Flags.SoftDirtPoints.Clear();
 
 			//X & Y value of the swamp origin, make sure X is on the jungle side
@@ -47,16 +47,22 @@ namespace ABMod.Generation
 			PlaceSwampY = (int)Main.worldSurface - (Main.maxTilesY / 8);
 
 			//Width & height of the swamp
-			BiomeWidth = Main.maxTilesX >= 8400 ? 450 : Main.maxTilesX >= 6400 ? 300 : 150;
+			BiomeWidth = Main.maxTilesX >= 8400 ? 355 : Main.maxTilesX >= 6400 ? 250 : 175;
 			BiomeHeightLimit = (int)(Main.maxTilesY / 1.75f);
 
 			int StartX = PlaceSwampX - BiomeWidth;
 			int EndX = PlaceSwampX + BiomeWidth;
 
 			//Place the biome base
-			int progressFifth = (int)(BiomeWidth * 2 / 5);
+			int progressFifth = (int)(BiomeWidth * 2 / 5f);
 
-			for (int X = StartX - 10; X < EndX + 10; X++)
+			int tileType;
+			int wallType;
+
+			int limit = (int)Main.worldSurface + 30;
+			int deepLimit = (int)Main.worldSurface + 40;
+
+			for (int X = StartX; X < EndX; X++)
 			{
 				//Progress setters
 				if (X == StartX + progressFifth) progress.Set(0.2);
@@ -65,8 +71,12 @@ namespace ABMod.Generation
 				if (X == StartX + (progressFifth * 4)) progress.Set(0.8);
 
 				//Tile replacement loop
-				for (int Y = PlaceSwampY; Y < BiomeHeightLimit + 10; Y++)
+				for (int Y = PlaceSwampY; Y < BiomeHeightLimit; Y++)
 				{
+					//Tile type check
+					tileType = TileTypeCheck(Y, limit, deepLimit);
+					wallType = WallTypeCheck(Y, limit, deepLimit);
+
 					if (WorldgenTools.NoFloatingIslands(X, Y, 45))
 					{
 						Tile tile = Main.tile[X, Y];
@@ -74,95 +84,124 @@ namespace ABMod.Generation
 						//Replace tiles
 						if (tile.HasTile && tile.TileType != TileID.Cloud && tile.TileType != TileID.RainCloud && !IsSwampTile(X, Y))
 						{
-							if (X < StartX || X > EndX || Y > BiomeHeightLimit)
+							//Clear if not solid
+							if (WorldGen.SolidTile(X, Y))
 							{
-								//Replace with a 50/50 chance
-								if (WorldGen.SolidTile(X, Y) && WorldGen.genRand.NextBool())
-								{
-									ReplaceTile(X, Y);
-								}
+								tile.TileType = (ushort)tileType;
 							}
 							else
 							{
-								//Clear if not solid
-								if (WorldGen.SolidTile(X, Y))
-								{
-									ReplaceTile(X, Y);
-								}
-								else
-								{
-									Main.tile[X, Y].ClearTile();
-								}
+								Main.tile[X, Y].ClearTile();
 							}
 						}
 
 						//Place tiles on ebonstone and crimstone walls because THEY SUCK
-						if (X >= StartX && X <= EndX && Y <= BiomeHeightLimit)
+						if (!tile.HasTile && (tile.WallType == WallID.EbonstoneUnsafe || tile.WallType == WallID.CrimstoneUnsafe))
 						{
-							if (!tile.HasTile && (tile.WallType == WallID.EbonstoneUnsafe || tile.WallType == WallID.CrimstoneUnsafe))
-							{
-								if (Y >= (int)Main.worldSurface + 40)
-								{
-									tile.TileType = (ushort)ModContent.TileType<AncientStone>();
-								}
-								else if (Y >= (int)Main.worldSurface + 35)
-								{
-									if (WorldGen.genRand.NextBool())
-									{
-										tile.TileType = (ushort)ModContent.TileType<AncientStone>();
-									}
-									else
-									{
-										tile.TileType = (ushort)ModContent.TileType<AncientDirt>();
-									}
-								}
-								else
-								{
-									tile.TileType = (ushort)ModContent.TileType<AncientDirt>();
-								}
-							}
+							tile.TileType = (ushort)tileType;
 						}
 
 						//Replace walls
 						if (tile.WallType > WallID.None)
 						{
-							if (X < StartX || X > EndX || Y > BiomeHeightLimit)
-							{
-								//Replace wall with a 50/50 chance
-								if (WorldGen.genRand.NextBool())
-								{
-									ReplaceWall(X, Y);
-								}
-							}
-							else
-							{
-								ReplaceWall(X, Y);
-							}
+							tile.WallType = (ushort)wallType;
 						}
 
 						//Place walls
 						if(tile.WallType == WallID.None && Y > (int)Main.worldSurface)
                         {
-                            if (WorldGen.genRand.NextBool())
-							{
-								PlaceWall(X, Y);
-							}
+                            WorldGen.PlaceWall(X, Y, wallType, true);
                         }
 					}
 				}
+			}
 
-				//Fixed base to avoid making it too low
-				if (X >= StartX && X <= EndX)
+			//Fixed base and hole fill
+			for (int X = StartX; X <= EndX; X++)
+			{
+				for (int Y = (int)Main.worldSurface - 70; Y < BiomeHeightLimit; Y++)
 				{
-					for (int Y = (int)Main.worldSurface - 70; Y < (int)Main.worldSurface; Y++)
+					Tile tile = Main.tile[X, Y];
+
+					if (!tile.HasTile)
 					{
-						Tile tile = Main.tile[X, Y];
+						tileType = TileTypeCheck(Y, limit, deepLimit);
+						wallType = WallTypeCheck(Y, limit, deepLimit);
 
-						tile.TileType = (ushort)ModContent.TileType<AncientDirt>();
-						WorldGen.PlaceTile(X, Y, ModContent.TileType<AncientDirt>());
+						WorldGen.PlaceTile(X, Y,tileType, true);
+						WorldGen.PlaceWall(X, Y, wallType, true);
+					}
+				}
+			}
 
-						tile.WallType = (ushort)ModContent.WallType<AncientDirtWall>();
-						WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientDirtWall>());
+			//Dithering
+			for (int X = StartX - 10; X < EndX + 10; X++)
+			{
+				if(X < StartX || X > EndX)
+				{
+					for (int Y = PlaceSwampY; Y < BiomeHeightLimit; Y++)
+					{
+						//Tile type check
+						tileType = TileTypeCheck(Y, limit, deepLimit);
+						wallType = WallTypeCheck(Y, limit, deepLimit);
+
+						if (WorldgenTools.NoFloatingIslands(X, Y, 45))
+						{
+							Tile tile = Main.tile[X, Y];
+
+							//Replace tiles
+							if (tile.HasTile && tile.TileType != TileID.Cloud && tile.TileType != TileID.RainCloud && !IsSwampTile(X, Y))
+							{
+								if (WorldGen.SolidTile(X, Y) && WorldGen.genRand.NextBool())
+								{
+									tile.TileType = (ushort)tileType;
+								}
+							}
+
+							//Replace walls
+							if (tile.WallType > WallID.None && WorldGen.genRand.NextBool())
+							{
+								tile.WallType = (ushort)wallType;
+							}
+
+							//Place walls
+							if(tile.WallType == WallID.None && Y > (int)Main.worldSurface && WorldGen.genRand.NextBool())
+							{
+								WorldGen.PlaceWall(X, Y, wallType, true);
+							}
+						}
+					}
+				}
+			}
+
+			tileType = ModContent.TileType<AncientStone>();
+			wallType = ModContent.WallType<AncientStoneWall>();
+
+			for (int X = StartX - 10; X < EndX + 10; X++)
+			{
+				for (int Y = BiomeHeightLimit; Y <= BiomeHeightLimit + 10; Y++)
+				{
+					Tile tile = Main.tile[X, Y];
+
+					//Replace tiles
+					if (tile.HasTile && tile.TileType != TileID.Cloud && tile.TileType != TileID.RainCloud && !IsSwampTile(X, Y))
+					{
+						if (WorldGen.SolidTile(X, Y) && WorldGen.genRand.NextBool())
+						{
+							tile.TileType = (ushort)tileType;
+						}
+					}
+
+					//Replace walls
+					if (tile.WallType > WallID.None && WorldGen.genRand.NextBool())
+					{
+						tile.WallType = (ushort)wallType;
+					}
+
+					//Place walls
+					if(tile.WallType == WallID.None && Y > (int)Main.worldSurface && WorldGen.genRand.NextBool())
+					{
+						WorldGen.PlaceWall(X, Y, wallType, true);
 					}
 				}
 			}
@@ -487,6 +526,17 @@ namespace ABMod.Generation
 							}
 						}
 
+						if(!IsSloped(X, Y))
+						{
+							if (WorldGen.genRand.NextBool(6))
+							{
+								if (WorldgenTools.GrowTreeCheck(X, Y, 5, 25, ModContent.TileType<Skinny>()))
+								{
+									Skinny.Grow(X, Y - 1, 15, 20, false);
+								}
+							}
+						}
+
 						//Ambient decorations
 						if (WorldGen.genRand.NextBool(5) && tileAbove.TileType != (ushort)ModContent.TileType<Lep>())
                         {
@@ -558,85 +608,51 @@ namespace ABMod.Generation
 			Main.tile[X, Y].TileType == (ushort)ModContent.TileType<PrehistoricMoss>();
 		}
 
-		//Replace a tile
-		public static void ReplaceTile(int X, int Y)
+		//Check the tile type
+		public static int TileTypeCheck(int Y, int limit, int deepLimit)
 		{
-			Tile tile = Main.tile[X, Y];
-
-			if (Y >= (int)Main.worldSurface + 40)
+			if (Y >= deepLimit)
 			{
-				tile.TileType = (ushort)ModContent.TileType<AncientStone>();
-				WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientStoneWall>());
+				return ModContent.TileType<AncientStone>();
 			}
-			else if (Y >= (int)Main.worldSurface + 30)
+			else if (Y >= limit)
 			{
 				if (WorldGen.genRand.NextBool())
 				{
-					tile.TileType = (ushort)ModContent.TileType<AncientStone>();
-					WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientStoneWall>());
+					return ModContent.TileType<AncientStone>();
 				}
 				else
 				{
-					tile.TileType = (ushort)ModContent.TileType<AncientDirt>();
-					WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientDirtWall>());
+					return ModContent.TileType<AncientDirt>();
 				}
 			}
 			else
 			{
-				tile.TileType = (ushort)ModContent.TileType<AncientDirt>();
-				WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientDirtWall>());
+				return ModContent.TileType<AncientDirt>();
 			}
 		}
 
-		//Replace a wall
-		public static void ReplaceWall(int X, int Y)
+		//Check the wall type
+		public static int WallTypeCheck(int Y, int limit, int deepLimit)
 		{
-			Tile tile = Main.tile[X, Y];
-
-			if (Y >= (int)Main.worldSurface + 40)
+			if (Y >= deepLimit)
 			{
-				tile.WallType = (ushort)ModContent.WallType<AncientStoneWall>();
+				return ModContent.WallType<AncientStoneWall>();
 			}
-			else if (Y >= (int)Main.worldSurface + 30)
+			else if (Y >= limit)
 			{
 				if (WorldGen.genRand.NextBool())
 				{
-					tile.WallType = (ushort)ModContent.WallType<AncientStoneWall>();
+					return ModContent.WallType<AncientStoneWall>();
 				}
 				else
 				{
-					tile.WallType = (ushort)ModContent.WallType<AncientDirtWall>();
+					return ModContent.WallType<AncientDirtWall>();
 				}
 			}
 			else
 			{
-				tile.WallType = (ushort)ModContent.WallType<AncientDirtWall>();
-			}
-		}
-
-		//Place a wall
-		public static void PlaceWall(int X, int Y)
-		{
-			Tile tile = Main.tile[X, Y];
-
-			if (Y >= (int)Main.worldSurface + 40)
-			{
-				WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientStoneWall>());
-			}
-			else if (Y >= (int)Main.worldSurface + 30)
-			{
-				if (WorldGen.genRand.NextBool())
-				{
-					WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientStoneWall>());
-				}
-				else
-				{
-					WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientDirtWall>());
-				}
-			}
-			else
-			{
-				WorldGen.PlaceWall(X, Y, ModContent.WallType<AncientDirtWall>());
+				return ModContent.WallType<AncientDirtWall>();
 			}
 		}
 		
@@ -652,35 +668,14 @@ namespace ABMod.Generation
 				Vector2 Position = BezierCurve.cuadraticBezier(t, p0, p1, p2);
 
 				//Place tiles
-				for (int Y = (int)Position.Y; Y <= BiomeHeightLimit; Y++)
+				for (int Y = (int)Position.Y; Y <= Main.worldSurface; Y++)
 				{
 					Tile tile = Main.tile[(int)Position.X, Y];
 
 					if (!tile.HasTile)
 					{
-						if (Y >= (int)Main.worldSurface + 40)
-						{
-							WorldGen.PlaceTile((int)Position.X, Y, ModContent.TileType<AncientStone>());
-							WorldGen.PlaceWall((int)Position.X, Y, ModContent.WallType<AncientStoneWall>());
-						}
-						else if (Y >= (int)Main.worldSurface + 35)
-						{
-							if (WorldGen.genRand.NextBool())
-							{
-								WorldGen.PlaceTile((int)Position.X, Y, ModContent.TileType<AncientStone>());
-								WorldGen.PlaceWall((int)Position.X, Y, ModContent.WallType<AncientStoneWall>());
-							}
-							else
-							{
-								WorldGen.PlaceTile((int)Position.X, Y, ModContent.TileType<AncientDirt>());
-								WorldGen.PlaceWall((int)Position.X, Y, ModContent.WallType<AncientDirtWall>());
-							}
-						}
-						else
-						{
-							WorldGen.PlaceTile((int)Position.X, Y, ModContent.TileType<AncientDirt>());
-							WorldGen.PlaceWall((int)Position.X, Y, ModContent.WallType<AncientDirtWall>());
-						}
+						WorldGen.PlaceTile((int)Position.X, Y, ModContent.TileType<AncientDirt>(), true);
+						WorldGen.PlaceWall((int)Position.X, Y, ModContent.WallType<AncientDirtWall>(), true);
 					}
 				}
 
@@ -714,19 +709,19 @@ namespace ABMod.Generation
 						if (WorldGen.genRand.NextBool())
 						{
 							tile.TileType = (ushort)ModContent.TileType<PreservedDirt>();
-							WorldGen.PlaceTile(point.X, point.Y + j, ModContent.TileType<PreservedDirt>());
+							WorldGen.PlaceTile(point.X, point.Y + j, ModContent.TileType<PreservedDirt>(), true);
 
 							tile.WallType = (ushort)ModContent.WallType<PreservedDirtWall>();
-							WorldGen.PlaceWall(point.X, point.Y + j, ModContent.WallType<PreservedDirtWall>());
+							WorldGen.PlaceWall(point.X, point.Y + j, ModContent.WallType<PreservedDirtWall>(), true);
 						}
 					}
 					else
 					{
 						tile.TileType = (ushort)ModContent.TileType<PreservedDirt>();
-						WorldGen.PlaceTile(point.X, point.Y + j, ModContent.TileType<PreservedDirt>());
+						WorldGen.PlaceTile(point.X, point.Y + j, ModContent.TileType<PreservedDirt>(), true);
 
 						tile.WallType = (ushort)ModContent.WallType<PreservedDirtWall>();
-						WorldGen.PlaceWall(point.X, point.Y + j, ModContent.WallType<PreservedDirtWall>());
+						WorldGen.PlaceWall(point.X, point.Y + j, ModContent.WallType<PreservedDirtWall>(), true);
 					}
 				}
 
@@ -737,8 +732,8 @@ namespace ABMod.Generation
 
 				if(WorldGen.genRand.NextBool() && Main.tile[point.X + 1, point.Y].HasTile)
                 {
-					WorldGen.PlaceTile(point.X, point.Y - 1, ModContent.TileType<PreservedDirt>());
-					WorldGen.PlaceTile(point.X + 1, point.Y - 1, ModContent.TileType<PreservedDirt>());
+					WorldGen.PlaceTile(point.X, point.Y - 1, ModContent.TileType<PreservedDirt>(), true);
+					WorldGen.PlaceTile(point.X + 1, point.Y - 1, ModContent.TileType<PreservedDirt>(), true);
                 }
 			}
 		}

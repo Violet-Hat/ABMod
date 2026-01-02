@@ -450,6 +450,7 @@ Tiles: {
 	PurMossTree.MapEntry: Pur Moss Tree
 	RedMossTree.MapEntry: Red Moss Tree
 	VioMossTree.MapEntry: Vio Moss Tree
+	Skinny.MapEntry: Skinny
 }
 
 Buffs: {

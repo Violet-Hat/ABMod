@@ -9,8 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 
 using ABMod.Common;
-﻿using ABMod.Items;
-﻿using ABMod.Tiles.AncientSwampBiome;
+using ABMod.Items;
+using ABMod.Tiles.AncientSwampBiome;
 
 namespace ABMod.Tiles.AncientSwampBiome.Trees
 {
@@ -63,14 +63,14 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 		public static bool Grow(int i, int j, int minSize, int maxSize, bool saplingExists = false)
 		{
 			//Check if there's a sapling and destroy it
-			if(saplingExists)
+			if (saplingExists)
 			{
 				WorldGen.KillTile(i, j, false, false, true);
 				WorldGen.KillTile(i, j - 1, false, false, true);
 				WorldGen.KillTile(i + 1, j, false, false, true);
 				WorldGen.KillTile(i + 1, j - 1, false, false, true);
 				
-				if(Main.netMode != NetmodeID.SinglePlayer)
+				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
 					NetMessage.SendTileSquare(-1, i, j, 2, 1, TileChangeType.None);
 				}
@@ -78,10 +78,10 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			
 			//Get a random height for it
 			int height = WorldGen.genRand.Next(minSize, maxSize);
-			for(int k = 1; k < height; k++)
+			for (int k = 1; k < height; k++)
 			{
 				//If there´s a tile blocking it or it's not on the world, make it shorter
-				if(SolidTile(i, j - k) || !WorldGen.InWorld(i, j - k))
+				if (SolidTile(i, j - k) || !WorldGen.InWorld(i, j - k))
 				{
 					height = k - 2;
 					break;
@@ -89,13 +89,13 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			}
 			
 			//If it's too short, don't let it grow
-			if(height < minSize)
+			if (height < minSize)
 			{
 				return false;
 			}
 			
 			//Make sure the tile is valid
-			if((SolidTopTile(i, j + 1) || SolidTile(i, j + 1)) && !Framing.GetTileSafely(i, j).HasTile)
+			if ((SolidTopTile(i, j + 1) || SolidTile(i, j + 1)) && !Framing.GetTileSafely(i, j).HasTile)
 			{
 				if((SolidTopTile(i + 1, j + 1) || SolidTile(i + 1, j + 1)) && !Framing.GetTileSafely(i, j).HasTile)
 				{
@@ -118,7 +118,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			}
 			
 			//Time to put the tile frames
-			for(int numSegments = 1; numSegments < height; numSegments++)
+			for (int numSegments = 1; numSegments < height; numSegments++)
 			{
 				//Place the tree segment with a random X frame
 				short YFrame = (short)((WorldGen.genRand.Next(6) * 18) + 18);
@@ -130,7 +130,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
                 Framing.GetTileSafely(i + 1, j - numSegments).TileFrameY = YFrame;
 				
 				//If it's the first segment, put the frame X to 0 & 18 and frame Y to 0 on both
-				if(numSegments == 1)
+				if (numSegments == 1)
 				{
 					Framing.GetTileSafely(i, j - numSegments).TileFrameX = 0;
 					Framing.GetTileSafely(i, j - numSegments).TileFrameY = 0;
@@ -140,9 +140,9 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 				}
 				
 				//If it's the middle segments randomize between three types of Y frames
-				if(numSegments > 1 && numSegments < height - 1)
+				if (numSegments > 1 && numSegments < height - 1)
 				{
-					if(Main.rand.NextBool(4))
+					if (Main.rand.NextBool(4))
 					{
 						//Irregular trunk right
 						Framing.GetTileSafely(i, j - numSegments).TileFrameX = 36;
@@ -150,7 +150,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 					}
 					else
 					{
-						if(Main.rand.NextBool(4))
+						if (Main.rand.NextBool(4))
 						{
 							//Irregular trunk left
 							Framing.GetTileSafely(i, j - numSegments).TileFrameX = 72;
@@ -166,7 +166,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 				}
 				
 				//If it's the last segment, make it the top of the tree with X equals 72 & 90 and frame Y equals 0 on both
-				if(numSegments == height - 1)
+				if (numSegments == height - 1)
 				{
 					Framing.GetTileSafely(i, j - numSegments).TileFrameX = 72;
 					Framing.GetTileSafely(i, j - numSegments).TileFrameY = 0;
@@ -175,7 +175,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 					Framing.GetTileSafely(i + 1, j - numSegments).TileFrameY = 0;
 				}
 				
-				if(Main.netMode != NetmodeID.SinglePlayer)
+				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
 					NetMessage.SendTileSquare(-1, i, j - numSegments, 1, 1, TileChangeType.None);
 					NetMessage.SendTileSquare(-1, i + 1, j - numSegments, 1, 1, TileChangeType.None);
@@ -217,7 +217,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			}
 			
 			//Drop item
-			Item.NewItem(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), (new Vector2(i, j) * 16), ModContent.ItemType<ScaleWoodItem>());
+			Item.NewItem(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), new Vector2(i, j) * 16, ModContent.ItemType<ScaleWoodItem>());
 			Framing.GetTileSafely(i, j).HasTile = false;
 			
 			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<Lep>();
@@ -233,39 +233,45 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			if (up)
 				WorldGen.KillTile(i, j - 1);
 			if(down && !downer)
+			{
 				WorldGen.KillTile(i, j + 1);
+				down = false;
+			}
 			
 			//If there's a remaining segment below, turn it into a cut segment
-			int belowFrameX = Framing.GetTileSafely(i, j + 1).TileFrameX;
-			int belowFrameY = Framing.GetTileSafely(i, j + 1).TileFrameY;
-			
-			if(belowFrameX < 108)
+			if (down)
 			{
-				if(belowFrameY == 0)
+				int belowFrameX = Framing.GetTileSafely(i, j + 1).TileFrameX;
+				int belowFrameY = Framing.GetTileSafely(i, j + 1).TileFrameY;
+				
+				if(belowFrameX < 108)
 				{
-					if(belowFrameX == 0)
-                    {
-                        Framing.GetTileSafely(i, j + 1).TileFrameX = 108;
-                    }
-                    else
-                    {
-                        Framing.GetTileSafely(i, j + 1).TileFrameX = 126;
-                    }
-				}
-				else
-				{
-					short FrameY = (short)((WorldGen.genRand.Next(3) * 18) + 18);
-
-					if(belowFrameX == 0 || belowFrameX == 36 || belowFrameX == 72)
-                    {
-                        Framing.GetTileSafely(i, j + 1).TileFrameX = 108;
-						Framing.GetTileSafely(i, j + 1).TileFrameY = FrameY;
-                    }
+					if(belowFrameY == 0)
+					{
+						if(belowFrameX == 0)
+						{
+							Framing.GetTileSafely(i, j + 1).TileFrameX = 108;
+						}
+						else
+						{
+							Framing.GetTileSafely(i, j + 1).TileFrameX = 126;
+						}
+					}
 					else
-                    {
-                        Framing.GetTileSafely(i, j + 1).TileFrameX = 126;
-						Framing.GetTileSafely(i, j + 1).TileFrameY = FrameY;
-                    }
+					{
+						short FrameY = (short)((WorldGen.genRand.Next(3) * 18) + 18);
+
+						if(belowFrameX == 0 || belowFrameX == 36 || belowFrameX == 72)
+						{
+							Framing.GetTileSafely(i, j + 1).TileFrameX = 108;
+							Framing.GetTileSafely(i, j + 1).TileFrameY = FrameY;
+						}
+						else
+						{
+							Framing.GetTileSafely(i, j + 1).TileFrameX = 126;
+							Framing.GetTileSafely(i, j + 1).TileFrameY = FrameY;
+						}
+					}
 				}
 			}
 		}

@@ -10,6 +10,8 @@ using Terraria.ID;
 using Terraria.WorldBuilding;
 using Terraria.ModLoader;
 
+using ABMod.Tiles.AncientSwampBiome.Trees;
+
 namespace ABMod.Generation
 {
 	public class WorldgenTools
@@ -183,42 +185,38 @@ namespace ABMod.Generation
 		
 		public static bool GrowTreeCheck(int X, int Y, int distanceX, int distanceY, int tileType, int extra = 0)
 		{
-			int canPlace = 0;
-
 			//If there's others around it, don't let it grow
 			for (int i = X - distanceX; i < X + distanceX + extra; i++)
 			{
 				for (int j = Y - 5; j < Y + 5; j++)
 				{
-					if (Main.tile[i, j].HasTile && (Main.tile[i, j].TileType == tileType))
+					if (Main.tile[i, j].HasTile && IsTreeType(i, j))
 					{
-						canPlace++;
-						if (canPlace > 0)
-						{
-							return false;
-						}
+						return false;
 					}
 				}
 			}
 
 			//If there's not enought space, don't let it grow
-			for (int i = X - (int)(distanceX / 2); i < X + (int)(distanceX / 2) + extra; i++)
+			for (int i = X - (int)(distanceX / 2f); i < X + (int)(distanceX / 2f) + extra; i++)
 			{
 				for (int j = Y - distanceY; j < Y - 2; j++)
 				{
 					//only check for solid blocks
 					if (Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
 					{
-						canPlace++;
-						if (canPlace > 0)
-						{
-							return false;
-						}
+						return false;
 					}
 				}
 			}
 
 			return true;
+		}
+
+		public static bool IsTreeType(int X, int Y)
+		{
+			return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>() ||
+			Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Skinny>();
 		}
 
 		internal static readonly List<Vector2> Directions = new List<Vector2>()
