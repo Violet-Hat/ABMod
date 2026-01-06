@@ -125,7 +125,7 @@ namespace ABMod.Backgrounds.AncientSwamp
                 int[] layerMenuTop = [320, 400, 480];
                 int[] layerMenuXOffset = [0, -80, -100];
 
-                int[] layerYOffset = [-175, -325, -750];
+                int[] layerYOffset = [-165, -335, -790];
 
                 for(int i = 0; i < length; i++)
                 {
