@@ -329,7 +329,6 @@ namespace ABMod.Generation
 			int seed = WorldGen.genRand.Next();
 			int octaves = 5;
 			float clearChance = 0.6f;
-			//float smoothPow = 0.2f;
 
 			//Upper caves
 			int CaveStart = (int)(Main.worldSurface - 5);
@@ -426,123 +425,6 @@ namespace ABMod.Generation
                     }
                 }
             }
-
-			/*
-			//Upper caves
-			int PlaceCaveY = (int)((Main.worldSurface - 15 + Main.worldSurface + 35) / 2);
-			int CaveHeight = (int)(Math.Abs(Main.worldSurface + 35 - Main.worldSurface - 15) / 2);
-
-			for (int X = PlaceSwampX - CaveWidth; X <= PlaceSwampX + CaveWidth; X++)
-			{
-				for (int Y = PlaceCaveY - CaveHeight; Y < PlaceCaveY + CaveHeight; Y++)
-				{
-					//Perlin noise values
-					//These are for transition purposes
-					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
-					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, seed) + 0.5f + horizontalOffsetNoise;
-					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, unchecked(seed - 1)) + 0.5f;
-					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.235f;
-
-					//Smooth X and Y value
-					float distanceX = Math.Abs(X - PlaceSwampX);
-					float smoothValueX = 1f - (distanceX / CaveWidth);
-					float smoothX = (float)Math.Pow(Math.Clamp(smoothValueX, 0f, 1f), smoothPow);
-
-					float distanceY = Math.Abs(Y - PlaceCaveY);
-					float smoothValueY = 1f - (distanceY / CaveHeight);
-					float smoothY = (float)Math.Pow(Math.Clamp(smoothValueY, 0f, 1f), smoothPow);
-
-					//Smooth the noise
-					float smooth = smoothX * smoothY;
-					float smoothNoiseMap = caveNoiseMap * smooth;
-					float smoothCreationThreshold = caveCreationThreshold * smooth;
-
-					//Remove tiles based on the noise
-					if (smoothNoiseMap * smoothNoiseMap > smoothCreationThreshold)
-					{
-						WorldGen.KillTile(X, Y);
-					}
-				}
-			}
-
-			PlaceCaveY = (int)((Main.worldSurface + 20 + Main.rockLayer + 15) / 2);
-			CaveHeight = (int)(Math.Abs(Main.rockLayer + 15 - Main.worldSurface + 20) / 2);
-
-			for (int X = PlaceSwampX - CaveWidth; X <= PlaceSwampX + CaveWidth; X++)
-			{
-				for (int Y = PlaceCaveY - CaveHeight; Y < PlaceCaveY + CaveHeight; Y++)
-				{
-					//Perlin noise values
-					//Higher Y values for more vertical caves
-					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
-					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 350f, Y / 500f, octaves, seed) + 0.5f + horizontalOffsetNoise;
-					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 350f, Y / 500f, octaves, unchecked(seed - 1)) + 0.5f;
-					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.235f;
-
-					//Smooth X and Y value
-					float distanceX = Math.Abs(X - PlaceSwampX);
-					float smoothValueX = 1f - (distanceX / CaveWidth);
-					float smoothX = (float)Math.Pow(Math.Clamp(smoothValueX, 0f, 1f), smoothPow);
-
-					float distanceY = Math.Abs(Y - PlaceCaveY);
-					float smoothValueY = 1f - (distanceY / CaveHeight);
-					float smoothY = (float)Math.Pow(Math.Clamp(smoothValueY, 0f, 1f), smoothPow);
-
-					//Smooth the noise
-					float smooth = smoothX * smoothY;
-					float smoothNoiseMap = caveNoiseMap * smooth;
-					float smoothCreationThreshold = caveCreationThreshold * smooth;
-
-					//Remove tiles based on the noise
-					if (smoothNoiseMap * smoothNoiseMap > smoothCreationThreshold)
-					{
-						WorldGen.KillTile(X, Y);
-					}
-				}
-			}
-
-			progress.Set(0.25);
-
-			//Lower caves
-			PlaceCaveY = (int)((Main.rockLayer + BiomeHeightLimit) / 2);
-			CaveHeight = (int)(Math.Abs(BiomeHeightLimit + 20 - Main.rockLayer) / 2);
-
-			for (int X = PlaceSwampX - CaveWidth; X <= PlaceSwampX + CaveWidth; X++)
-			{
-				for (int Y = PlaceCaveY - CaveHeight; Y <= PlaceCaveY + CaveHeight; Y++)
-				{
-					//Perlin noise values
-					//Higher X values for more horizontal caves
-					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
-					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, seed) + 0.5f + horizontalOffsetNoise;
-					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, unchecked(seed - 1)) + 0.5f;
-					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.235f;
-
-					//Smooth X and Y value
-					float distanceX = Math.Abs(X - PlaceSwampX);
-					float smoothValueX = 1f - (distanceX / CaveWidth);
-					float smoothX = (float)Math.Pow(Math.Clamp(smoothValueX, 0f, 1f), smoothPow);
-
-					float distanceY = Math.Abs(Y - PlaceCaveY);
-					float smoothValueY = 1f - (distanceY / CaveHeight);
-					float smoothY = (float)Math.Pow(Math.Clamp(smoothValueY, 0f, 1f), smoothPow);
-
-					//Smooth the noise
-					float smooth = smoothX * smoothY;
-					float smoothNoiseMap = caveNoiseMap * smooth;
-					float smoothCreationThreshold = caveCreationThreshold * smooth;
-
-					//Remove tiles based on the noise
-					if (smoothNoiseMap * smoothNoiseMap > smoothCreationThreshold)
-					{
-						WorldGen.KillTile(X, Y);
-					}
-				}
-			}
-			*/
 
 			progress.Set(0.5);
 
