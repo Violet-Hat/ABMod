@@ -219,6 +219,27 @@ namespace ABMod.Generation
 			Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Skinny>();
 		}
 
+		static public int CheckTiles(int x, int y)
+        {
+            int count = 0;
+
+            for (int nebX = x - 1; nebX <= x + 1; nebX++)
+            {
+                for (int nebY = y - 1; nebY <= y + 1; nebY++)
+                {
+                    if (nebX != x || nebY != y)
+                    {
+                        if (Main.tile[nebX, nebY].HasTile)
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+
+            return count;
+        }
+
 		internal static readonly List<Vector2> Directions = new List<Vector2>()
 		{
 			new Vector2(-1f, -1f),

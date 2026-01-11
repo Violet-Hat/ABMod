@@ -328,10 +328,106 @@ namespace ABMod.Generation
 
 			int seed = WorldGen.genRand.Next();
 			int octaves = 5;
-			float smoothPow = 0.2f;
+			float clearChance = 0.6f;
+			//float smoothPow = 0.2f;
 
-			int CaveWidth = BiomeWidth + 20;
+			//Upper caves
+			int CaveStart = (int)(Main.worldSurface - 5);
+			int CaveEnd = (int)(Main.worldSurface + 45);
 
+			for (int X = PlaceSwampX - BiomeWidth; X <= PlaceSwampX + BiomeWidth; X++)
+			{
+				for (int Y = CaveStart; Y < CaveEnd; Y++)
+				{
+					//Perlin noise values
+					//These are for transition purposes
+					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
+					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, seed) + 0.5f + horizontalOffsetNoise;
+					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, unchecked(seed - 1)) + 0.5f;
+					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
+					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.235f;
+
+					//Remove tiles based on the noise
+					if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+					{
+						WorldGen.KillTile(X, Y);
+					}
+				}
+			}
+
+			CaveStart = (int)(Main.worldSurface + 30);
+			CaveEnd = (int)(Main.rockLayer + 15);
+
+			for (int X = PlaceSwampX - BiomeWidth; X <= PlaceSwampX + BiomeWidth; X++)
+			{
+				for (int Y = CaveStart; Y < CaveEnd; Y++)
+				{
+					//Perlin noise values
+					//Higher Y values for more vertical caves
+					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
+					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 350f, Y / 575f, octaves, seed) + 0.5f + horizontalOffsetNoise;
+					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 350f, Y / 575f, octaves, unchecked(seed - 1)) + 0.5f;
+					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
+					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.20f;
+
+					//Remove tiles based on the noise
+					if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+					{
+						WorldGen.KillTile(X, Y);
+					}
+				}
+			}
+
+			progress.Set(0.25);
+
+			//Lower caves
+			CaveStart = (int)Main.rockLayer;
+			CaveEnd = BiomeHeightLimit;
+
+			for (int X = PlaceSwampX - BiomeWidth; X <= PlaceSwampX + BiomeWidth; X++)
+			{
+				for (int Y = CaveStart; Y < CaveEnd; Y++)
+				{
+					//Perlin noise values
+					//Higher X values for more horizontal caves
+					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
+					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 575f, Y / 350f, octaves, seed) + 0.5f + horizontalOffsetNoise;
+					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 575f, Y / 350f, octaves, unchecked(seed - 1)) + 0.5f;
+					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
+					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.20f;
+
+					//Remove tiles based on the noise
+					if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+					{
+						WorldGen.KillTile(X, Y);
+					}
+				}
+			}
+
+			//Smooth the noise
+			for (int l = 0; l < 10; l++)
+            {
+                for (int x = PlaceSwampX - BiomeWidth; x <= PlaceSwampX + BiomeWidth; x++)
+                {
+                    for(int y = (int)Main.worldSurface - 10; y <= BiomeHeightLimit; y++)
+                    {
+                        int tileCount = WorldgenTools.CheckTiles(x, y);
+
+                        if (tileCount > 4)
+                        {
+							int tileType = TilesAround(x, y);
+
+                            WorldGen.PlaceTile(x, y, tileType, true);
+                        }
+                        else if (tileCount < 4)
+                        {
+                            WorldGen.KillTile(x, y);
+                        }
+                    }
+                }
+            }
+
+			/*
 			//Upper caves
 			int PlaceCaveY = (int)((Main.worldSurface - 15 + Main.worldSurface + 35) / 2);
 			int CaveHeight = (int)(Math.Abs(Main.worldSurface + 35 - Main.worldSurface - 15) / 2);
@@ -446,6 +542,7 @@ namespace ABMod.Generation
 					}
 				}
 			}
+			*/
 
 			progress.Set(0.5);
 
@@ -735,6 +832,41 @@ namespace ABMod.Generation
 					WorldGen.PlaceTile(point.X, point.Y - 1, ModContent.TileType<PreservedDirt>(), true);
 					WorldGen.PlaceTile(point.X + 1, point.Y - 1, ModContent.TileType<PreservedDirt>(), true);
                 }
+			}
+		}
+
+		//Check tiles around and return which one is more present
+		static public int TilesAround(int x, int y)
+		{
+			int dirtCount = 0;
+			int stoneCount = 0;
+
+            for (int nebX = x - 1; nebX <= x + 1; nebX++)
+            {
+                for (int nebY = y - 1; nebY <= y + 1; nebY++)
+                {
+                    if (nebX != x || nebY != y)
+                    {
+                        if (Main.tile[nebX, nebY].TileType == ModContent.TileType<AncientStone>())
+                            stoneCount++;
+
+						if (Main.tile[nebX, nebY].TileType == ModContent.TileType<AncientDirt>())
+							dirtCount++;
+                    }
+                }
+            }
+
+			if (stoneCount > dirtCount)
+			{
+				return ModContent.TileType<AncientStone>();
+			}
+			else if (dirtCount > stoneCount)
+			{
+				return ModContent.TileType<AncientDirt>();
+			}
+			else
+			{
+				return WorldGen.genRand.NextBool() ? ModContent.TileType<AncientStone>() : ModContent.TileType<AncientDirt>();
 			}
 		}
 
