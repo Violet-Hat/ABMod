@@ -16,6 +16,7 @@ using ABMod.Common;
 using ABMod.Tiles.AncientSwampBiome;
 using ABMod.Tiles.AncientSwampBiome.Trees;
 using ABMod.Tiles.AncientSwampBiome.Ambient;
+using System.Linq;
 
 namespace ABMod.Generation
 {
@@ -214,42 +215,8 @@ namespace ABMod.Generation
 			int EndX = PlaceSwampX + BiomeWidth;
 
 			//Ground points
-			int LeftY = 0;
-			int RightY = 0;
-
-			//Search values
-			bool foundGroundLeft = false;
-			int attemptsLeft = 0;
-
-			//Find values
-			while (!foundGroundLeft && attemptsLeft++ < 100000)
-			{
-				if (!IsSwampTile(StartX, LeftY) || !WorldgenTools.NoFloatingIslands(StartX, LeftY, 45) && LeftY < Main.maxTilesY)
-				{
-					LeftY++;
-				}
-
-				if ((WorldGen.SolidTile(StartX, LeftY) || Main.tile[StartX, LeftY].WallType > WallID.None) && WorldgenTools.NoFloatingIslands(StartX, LeftY, 45))
-				{
-					foundGroundLeft = true;
-				}
-			}
-
-			bool foundGroundRight = false;
-			int attemptsRight = 0;
-
-			while (!foundGroundRight && attemptsRight++ < 100000)
-			{
-				if (!IsSwampTile(EndX, RightY) || !WorldgenTools.NoFloatingIslands(EndX, RightY, 45) && RightY < Main.maxTilesY)
-				{
-					RightY++;
-				}
-
-				if ((WorldGen.SolidTile(EndX, RightY) || Main.tile[EndX, RightY].WallType > WallID.None) && WorldgenTools.NoFloatingIslands(EndX, RightY, 45))
-				{
-					foundGroundRight = true;
-				}
-			}
+			int LeftY = FindGround(StartX);
+			int RightY = FindGround(EndX);
 
 			int MiddleY = LeftY > RightY ? LeftY : RightY;
 
@@ -285,6 +252,8 @@ namespace ABMod.Generation
 					stoneCount--;
 				}
 			}
+
+			progress.Set(0.75);
 			
 			int j = 0;
 			int dirtCount = Main.maxTilesX >= 8400 ? 28 : Main.maxTilesX >= 6400 ? 21 : 9;
@@ -303,20 +272,6 @@ namespace ABMod.Generation
 					dirtCount--;
                 }
             }
-
-			progress.Set(0.75);
-
-			//Smooth time
-			for (int X = MiddleX - BiomeWidth - 5; X <= MiddleX + BiomeWidth + 5; X++)
-			{
-				for (int Y = heightLimit; Y <= Main.worldSurface; Y++)
-				{
-					if (IsSwampTile(X, Y))
-					{
-						Tile.SmoothSlope(X, Y);
-					}
-				}
-			}
 		}
 
 		private void SwampCaves(GenerationProgress progress, GameConfiguration configuration)
@@ -438,38 +393,42 @@ namespace ABMod.Generation
 			int EndX = PlaceSwampX + BiomeWidth;
 
 			//Structure values
-			bool placedTunnel = false;
-			bool placedLake = false;
-
 			int numSurfaceStructures = Main.maxTilesX >= 8400 ? 6 : Main.maxTilesX >= 6400 ? 5 : 4;
 			int structurePartition = BiomeWidth * 2 / (numSurfaceStructures + 1);
+			int structureMaxRange = Main.maxTilesX >= 8400 ? 30 : Main.maxTilesX >= 6400 ? 20 : 10;
 
 			for (int i = 0; i < numSurfaceStructures; i++)
 			{
 				values.Add(i + 1);
 			}
 
-			if (!placedTunnel)
+			//Tunnel
+			int placeTunnel = 0;
+			int rando = 0;
+
+			if (GenVars.dungeonSide == -1)
 			{
-				int placeTunnel = 0;
-				int rando = 0;
-
-				if (GenVars.dungeonSide == -1)
-				{
-					placeTunnel = 1;
-					rando = -structurePartition / 3;
-				}
-				else
-				{
-					placeTunnel = numSurfaceStructures;
-					rando = structurePartition / 3;
-				}
-
-				//Remove this position from the list
-				values.Remove(placeTunnel);
-
-				GenerateTunnel(StartX + (structurePartition * placeTunnel) + rando);
+				placeTunnel = 1;
+				rando = -structurePartition / 3;
 			}
+			else
+			{
+				placeTunnel = numSurfaceStructures;
+				rando = structurePartition / 3;
+			}
+
+			//Remove this position from the list and generate the structure
+			values.Remove(placeTunnel);
+			GenerateTunnel(StartX + (structurePartition * placeTunnel) + rando);
+
+			//Lake
+			int index = WorldGen.genRand.Next(values.Count);
+			int placeLake = values[index];
+			int lakeWidth = Main.maxTilesX >= 8400 ? 40 : Main.maxTilesX >= 6400 ? 30 : 20;
+
+			//Remove this position from the list and generate the structure
+			values.Remove(placeLake);
+			GenerateLake(StartX + (structurePartition * placeLake), lakeWidth, structureMaxRange);
 
 			//GRASS
 			for(int X = StartX; X <= EndX; X++)
@@ -480,6 +439,19 @@ namespace ABMod.Generation
                 }
 			}
 
+			//Smoothing
+			for (int X = StartX - 5; X <= EndX + 5; X++)
+			{
+				for (int Y = PlaceSwampY; Y <= Main.worldSurface; Y++)
+				{
+					if (IsSwampTile(X, Y))
+					{
+						Tile.SmoothSlope(X, Y);
+					}
+				}
+			}
+
+			//Vegetation
 			for(int X = StartX; X <= EndX; X++)
 			{
 				for(int Y = PlaceSwampY; Y <= BiomeHeightLimit; Y++)
@@ -768,26 +740,7 @@ namespace ABMod.Generation
 		public static void GenerateTunnel(int x)
 		{
 			//Find ground
-			int y = 0;
-
-			//Search values
-			bool foundGround = false;
-			int attemptsLeft = 0;
-
-			//Find values
-			while (!foundGround && attemptsLeft++ < 100000)
-			{
-				if (!IsSwampTile(x, y) || !WorldgenTools.NoFloatingIslands(x, y, 45) && y < Main.maxTilesY)
-				{
-					y++;
-				}
-
-				if ((WorldGen.SolidTile(x, y) || Main.tile[x, y].WallType > WallID.None) && WorldgenTools.NoFloatingIslands(x, y, 45))
-				{
-					foundGround = true;
-				}
-			}
-
+			int y = FindGround(x);
 			y -= 5;
 
 			//Tunnel time
@@ -867,6 +820,78 @@ namespace ABMod.Generation
                     }
                 }
             }
+		}
+
+		//Generate lake
+		public static void GenerateLake(int x, int width, int range)
+		{
+			int posX = x + WorldGen.genRand.Next(-range, range + 1);
+			int posY = FindGround(posX);
+			posY -= (int)(width / 4);
+
+			//Place a soft dirt base so trees doesn't grow there often
+			WorldUtils.Gen(new Point(posX, posY + 5), new Shapes.Circle(width + 5, width + 5), Actions.Chain(new GenAction[]
+            {
+				new Modifiers.IsSolid(),
+                new Modifiers.Blotches(2, 0.4),
+                new Actions.SetTile((ushort)ModContent.TileType<AncientDirt>()),
+            }));
+
+			//Clear tiles
+			WorldUtils.Gen(new Point(posX, posY), new Shapes.Circle(width, width), Actions.Chain(new GenAction[]
+            {
+                new Modifiers.Blotches(2, 0.4),
+                new Actions.ClearTile(true),
+            }));
+
+			//Place water
+			WorldUtils.Gen(new Point(posX, posY), new Shapes.Circle(width, width), Actions.Chain(new GenAction[]
+            {
+                new Actions.SetLiquid(LiquidID.Water, 125),
+            }));
+
+			//Clean up
+			for (int l = 0; l < 10; l++)
+            {
+                for (int i = posX - width - 5; i <= posX + width + 5; i++)
+                {
+                    for(int j = posY; j <= posY + width + 5; j++)
+                    {
+                        Tile tile = Main.tile[i, j];
+
+						if (!tile.HasTile && WorldGen.SolidTile(i, j - 1))
+						{
+							WorldGen.PlaceTile(i, j, ModContent.TileType<AncientDirt>(), true);
+						}
+                    }
+                }
+            }
+		}
+
+		//Find ground
+		public static int FindGround(int x)
+		{
+			int y = 0;
+
+			//Search values
+			bool foundGround = false;
+			int attemptsLeft = 0;
+
+			//Find values
+			while (!foundGround && attemptsLeft++ < 100000)
+			{
+				if (!IsSwampTile(x, y) || !WorldgenTools.NoFloatingIslands(x, y, 45) && y < Main.maxTilesY)
+				{
+					y++;
+				}
+
+				if ((WorldGen.SolidTile(x, y) || Main.tile[x, y].WallType > WallID.None) && WorldgenTools.NoFloatingIslands(x, y, 45))
+				{
+					foundGround = true;
+				}
+			}
+
+			return y;
 		}
 
 		//Check if it's sloped
