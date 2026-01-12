@@ -11,6 +11,8 @@ using Terraria.ModLoader;
 using Terraria.GameContent.Generation;
 using static Terraria.WorldGen;
 using static tModPorter.ProgressUpdate;
+using StructureHelper;
+using StructureHelper.Models;
 
 using ABMod.Common;
 using ABMod.Tiles.AncientSwampBiome;
@@ -430,15 +432,6 @@ namespace ABMod.Generation
 			values.Remove(placeLake);
 			GenerateLake(StartX + (structurePartition * placeLake), lakeWidth, structureMaxRange);
 
-			//GRASS
-			for(int X = StartX; X <= EndX; X++)
-			{
-				for(int Y = PlaceSwampY; Y <= Main.worldSurface; Y++)
-                {
-                    WorldGen.SpreadGrass(X, Y, ModContent.TileType<PreservedDirt>(), ModContent.TileType<PrehistoricMoss>());
-                }
-			}
-
 			//Smoothing
 			for (int X = StartX - 5; X <= EndX + 5; X++)
 			{
@@ -449,6 +442,48 @@ namespace ABMod.Generation
 						Tile.SmoothSlope(X, Y);
 					}
 				}
+			}
+
+			//Last structures
+			bool placedStruct1 = false;
+			bool placedStruct2 = false;
+
+			foreach (int placement in values)
+			{
+				if(!placedStruct1 && !placedStruct2)
+				{
+					if (WorldGen.genRand.NextBool())
+					{
+						GenerateStructure(StartX + (structurePartition * placement), "SwampStruct1", structureMaxRange, 5);
+						placedStruct1 = true;
+					}
+					else
+					{
+						GenerateStructure(StartX + (structurePartition * placement), "SwampStruct2", structureMaxRange, 15);
+						placedStruct2 = true;
+					}
+				}
+				else if (placedStruct1)
+				{
+					GenerateStructure(StartX + (structurePartition * placement), "SwampStruct2", structureMaxRange, 15);
+					placedStruct2 = true;
+					placedStruct1 = false;
+				}
+				else if (placedStruct2)
+				{
+					GenerateStructure(StartX + (structurePartition * placement), "SwampStruct1", structureMaxRange, 5);
+					placedStruct1 = true;
+					placedStruct2 = false;
+				}
+			}
+
+			//GRASS
+			for(int X = StartX; X <= EndX; X++)
+			{
+				for(int Y = PlaceSwampY; Y <= Main.worldSurface; Y++)
+                {
+                    WorldGen.SpreadGrass(X, Y, ModContent.TileType<PreservedDirt>(), ModContent.TileType<PrehistoricMoss>());
+                }
 			}
 
 			//Vegetation
@@ -827,7 +862,7 @@ namespace ABMod.Generation
 		{
 			int posX = x + WorldGen.genRand.Next(-range, range + 1);
 			int posY = FindGround(posX);
-			posY -= (int)(width / 4);
+			posY -= (int)(width / 3);
 
 			//Place a soft dirt base so trees doesn't grow there often
 			WorldUtils.Gen(new Point(posX, posY + 5), new Shapes.Circle(width + 5, width + 5), Actions.Chain(new GenAction[]
@@ -866,6 +901,19 @@ namespace ABMod.Generation
                     }
                 }
             }
+		}
+
+		//Generate structure
+		public static void GenerateStructure(int x, String structureFile, int range, int offsetY)
+		{
+			int posX = x + WorldGen.genRand.Next(-range, range + 1);
+			int posY = FindGround(posX);
+			posY --;
+
+			StructureData data = StructureHelper.API.Generator.GetStructureData("Generation/Structures/" + structureFile + ".shstruct", ABMod.Instance);
+
+			Vector2 origin = new Vector2(posX - (int)(data.width/2), posY - offsetY);
+			StructureHelper.API.Generator.GenerateStructure("Generation/Structures/" + structureFile + ".shstruct", origin.ToPoint16(), ABMod.Instance);
 		}
 
 		//Find ground

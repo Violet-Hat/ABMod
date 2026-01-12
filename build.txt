@@ -1,3 +1,7 @@
 displayName = Ancient Biomes
 author = Hathew
+
 version = 0.1
+modReferences = StructureHelper
+
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*

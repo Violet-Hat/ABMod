@@ -7,9 +7,32 @@ using Terraria.ModLoader;
 
 namespace ABMod
 {
-	// Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
 	public class ABMod : Mod
 	{
+		internal static ABMod Instance;
 		
+		//For NPC management in case of subworlds
+		internal Mod subworldLibrary = null;
+		
+		internal static ABMod mod;
+		
+		public ABMod()
+		{
+			mod = this;
+		}
+		
+		public override void Load()
+		{
+			Instance = this;
+			
+			ModLoader.TryGetMod("SubworldLibrary", out subworldLibrary);
+		}
+		
+		public override void Unload()
+		{
+			subworldLibrary = null;
+			
+			mod = null;
+		}
 	}
 }

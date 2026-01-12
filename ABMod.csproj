@@ -5,12 +5,15 @@
 
 	<!-- General -->
 	<PropertyGroup>
-		
+		<AssemblyName>ABMod</AssemblyName>
+    	<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 
 	<!-- References -->
 	<ItemGroup>
-		
+		<Reference Include="StructureHelper">
+      		<HintPath>lib\StructureHelper.dll</HintPath>
+    	</Reference>
 	</ItemGroup>
 
 </Project>
