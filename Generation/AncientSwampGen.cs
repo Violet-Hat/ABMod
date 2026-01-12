@@ -54,7 +54,7 @@ namespace ABMod.Generation
 			int EndX = PlaceSwampX + BiomeWidth;
 
 			//Place the biome base
-			int progressFifth = (int)(BiomeWidth * 2 / 5f);
+			int progressEigth = (int)(BiomeWidth * 2 / 8f);
 
 			int tileType;
 			int wallType;
@@ -65,10 +65,7 @@ namespace ABMod.Generation
 			for (int X = StartX; X < EndX; X++)
 			{
 				//Progress setters
-				if (X == StartX + progressFifth) progress.Set(0.2);
-				if (X == StartX + (progressFifth * 2)) progress.Set(0.4);
-				if (X == StartX + (progressFifth * 3)) progress.Set(0.6);
-				if (X == StartX + (progressFifth * 4)) progress.Set(0.8);
+				progress.Set((float)(X - StartX) / (EndX - StartX));
 
 				//Tile replacement loop
 				for (int Y = PlaceSwampY; Y < BiomeHeightLimit; Y++)
@@ -377,7 +374,7 @@ namespace ABMod.Generation
 				}
 			}
 
-			progress.Set(0.25);
+			progress.Set(0.5);
 
 			//Lower caves
 			CaveStart = (int)Main.rockLayer;
@@ -403,6 +400,8 @@ namespace ABMod.Generation
 				}
 			}
 
+			progress.Set(0.85);
+
 			//Smooth the noise
 			for (int l = 0; l < 10; l++)
             {
@@ -425,56 +424,54 @@ namespace ABMod.Generation
                     }
                 }
             }
-
-			progress.Set(0.5);
-
-			/*
-			//Walls
-			PlaceCaveY = (int)((Main.worldSurface + 5 + BiomeHeightLimit) / 2);
-			CaveHeight = (int)(Math.Abs(BiomeHeightLimit - Main.worldSurface + 5) / 2);
-
-			for (int X = PlaceSwampX - BiomeWidth; X <= PlaceSwampX + BiomeWidth; X++)
-			{
-				for (int Y = (int)Main.worldSurface + 5; Y <= BiomeHeightLimit; Y++)
-				{
-					//Perlin noise values
-					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 50f, Y / 50f, octaves, unchecked(seed + 1)) * 0.01f;
-					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 750f, Y / 350f, octaves, seed) + 0.5f + horizontalOffsetNoise;
-					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 750f, Y / 350f, octaves, unchecked(seed - 1)) + 0.5f;
-					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.235f;
-
-					//Smooth X and Y value
-					float distanceX = Math.Abs(X - PlaceSwampX);
-					float smoothValueX = 1f - (distanceX / BiomeWidth);
-					float smoothX = (float)Math.Pow(Math.Clamp(smoothValueX, 0f, 1f), 0.15f);
-
-					float distanceY = Math.Abs(Y - PlaceCaveY);
-					float smoothValueY = 1f - (distanceY / CaveHeight);
-					float smoothY = (float)Math.Pow(Math.Clamp(smoothValueY, 0f, 1f), 0.15f);
-
-					//Smooth the noise
-					float smooth = smoothX * smoothY;
-					float smoothNoiseMap = caveNoiseMap * smooth;
-					float smoothCreationThreshold = caveCreationThreshold * smooth;
-
-					//Remove tiles based on the noise
-					if (smoothNoiseMap * smoothNoiseMap > smoothCreationThreshold)
-					{
-						WorldGen.KillWall(X, Y);
-					}
-				}
-			}
-			*/
 		}
 		
 		private void SwampAmbience(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = "Adding a nice ambience";
 
+			//Hell
+			List <int> values = new List<int>();
+
+			//Start and end
 			int StartX = PlaceSwampX - BiomeWidth;
 			int EndX = PlaceSwampX + BiomeWidth;
 
+			//Structure values
+			bool placedTunnel = false;
+			bool placedLake = false;
+
+			int numSurfaceStructures = Main.maxTilesX >= 8400 ? 6 : Main.maxTilesX >= 6400 ? 5 : 4;
+			int structurePartition = BiomeWidth * 2 / (numSurfaceStructures + 1);
+
+			for (int i = 0; i < numSurfaceStructures; i++)
+			{
+				values.Add(i + 1);
+			}
+
+			if (!placedTunnel)
+			{
+				int placeTunnel = 0;
+				int rando = 0;
+
+				if (GenVars.dungeonSide == -1)
+				{
+					placeTunnel = 1;
+					rando = -structurePartition / 3;
+				}
+				else
+				{
+					placeTunnel = numSurfaceStructures;
+					rando = structurePartition / 3;
+				}
+
+				//Remove this position from the list
+				values.Remove(placeTunnel);
+
+				GenerateTunnel(StartX + (structurePartition * placeTunnel) + rando);
+			}
+
+			//GRASS
 			for(int X = StartX; X <= EndX; X++)
 			{
 				for(int Y = PlaceSwampY; Y <= Main.worldSurface; Y++)
@@ -718,8 +715,9 @@ namespace ABMod.Generation
 		}
 
 		//Check tiles around and return which one is more present
-		static public int TilesAround(int x, int y)
+		public static int TilesAround(int x, int y)
 		{
+			int softCount = 0;
 			int dirtCount = 0;
 			int stoneCount = 0;
 
@@ -734,22 +732,141 @@ namespace ABMod.Generation
 
 						if (Main.tile[nebX, nebY].TileType == ModContent.TileType<AncientDirt>())
 							dirtCount++;
+
+						if (Main.tile[nebX, nebY].TileType == ModContent.TileType<PreservedDirt>())
+							softCount++;
                     }
                 }
             }
 
-			if (stoneCount > dirtCount)
+			if (softCount > dirtCount)
 			{
-				return ModContent.TileType<AncientStone>();
+				return ModContent.TileType<PreservedDirt>();
 			}
-			else if (dirtCount > stoneCount)
+			else if (dirtCount > softCount || dirtCount > stoneCount)
 			{
 				return ModContent.TileType<AncientDirt>();
 			}
+			else if (stoneCount > dirtCount)
+			{
+				return ModContent.TileType<AncientStone>();
+			}
 			else
 			{
-				return WorldGen.genRand.NextBool() ? ModContent.TileType<AncientStone>() : ModContent.TileType<AncientDirt>();
+				if (softCount == dirtCount)
+				{
+					return WorldGen.genRand.NextBool() ? ModContent.TileType<PreservedDirt>() : ModContent.TileType<AncientDirt>();
+				}
+				else
+				{
+					return WorldGen.genRand.NextBool() ? ModContent.TileType<AncientDirt>() : ModContent.TileType<AncientStone>();
+				}
 			}
+		}
+
+		//Generate tunnel
+		public static void GenerateTunnel(int x)
+		{
+			//Find ground
+			int y = 0;
+
+			//Search values
+			bool foundGround = false;
+			int attemptsLeft = 0;
+
+			//Find values
+			while (!foundGround && attemptsLeft++ < 100000)
+			{
+				if (!IsSwampTile(x, y) || !WorldgenTools.NoFloatingIslands(x, y, 45) && y < Main.maxTilesY)
+				{
+					y++;
+				}
+
+				if ((WorldGen.SolidTile(x, y) || Main.tile[x, y].WallType > WallID.None) && WorldgenTools.NoFloatingIslands(x, y, 45))
+				{
+					foundGround = true;
+				}
+			}
+
+			y -= 5;
+
+			//Tunnel time
+			int area = Main.maxTilesX >= 8400 ? 55 : Main.maxTilesX >= 6400 ? 45 : 35;
+			int limit = Math.Abs((int)(Main.worldSurface + 45) - y);
+			int currentX = 0;
+
+			float roughness = 0.5f;
+			float curvyness = 0.5f;
+
+			int tunnelWidth = 3;
+
+			for (int j = 0; j <= limit; j++)
+			{
+				//Can be wider?
+				if (WorldGen.genRand.NextFloat() < roughness)
+				{
+					tunnelWidth += WorldGen.genRand.Next(-9, 10);
+
+					//If it's too small, make it the minimum
+					if (tunnelWidth < 3)
+					{
+						tunnelWidth = 3;
+					}
+
+					//If it's too large, make it the maximum
+					if (tunnelWidth > 9)
+					{
+						tunnelWidth = 9;
+					}
+				}
+
+				//Can it change position?
+				if (WorldGen.genRand.NextFloat() < curvyness)
+				{
+					currentX += WorldGen.genRand.Next(-3, 4);
+
+					//Check that isn't too close to the limit left
+					if(currentX - tunnelWidth < -area)
+					{
+						currentX = -area + tunnelWidth + 1;
+					}
+
+					//Check that isn't too close to the limit right
+					if(currentX + tunnelWidth > area)
+					{
+						currentX = area - tunnelWidth - 1;
+					}
+				}
+
+				//Excavate
+				for (int i = -tunnelWidth; i <= tunnelWidth; i++)
+				{
+					WorldGen.KillTile(x + currentX + i, y + j);
+				}
+			}
+
+			//Clean up
+			for (int l = 0; l < 10; l++)
+            {
+                for (int i = x - area; i <= x + area; i++)
+                {
+                    for(int j = y - 5; j <= (int)(Main.worldSurface + 45); j++)
+                    {
+                        int tileCount = WorldgenTools.CheckTiles(i, j);
+
+                        if (tileCount > 4)
+                        {
+							int tileType = TilesAround(i, j);
+
+                            WorldGen.PlaceTile(i, j, tileType, true);
+                        }
+                        else if (tileCount < 4)
+                        {
+                            WorldGen.KillTile(i, j);
+                        }
+                    }
+                }
+            }
 		}
 
 		//Check if it's sloped
