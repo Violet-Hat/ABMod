@@ -113,7 +113,7 @@ namespace ABMod.Backgrounds.AncientSwamp
             if (canBGDraw)
             {
                 int Width = 1024;
-                int Height = 600;
+                int Height = 800;
 
                 int length = textureSlots.Length;
                 float[] layerScales = [1f, 1.2f, 1.34f];
@@ -125,7 +125,7 @@ namespace ABMod.Backgrounds.AncientSwamp
                 int[] layerMenuTop = [320, 400, 480];
                 int[] layerMenuXOffset = [0, -80, -100];
 
-                int[] layerYOffset = [-165, -335, -790];
+                int[] layerYOffset = [-15, -115, -515];
 
                 for(int i = 0; i < length; i++)
                 {
