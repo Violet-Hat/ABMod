@@ -144,16 +144,7 @@ namespace ABMod.Generation
 			}
 			
 			//Check if it is far away from the islands
-			for (int i = area.Left; i < area.Right; i++)
-			{
-				for (int j = area.Top; j < area.Bottom; j++)
-				{
-					if (Main.tile[i, j].TileType == TileID.Cloud || Main.tile[i, j].TileType == TileID.RainCloud || Main.tile[i, j].TileType == TileID.Sunplate)
-					{
-						return false;
-					}
-                }
-            }
+			NoFloatingIslands(area.Center.X, area.Center.Y, area.Width / 2);
 			
 			//Check if it can be placed here using the structure map
             if (!structures.CanPlace(area))
@@ -213,10 +204,58 @@ namespace ABMod.Generation
 			return true;
 		}
 
-		public static bool IsTreeType(int X, int Y)
+		public static bool GrowSkinnyCheck(int X, int Y, int distanceX, int distanceY)
 		{
-			return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>() ||
-			Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Skinny>();
+			//If there's others around it, don't let it grow
+			for (int i = X - distanceX; i < X + distanceX; i++)
+			{
+				for (int j = Y - 5; j < Y + 5; j++)
+				{
+					if (Main.tile[i, j].HasTile && IsTreeType(i, j, true))
+					{
+						return false;
+					}
+				}
+			}
+
+			for (int i = X - 1; i < X + 1; i++) //This one special
+			{
+				for (int j = Y - 5; j < Y + 5; j++)
+				{
+					if (Main.tile[i, j].HasTile && IsTreeType(i, j))
+					{
+						return false;
+					}
+				}
+			}
+
+			//If there's not enought space, don't let it grow
+			for (int i = X - (int)(distanceX / 2f); i < X + (int)(distanceX / 2f); i++)
+			{
+				for (int j = Y - distanceY; j < Y - 2; j++)
+				{
+					//only check for solid blocks
+					if (Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		public static bool IsTreeType(int X, int Y, bool special = false)
+		{
+			if (!special)
+			{
+				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>() ||
+				Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Skinny>();
+			}
+			else
+			{
+				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>();
+			}
 		}
 
 		static public int CheckTiles(int x, int y)
@@ -239,6 +278,30 @@ namespace ABMod.Generation
 
             return count;
         }
+
+		public static bool IsSloped(int X, int Y)
+        {
+            return Main.tile[X, Y].LeftSlope ||
+			Main.tile[X, Y].RightSlope ||
+			Main.tile[X, Y].TopSlope ||
+			Main.tile[X, Y].BottomSlope ||
+			Main.tile[X, Y].IsHalfBlock;
+        }
+
+		public static bool TooMuchLiquid(int x, int y, int amount = 1, int liquidAmount = 99)
+		{
+			int count = 0;
+
+			for (int j = 1; j <= amount; j++)
+			{
+				if (Main.tile[x, y - j].LiquidAmount > liquidAmount)
+				{
+					count++;
+				}
+			}
+
+			return count == amount;
+		}
 
 		internal static readonly List<Vector2> Directions = new List<Vector2>()
 		{
