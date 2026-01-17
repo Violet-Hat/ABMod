@@ -390,6 +390,16 @@ Items: {
 		DisplayName: Skinny Seed
 		Tooltip: ""
 	}
+
+	PitfallTrapItem: {
+		DisplayName: Pitfall Trap Item
+		Tooltip: ""
+	}
+
+	ActivePitfallTrapItem: {
+		DisplayName: Active Pitfall Trap Item
+		Tooltip: ""
+	}
 }
 
 Biomes: {

@@ -428,18 +428,6 @@ namespace ABMod.Generation
 			values.Remove(placeLake);
 			GenerateLake(StartX + (structurePartition * placeLake), lakeWidth, structureMaxRange);
 
-			//Smoothing
-			for (int x = StartX - 5; x <= EndX + 5; x++)
-			{
-				for (int y = PlaceSwampY; y <= Main.worldSurface; y++)
-				{
-					if (BiomeTile.IsSwampTile(x, y))
-					{
-						Tile.SmoothSlope(x, y);
-					}
-				}
-			}
-
 			progress.Set(0.2);
 
 			//Last structures
@@ -487,13 +475,24 @@ namespace ABMod.Generation
 			}
 
 			//Bush walls for pretty
-			int bushAmount = Main.maxTilesX >= 8400 ? 7 : Main.maxTilesX >= 6400 ? 6 : 5;
+			int bushAmount = Main.maxTilesX >= 8400 ? 10 : Main.maxTilesX >= 6400 ? 8 : 6;
+			int halfBushAmount = bushAmount / 2;
 			int tries = 0;
 
 			while (bushAmount > 0 && tries++ < 10000)
 			{
 				bool tooClose = false;
-				int x = WorldGen.genRand.Next(StartX, EndX + 1);
+				int x;
+
+				//So it isn't too busy in one half hopefully
+				if (bushAmount > halfBushAmount)
+				{
+					x = WorldGen.genRand.Next(StartX, PlaceSwampX);
+				}
+				else
+				{
+					x = WorldGen.genRand.Next(PlaceSwampX, EndX + 1);
+				}
 
 				foreach(int posX in structuresX)
 				{
@@ -550,15 +549,16 @@ namespace ABMod.Generation
 					Tile tileRight = Main.tile[x + 1, y];
 
 					//Prehistoric moss ambient
-					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.IsSloped(x, y) && !WorldgenTools.TooMuchLiquid(x, y, 3))
+					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.TooMuchLiquid(x, y, 3))
 					{
 						//Tree
-						if(tileRight.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.IsSloped(x + 1, y))
+						if(tileRight.TileType == (ushort)ModContent.TileType<PrehistoricMoss>())
 						{
 							if (WorldGen.genRand.NextBool(8))
 							{
 								if (WorldgenTools.GrowTreeCheck(x, y, 6, 35, 1))
 								{
+									WorldGen.SlopeTile(x, y, 0);
 									Lep.Grow(x, y - 1, 25, 30, false);
 								}
 							}
@@ -568,6 +568,7 @@ namespace ABMod.Generation
 						{
 							if (WorldgenTools.GrowSkinnyCheck(x, y, 5, 25))
 							{
+								WorldGen.SlopeTile(x, y, 0);
 								Skinny.Grow(x, y - 1, 15, 20, false);
 							}
 						}
@@ -597,16 +598,20 @@ namespace ABMod.Generation
 					}
 
 					//Aquatic prehistoric moss ambience
-					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.IsSloped(x, y) && WorldgenTools.TooMuchLiquid(x, y, 3))
+					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && WorldgenTools.TooMuchLiquid(x, y, 3))
 					{
-						if (WorldgenTools.GrowSkinnyCheck(x, y, 5, 30))
+						if (WorldGen.genRand.NextBool(3))
 						{
-							Equi.Grow(x, y - 1, 10, 25, false);
+							if (WorldgenTools.GrowSkinnyCheck(x, y, 5, 30))
+							{
+								WorldGen.SlopeTile(x, y, 0);
+								Equi.Grow(x, y - 1, 10, 25, false);
+							}
 						}
 					}
 
-					//Ancient irt ambient
-					if(tile.TileType == (ushort)ModContent.TileType<AncientDirt>() && !WorldgenTools.IsSloped(x, y))
+					//Ancient dirt ambient
+					if(tile.TileType == (ushort)ModContent.TileType<AncientDirt>())
                     {
 						if (WorldGen.genRand.NextBool(3))
 						{

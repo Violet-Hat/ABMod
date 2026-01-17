@@ -13,8 +13,8 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
         public override void SetDefaults()
         {
             Item.DefaultToPlaceableTile(ModContent.TileType<LepSappling>());
-            Item.width = 16;
-            Item.height = 16;
+            Item.width = 18;
+            Item.height = 28;
         }
     }
 }

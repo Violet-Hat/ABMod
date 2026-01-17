@@ -1,7 +1,6 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.Localization;
 using ReLogic.Content;
@@ -14,6 +13,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 {
     public class Equi : ModTile
     {
+        //This is a modified version of the custom tree code
         //Texture
         private Asset<Texture2D> StemTexture;
 
@@ -30,11 +30,23 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			HitSound = SoundID.Dig;
 		}
 
-        //Update tile because it was placed or the neighbor got nuked (set to false)
+        //Update tile because it was placed or the neighbor got nuked
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
+            Tile tileSafely = Framing.GetTileSafely(i, j + 1);
+            
+            if (!tileSafely.HasTile)
+            {
+                WorldGen.KillTile(i, j);
+            }
+
+            if (tileSafely.TileType != ModContent.TileType<PrehistoricMoss>() && tileSafely.TileType != ModContent.TileType<Equi>())
+            {
+                WorldGen.KillTile(i, j);
+            }
+
 			resetFrame = false;
-			noBreak = true;
+            noBreak = true;
 			return false;
 		}
 
@@ -50,7 +62,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
             Main.tileSolid[Framing.GetTileSafely(i, j).TileType]);
         }
 		
-		//Let it grow
+		//Let it grow (used for initial worldgen placement)
 		public static bool Grow(int i, int j, int minSize, int maxSize, bool saplingExists = false)
         {
             //Get a random height for it
@@ -117,7 +129,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
             return true;
         }
 
-        //Check the tree
+        //Check the tree (bamboo)
 		private void CheckEntireTree(ref int x, ref int y)
 		{
 			while(Main.tile[x, y].TileType == Type)
@@ -147,18 +159,8 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			Item.NewItem(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), new Vector2(i, j) * 16, ItemID.BambooBlock);
 			Framing.GetTileSafely(i, j).HasTile = false;
 
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<Equi>();
+            //If there's a remaining segment below
             bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<Equi>();
-			
-			if (up)
-				WorldGen.KillTile(i, j - 1);
-            if (down && Framing.GetTileSafely(i, j + 1).TileFrameY == 18)
-            {
-                WorldGen.KillTile(i, j + 1);
-                down = false;
-            }
-			
-			//If there's a remaining segment below
 			int belowFrameX = Framing.GetTileSafely(i, j + 1).TileFrameX;
 			
             if (down)
@@ -177,14 +179,15 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
             }
         }
 
+        //Check if a bamboo tile can be placed above the existing one
         public static bool CanItGrow(int x, int y)
         {
-            if (!WorldGen.InWorld(x, y))
+            if (!WorldGen.InWorld(x, y - 1))
             {
                 return false;
             }
 
-            if (Main.tile[x, y].HasTile)
+            if (Framing.GetTileSafely(x, y - 1).HasTile)
             {
                 return false;
             }
@@ -197,13 +200,14 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
             return true;
         }
 
+        //Count how many bamboo tiles exist
         public static int CountBamboo(int x, int y)
         {
             int count = 0;
 
             for (int j = 0; j < 25; j++)
             {
-                if (Main.tile[x, y + j].TileType == ModContent.TileType<Equi>())
+                if (Framing.GetTileSafely(x, y + j).TileType == (ushort)ModContent.TileType<Equi>())
                 {
                     count++;
                 }
@@ -212,6 +216,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
             return count;
         }
 
+        //Used for the growth of the bamboo
         public override void RandomUpdate(int i, int j)
         {
             if (CanItGrow(i, j))
@@ -251,6 +256,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
             }
         }
 
+        //Draw the tree
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
             StemTexture = ModContent.Request<Texture2D>(Texture);
