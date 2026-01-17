@@ -85,7 +85,7 @@ namespace ABMod.Tiles.GreenMushroomBiome
 					NetMessage.SendTileSquare(-1, i, j - 1, 1, TileChangeType.None);
 				}
 
-				//Grow mushroom trees rarely
+				/*Grow mushroom trees rarely
                 if (Main.rand.NextBool(30))
                 {
                     if(WorldgenTools.GrowTreeCheck(i, j, 4, 18, ModContent.TileType<GreenFungusTree>()))
@@ -93,6 +93,7 @@ namespace ABMod.Tiles.GreenMushroomBiome
 						GreenFungusTree.Grow(i, j - 1, 8, 15, false);
 					}
                 }
+				*/
             }
         }
 

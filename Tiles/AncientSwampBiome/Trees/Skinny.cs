@@ -6,11 +6,8 @@ using Terraria.Localization;
 using ReLogic.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 using ABMod.Common;
-using ABMod.Items;
-using ABMod.Tiles.AncientSwampBiome;
 
 namespace ABMod.Tiles.AncientSwampBiome.Trees
 {
@@ -165,11 +162,6 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			}
 			
 			return true;
-		}
-		
-		//Effects (death)
-		public override void NearbyEffects(int i, int j, bool closer)
-		{
 		}
 		
 		//Check the tree

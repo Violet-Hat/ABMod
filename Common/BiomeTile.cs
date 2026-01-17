@@ -24,5 +24,13 @@ namespace ABMod.Common
 				Main.tile[x, y].TileType == (ushort)ModContent.TileType<AncientStone>() ||
 				Main.tile[x, y].TileType == (ushort)ModContent.TileType<PrehistoricMoss>();
 		}
+
+		public static bool IsFloatingIslandTile(int x, int y)
+		{
+			return Main.tile[x, y].TileType == TileID.Cloud ||
+				Main.tile[x, y].TileType == TileID.RainCloud ||
+				Main.tile[x, y].TileType == TileID.SnowCloud ||
+				Main.tile[x, y].TileType == TileID.Sunplate;
+		}
     }
 }

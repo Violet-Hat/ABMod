@@ -83,7 +83,7 @@ namespace ABMod.Generation
 						Tile tile = Main.tile[X, Y];
 
 						//Replace tiles
-						if (tile.HasTile && tile.TileType != TileID.Cloud && tile.TileType != TileID.RainCloud && !BiomeTile.IsSwampTile(X, Y))
+						if (tile.HasTile && !BiomeTile.IsFloatingIslandTile(X, Y))
 						{
 							//Clear if not solid
 							if (WorldGen.SolidTile(X, Y))
@@ -549,14 +549,15 @@ namespace ABMod.Generation
 					Tile tile = Main.tile[x, y];
 					Tile tileRight = Main.tile[x + 1, y];
 
+					//Prehistoric moss ambient
 					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.IsSloped(x, y) && !WorldgenTools.TooMuchLiquid(x, y, 3))
 					{
 						//Tree
 						if(tileRight.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.IsSloped(x + 1, y))
 						{
-							if (WorldGen.genRand.NextBool(6))
+							if (WorldGen.genRand.NextBool(8))
 							{
-								if (WorldgenTools.GrowTreeCheck(x, y, 6, 35, ModContent.TileType<Lep>(), 1))
+								if (WorldgenTools.GrowTreeCheck(x, y, 6, 35, 1))
 								{
 									Lep.Grow(x, y - 1, 25, 30, false);
 								}
@@ -572,7 +573,7 @@ namespace ABMod.Generation
 						}
 
 						//Ambient decorations
-						if (WorldGen.genRand.NextBool(5) && !WorldgenTools.IsTreeType(x, y - 1))
+						if (WorldGen.genRand.NextBool(4) && !WorldgenTools.IsTreeType(x, y - 1))
                         {
                             switch (WorldGen.genRand.Next(3))
                             {
@@ -595,6 +596,16 @@ namespace ABMod.Generation
                         }
 					}
 
+					//Aquatic prehistoric moss ambience
+					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.IsSloped(x, y) && WorldgenTools.TooMuchLiquid(x, y, 3))
+					{
+						if (WorldgenTools.GrowSkinnyCheck(x, y, 5, 30))
+						{
+							Equi.Grow(x, y - 1, 10, 25, false);
+						}
+					}
+
+					//Ancient irt ambient
 					if(tile.TileType == (ushort)ModContent.TileType<AncientDirt>() && !WorldgenTools.IsSloped(x, y))
                     {
 						if (WorldGen.genRand.NextBool(3))
@@ -608,6 +619,7 @@ namespace ABMod.Generation
 						}
                     }
 
+					//Ancient stone ambient
 					if(tile.TileType == (ushort)ModContent.TileType<AncientStone>() && !WorldgenTools.IsSloped(x, y))
                     {
                         //Ambient decorations

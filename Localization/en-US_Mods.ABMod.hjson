@@ -380,6 +380,16 @@ Items: {
 		DisplayName: Preserved Dirt Wall Item
 		Tooltip: ""
 	}
+
+	LepSeed: {
+		DisplayName: Lep Seed
+		Tooltip: ""
+	}
+
+	SkinnySeed: {
+		DisplayName: Skinny Seed
+		Tooltip: ""
+	}
 }
 
 Biomes: {
@@ -451,6 +461,8 @@ Tiles: {
 	RedMossTree.MapEntry: Red Moss Tree
 	VioMossTree.MapEntry: Vio Moss Tree
 	Skinny.MapEntry: Skinny
+	Equi.MapEntry: Equi
+	SkinnySappling.MapEntry: Skinny Sappling
 }
 
 Buffs: {

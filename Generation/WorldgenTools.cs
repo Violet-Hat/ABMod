@@ -15,91 +15,7 @@ using ABMod.Tiles.AncientSwampBiome.Trees;
 namespace ABMod.Generation
 {
 	public class WorldgenTools
-	{
-		public static void PlaceCircle(int X, int Y, int tileType, int wallType, int radiusX, int radiusY, bool clearTiles, bool clearWalls, bool blotches)
-		{
-			ShapeData circle = new ShapeData();
-			GenAction blotchMod;
-			
-			if(blotches)
-			{
-				blotchMod = new Modifiers.Blotches(2, 0.4);
-				
-				WorldUtils.Gen(new Point(X, Y), new Shapes.Circle(radiusX, radiusY), Actions.Chain(new GenAction[]
-				{
-					blotchMod.Output(circle)
-				}));
-			}
-			else
-			{
-				blotchMod = new Modifiers.Blotches(2, 0);
-				
-				WorldUtils.Gen(new Point(X, Y), new Shapes.Circle(radiusX, radiusY), Actions.Chain(new GenAction[]
-				{
-					blotchMod.Output(circle)
-				}));
-			}
-			
-			//Clear tiles
-			if(clearTiles)
-			{
-				WorldUtils.Gen(new Point(X, Y), new ModShapes.All(circle), Actions.Chain(new GenAction[]
-				{
-					new Actions.ClearTile(), new Actions.SetLiquid(0, 0)
-				}));
-			}
-			
-			//place tiles
-			if (tileType > -1)
-			{
-				WorldUtils.Gen(new Point(X, Y), new ModShapes.All(circle), Actions.Chain(new GenAction[]
-				{
-					new Actions.PlaceTile((ushort)tileType)
-				}));
-			}
-			
-			//Wall stuff
-			ShapeData wallCircle = new ShapeData();
-			GenAction wallBlotchMod;
-			
-			if(blotches)
-			{
-				wallBlotchMod = new Modifiers.Blotches(2, 0.4);
-				
-				WorldUtils.Gen(new Point(X, Y), new Shapes.Circle(radiusX - 1, radiusY - 1), Actions.Chain(new GenAction[]
-				{
-					wallBlotchMod.Output(wallCircle)
-				}));
-			}
-			else
-			{
-				wallBlotchMod = new Modifiers.Blotches(2, 0);
-				
-				WorldUtils.Gen(new Point(X, Y), new Shapes.Circle(radiusX - 1, radiusY - 1), Actions.Chain(new GenAction[]
-				{
-					wallBlotchMod.Output(wallCircle)
-				}));
-			}
-			
-			//Clear walls
-			if(clearWalls)
-			{
-				WorldUtils.Gen(new Point(X, Y), new ModShapes.All(wallCircle), Actions.Chain(new GenAction[]
-				{
-					new Actions.ClearWall()
-				}));
-			}
-			
-			//Place wall
-			if(wallType > 0)
-			{
-				WorldUtils.Gen(new Point(X, Y), new ModShapes.All(wallCircle), Actions.Chain(new GenAction[]
-				{
-					new Actions.PlaceWall((ushort)wallType)
-				}));
-			}
-		}
-		
+	{	
 		public static bool NoFloatingIslands(int X, int Y, int area)
 		{
 			for (int i = X - area; i < X + area; i++)
@@ -174,7 +90,7 @@ namespace ABMod.Generation
             return true;
         }
 		
-		public static bool GrowTreeCheck(int X, int Y, int distanceX, int distanceY, int tileType, int extra = 0)
+		public static bool GrowTreeCheck(int X, int Y, int distanceX, int distanceY, int extra = 0)
 		{
 			//If there's others around it, don't let it grow
 			for (int i = X - distanceX; i < X + distanceX + extra; i++)
@@ -189,9 +105,9 @@ namespace ABMod.Generation
 			}
 
 			//If there's not enought space, don't let it grow
-			for (int i = X - (int)(distanceX / 2f); i < X + (int)(distanceX / 2f) + extra; i++)
+			for (int i = X - (distanceX / 2); i < X + (distanceX / 2) + extra; i++)
 			{
-				for (int j = Y - distanceY; j < Y - 2; j++)
+				for (int j = Y - distanceY; j < Y; j++)
 				{
 					//only check for solid blocks
 					if (Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
@@ -232,7 +148,7 @@ namespace ABMod.Generation
 			//If there's not enought space, don't let it grow
 			for (int i = X - (int)(distanceX / 2f); i < X + (int)(distanceX / 2f); i++)
 			{
-				for (int j = Y - distanceY; j < Y - 2; j++)
+				for (int j = Y - distanceY; j < Y; j++)
 				{
 					//only check for solid blocks
 					if (Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
@@ -250,7 +166,8 @@ namespace ABMod.Generation
 			if (!special)
 			{
 				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>() ||
-				Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Skinny>();
+					Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Skinny>() ||
+					Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Equi>();
 			}
 			else
 			{

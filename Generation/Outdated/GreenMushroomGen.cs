@@ -253,10 +253,12 @@ namespace ABMod.Generation
                     {
                         if (WorldGen.genRand.NextBool(6))
 						{
-							if(WorldgenTools.GrowTreeCheck(X, Y, 4, 18, ModContent.TileType<GreenFungusTree>()))
+							/*
+							if(WorldgenTools.GrowTreeCheck(X, Y, 4, 18))
 							{
 								GreenFungusTree.Grow(X, Y - 1, 8, 15, false);
 							}
+							*/
 						}
                     }
 				}

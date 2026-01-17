@@ -56,15 +56,6 @@ namespace ABMod.Tiles.AsteroidBiome.Moss
 					WorldGen.PlaceTile(i, j - 1, GrassRockTile, true);
 					NetMessage.SendObjectPlacement(-1, i, j - 1, GrassRockTile, 0, 0, -1, -1);
 				}
-				
-				//Grow trees rarely
-                if (Main.rand.NextBool(100))
-                {
-                    if(WorldgenTools.GrowTreeCheck(i, j, 4, 18, ModContent.TileType<PurMossTree>()))
-					{
-						PurMossTree.Grow(i, j - 1, 10, 15, false);
-					}
-                }
             }
 		}
 

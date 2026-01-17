@@ -1,14 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Microsoft.Xna.Framework;
 
 using ABMod.Generation;
-using ABMod.Tiles.AncientSwampBiome;
 
 namespace ABMod.Tiles.AncientSwampBiome.Trees
 {
@@ -46,11 +45,9 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
         {
             if (WorldGen.genRand.NextBool(15))
             {
-                bool isPlayerNear = WorldGen.PlayerLOS(i, j);
-
-                if (isPlayerNear && Main.tile[i, j + 1].TileType != ModContent.TileType<LepSappling>() && Main.tile[i + 1, j].TileType == ModContent.TileType<LepSappling>())
+                if (Main.tile[i, j + 1].TileType != ModContent.TileType<LepSappling>() && Main.tile[i + 1, j].TileType == ModContent.TileType<LepSappling>())
                 {
-					if(WorldgenTools.GrowTreeCheck(i, j, 6, 35, ModContent.TileType<Lep>(), 1))
+					if(WorldgenTools.GrowTreeCheck(i, j + 1, 6, 35, 1))
 					{
 						Lep.Grow(i, j, 25, 30, true);
 					}
