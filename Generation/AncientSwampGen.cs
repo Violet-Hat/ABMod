@@ -1,22 +1,15 @@
 using System;
-using System.Threading;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using ReLogic.Content;
 using Terraria;
 using Terraria.IO;
 using Terraria.ID;
 using Terraria.WorldBuilding;
 using Terraria.ModLoader;
 using Terraria.GameContent.Generation;
-using static Terraria.WorldGen;
-using static tModPorter.ProgressUpdate;
-using StructureHelper.Models;
 
 using ABMod.Common;
 using ABMod.Tiles.AncientSwampBiome;
-using ABMod.Tiles.AncientSwampBiome.Trees;
-using ABMod.Tiles.AncientSwampBiome.Ambient;
 
 namespace ABMod.Generation
 {
@@ -27,9 +20,7 @@ namespace ABMod.Generation
 		public static int PlaceSwampY = 0;
 		public static int BiomeWidth = 0;
         public static int BiomeHeightLimit = 0;
-
-		//Structures
-		public static List <int> structuresX = new List<int>();
+		public static List <int> structuresPosX = new List<int>();
 
 		private void SwampGen(GenerationProgress progress, GameConfiguration configuration)
 		{
@@ -388,8 +379,17 @@ namespace ABMod.Generation
 		{
 			progress.Message = "Adding a nice ambience";
 
-			//Hell
+			//List hell
 			List <int> values = new List<int>();
+			List <String> structuresNames = new List<String>()
+			{
+				"SwampStruct1",
+				"SwampStruct2",
+				"SwampStruct3",
+				"SwampStruct4",
+				"SwampStruct5",
+				"SwampStruct6"
+			};
 
 			//Start and end
 			int StartX = PlaceSwampX - BiomeWidth;
@@ -398,7 +398,7 @@ namespace ABMod.Generation
 			//Structure values
 			int numSurfaceStructures = Main.maxTilesX >= 8400 ? 6 : Main.maxTilesX >= 6400 ? 5 : 4;
 			int structurePartition = BiomeWidth * 2 / (numSurfaceStructures + 1);
-			int structureMaxRange = Main.maxTilesX >= 8400 ? 30 : Main.maxTilesX >= 6400 ? 20 : 10;
+			int structureMaxRange = Main.maxTilesX >= 8400 ? 9 : Main.maxTilesX >= 6400 ? 7 : 5;
 
 			for (int i = 0; i < numSurfaceStructures; i++) values.Add(i + 1);
 			
@@ -420,7 +420,7 @@ namespace ABMod.Generation
 
 			progress.Set(0.1);
 
-			//Lake
+			//Lake for F I S H I NG
 			int index = WorldGen.genRand.Next(values.Count);
 			int placeLake = values[index];
 			int lakeWidth = Main.maxTilesX >= 8400 ? 40 : Main.maxTilesX >= 6400 ? 30 : 20;
@@ -431,36 +431,17 @@ namespace ABMod.Generation
 			progress.Set(0.2);
 
 			//Last structures
-			bool placedStruct1 = false;
-			bool placedStruct2 = false;
-
 			foreach (int placement in values)
 			{
-				if(!placedStruct1 && !placedStruct2)
-				{
-					if (WorldGen.genRand.NextBool())
-					{
-						GenerateStructure(StartX + (structurePartition * placement), "SwampStruct1", structureMaxRange, 5);
-						placedStruct1 = true;
-					}
-					else
-					{
-						GenerateStructure(StartX + (structurePartition * placement), "SwampStruct2", structureMaxRange, 15);
-						placedStruct2 = true;
-					}
-				}
-				else if (placedStruct1)
-				{
-					GenerateStructure(StartX + (structurePartition * placement), "SwampStruct2", structureMaxRange, 15);
-					placedStruct2 = true;
-					placedStruct1 = false;
-				}
-				else
-				{
-					GenerateStructure(StartX + (structurePartition * placement), "SwampStruct1", structureMaxRange, 5);
-					placedStruct1 = true;
-					placedStruct2 = false;
-				}
+				index = WorldGen.genRand.Next(structuresNames.Count);
+                string structureFile = structuresNames[index];
+				
+				structuresNames.Remove(structureFile);
+				
+				int structOffsetY = GetStructureOffset(structureFile);
+				int structWidth = GetStructureWidth(structureFile);
+
+				GenerateStructure(StartX + (structurePartition * placement), structureFile, structureMaxRange, structWidth, structOffsetY);
 			}
 
 			progress.Set(0.4);
@@ -494,7 +475,7 @@ namespace ABMod.Generation
 					x = WorldGen.genRand.Next(PlaceSwampX, EndX + 1);
 				}
 
-				foreach(int posX in structuresX)
+				foreach(int posX in structuresPosX)
 				{
 					if (Math.Abs(x - posX) < 20)
 					{
@@ -541,113 +522,6 @@ namespace ABMod.Generation
 			progress.Set(0.7);
 
 			//Vegetation
-			for(int x = StartX; x <= EndX; x++)
-			{
-				for(int y = PlaceSwampY; y <= BiomeHeightLimit; y++)
-				{
-					Tile tile = Main.tile[x, y];
-					Tile tileRight = Main.tile[x + 1, y];
-
-					//Prehistoric moss ambient
-					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && !WorldgenTools.TooMuchLiquid(x, y, 3))
-					{
-						//Tree
-						if(tileRight.TileType == (ushort)ModContent.TileType<PrehistoricMoss>())
-						{
-							if (WorldGen.genRand.NextBool(8))
-							{
-								if (WorldgenTools.GrowTreeCheck(x, y, 6, 35, 1))
-								{
-									WorldGen.SlopeTile(x, y, 0);
-									Lep.Grow(x, y - 1, 25, 30, false);
-								}
-							}
-						}
-
-						if (WorldGen.genRand.NextBool(6))
-						{
-							if (WorldgenTools.GrowSkinnyCheck(x, y, 5, 25))
-							{
-								WorldGen.SlopeTile(x, y, 0);
-								Skinny.Grow(x, y - 1, 15, 20, false);
-							}
-						}
-
-						//Ambient decorations
-						if (WorldGen.genRand.NextBool(4) && !WorldgenTools.IsTreeType(x, y - 1))
-                        {
-                            switch (WorldGen.genRand.Next(3))
-                            {
-								default: 
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargeAmbientPlant>(), true, WorldGen.genRand.Next(9));
-									break;
-                                case 1:
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargePrehistoricMossRock>(), true, WorldGen.genRand.Next(3));
-									break;
-								case 2:
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MediumAmbientPlant>(), true, WorldGen.genRand.Next(12));
-									break;
-                            }
-                        }
-
-						//Grass
-						if (WorldGen.genRand.NextBool(3) && !WorldgenTools.IsTreeType(x, y - 1))
-                        {
-                            WorldGen.PlaceObject(x, y - 1, ModContent.TileType<SwampGrass>(), true, WorldGen.genRand.Next(28));
-                        }
-					}
-
-					//Aquatic prehistoric moss ambience
-					if(tile.TileType == (ushort)ModContent.TileType<PrehistoricMoss>() && WorldgenTools.TooMuchLiquid(x, y, 3))
-					{
-						if (WorldGen.genRand.NextBool(3))
-						{
-							if (WorldgenTools.GrowSkinnyCheck(x, y, 5, 30))
-							{
-								WorldGen.SlopeTile(x, y, 0);
-								Equi.Grow(x, y - 1, 10, 25, false);
-							}
-						}
-					}
-
-					//Ancient dirt ambient
-					if(tile.TileType == (ushort)ModContent.TileType<AncientDirt>())
-                    {
-						if (WorldGen.genRand.NextBool(3))
-						{
-							WorldGen.PlaceObject(x, y - 1, ModContent.TileType<SmallAncientDirtRock>(), true, WorldGen.genRand.Next(3));
-						}
-						
-						if (WorldGen.genRand.NextBool(3) && !WorldgenTools.TooMuchLiquid(x, y))
-						{
-							WorldGen.PlaceObject(x, y - 1, ModContent.TileType<Cooksonia>(), true, WorldGen.genRand.Next(6));
-						}
-                    }
-
-					//Ancient stone ambient
-					if(tile.TileType == (ushort)ModContent.TileType<AncientStone>() && !WorldgenTools.IsSloped(x, y))
-                    {
-                        //Ambient decorations
-						if (WorldGen.genRand.NextBool(5))
-                        {
-                            switch (WorldGen.genRand.Next(2))
-                            {
-								default: 
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargeAncientStoneRock>(), true, WorldGen.genRand.Next(3));
-									break;
-                                case 1:
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MediumAncientStoneRock>(), true, WorldGen.genRand.Next(3));
-									break;
-                            }
-                        }
-
-						if (WorldGen.genRand.NextBool(3))
-                        {
-                            WorldGen.PlaceObject(x, y - 1, (ushort)ModContent.TileType<SmallAncientStoneRock>(), true, WorldGen.genRand.Next(3));
-                        }
-                    }
-                }
-			}
 		}
 
 		//Check the tile type
@@ -947,7 +821,7 @@ namespace ABMod.Generation
 
 						if (!tile.HasTile && WorldGen.SolidTile(i, j - 1))
 						{
-							WorldGen.PlaceTile(i, j, ModContent.TileType<AncientDirt>(), true);
+							WorldGen.PlaceTile(i, j, ModContent.TileType<PreservedDirt>(), true);
 						}
                     }
                 }
@@ -955,18 +829,62 @@ namespace ABMod.Generation
 		}
 
 		//Generate structure
-		public static void GenerateStructure(int x, String structureFile, int range, int offsetY)
+		public static void GenerateStructure(int x, string structureFile, int range, int width, int offsetY)
 		{
 			int posX = x + WorldGen.genRand.Next(-range, range + 1);
 			int posY = FindGround(posX);
-			posY --;
+			posY--;
 
-			StructureData data = StructureHelper.API.Generator.GetStructureData("Generation/Structures/" + structureFile + ".shstruct", ABMod.Instance);
+			Vector2 origin = new Vector2(posX - (width / 2), posY - offsetY);
+			StructureHelper.API.Generator.GenerateStructure("Generation/Structures/AncientSwamps/" + structureFile + ".shstruct", origin.ToPoint16(), ABMod.Instance);
 
-			Vector2 origin = new Vector2(posX - (int)(data.width/2), posY - offsetY);
-			StructureHelper.API.Generator.GenerateStructure("Generation/Structures/" + structureFile + ".shstruct", origin.ToPoint16(), ABMod.Instance);
+			structuresPosX.Add(posX);
+		}
 
-			structuresX.Add(posX);
+		//Get the structure offset
+		public static int GetStructureOffset(string structureFile)
+		{
+			if (structureFile == "SwampStruct1" || structureFile == "SwampStruct6")
+			{
+				return 5;
+			}
+			else if (structureFile == "SwampStruct2")
+			{
+				return 15;
+			}
+			else if (structureFile == "SwampStruct3" || structureFile == "SwampStruct5")
+			{
+				return 3;
+			}
+			else
+			{
+				return 10;
+			}
+		}
+
+		//Get the structure width
+		public static int GetStructureWidth(string structureFile)
+		{
+			if (structureFile == "SwampStruct1" || structureFile == "SwampStruct5")
+			{
+				return 26;
+			}
+			else if (structureFile == "SwampStruct2")
+			{
+				return 23;
+			}
+			else if (structureFile == "SwampStruct3")
+			{
+				return 35;
+			}
+			else if (structureFile == "SwampStruct4")
+			{
+				return 34;
+			}
+			else
+			{
+				return 29;
+			}
 		}
 
 		//Find ground

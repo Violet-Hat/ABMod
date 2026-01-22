@@ -400,6 +400,11 @@ Items: {
 		DisplayName: Active Pitfall Trap Item
 		Tooltip: ""
 	}
+
+	EvilSpikesItem: {
+		DisplayName: Evil Spikes Item
+		Tooltip: ""
+	}
 }
 
 Biomes: {
