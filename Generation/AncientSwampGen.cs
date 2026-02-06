@@ -20,7 +20,7 @@ namespace ABMod.Generation
 		public static int PlaceSwampY = 0;
 		public static int BiomeWidth = 0;
         public static int BiomeHeightLimit = 0;
-		public static List <int> structuresPosX = new List<int>();
+		public static readonly List <int> structuresPosX = new List<int>();
 
 		private void SwampGen(GenerationProgress progress, GameConfiguration configuration)
 		{
@@ -29,28 +29,77 @@ namespace ABMod.Generation
 			//Clear tiles
 			Flags.SoftDirtPoints.Clear();
 
-			//X & Y value of the swamp origin, make sure X is on the jungle side
-			if (GenVars.dungeonSide == -1)
-			{
-				PlaceSwampX = Main.maxTilesX - (Main.maxTilesX / 8);
-			}
-			else
-			{
-				PlaceSwampX = (int)(Main.maxTilesX / 8f);
-			}
-
-			PlaceSwampY = (int)Main.worldSurface - (Main.maxTilesY / 8);
-
 			//Width & height of the swamp
 			BiomeWidth = Main.maxTilesX >= 8400 ? 355 : Main.maxTilesX >= 6400 ? 250 : 175;
 			BiomeHeightLimit = (int)(Main.maxTilesY / 1.75f);
 
+			//X & Y value of the swamp origin, make sure X is on the jungle side
+			bool foundValidPosition = false;
+			int temporalSpawnX;
+
+			if (GenVars.dungeonSide == -1)
+			{
+				//Time to search a valid position
+				temporalSpawnX = Main.maxTilesX - (Main.maxTilesX / 8);
+
+				if (!foundValidPosition && temporalSpawnX > ((Main.maxTilesX / 2) + BiomeWidth + 200))
+				{
+					if (!CanBePlaced(temporalSpawnX, (int)Main.worldSurface))
+					{
+						temporalSpawnX -= 10;
+					}
+					else
+					{
+						foundValidPosition = true;
+					}
+				}
+
+				if(foundValidPosition)
+				{
+					PlaceSwampX = temporalSpawnX;
+				}
+				else
+				{
+					PlaceSwampX = Main.maxTilesX - (Main.maxTilesX / 8);
+				}
+			}
+			else
+			{
+				//Time to search a valid position
+				temporalSpawnX = Main.maxTilesX / 8;
+
+				if (!foundValidPosition && temporalSpawnX < ((Main.maxTilesX / 2) - BiomeWidth - 200))
+				{
+					if (!CanBePlaced(temporalSpawnX, (int)Main.worldSurface))
+					{
+						temporalSpawnX += 10;
+					}
+					else
+					{
+						foundValidPosition = true;
+					}
+				}
+
+				if(foundValidPosition)
+				{
+					PlaceSwampX = temporalSpawnX;
+				}
+				else
+				{
+					PlaceSwampX = Main.maxTilesX / 8;
+				}
+			}
+
 			int StartX = PlaceSwampX - BiomeWidth;
 			int EndX = PlaceSwampX + BiomeWidth;
 
-			//Place the biome base
-			int progressEigth = (int)(BiomeWidth * 2 / 8f);
+			//For the vegetation code
+			VegetationGen.SwampStartX = StartX;
+			VegetationGen.SwampEndX = EndX;
+			VegetationGen.SwampStartY = PlaceSwampY;
+			VegetationGen.SwampEndY = BiomeHeightLimit;
 
+			//Place the biome base
 			int tileType;
 			int wallType;
 
@@ -69,12 +118,12 @@ namespace ABMod.Generation
 					tileType = TileTypeCheck(Y, limit, deepLimit);
 					wallType = WallTypeCheck(Y, limit, deepLimit);
 
-					if (WorldgenTools.NoFloatingIslands(X, Y, 45))
+					if (WorldgenTools.NoFloatingIslands(X, Y) && !BiomeTile.IsFloatingIslandTile(X, Y))
 					{
 						Tile tile = Main.tile[X, Y];
 
 						//Replace tiles
-						if (tile.HasTile && !BiomeTile.IsFloatingIslandTile(X, Y))
+						if (tile.HasTile)
 						{
 							//Clear if not solid
 							if (WorldGen.SolidTile(X, Y))
@@ -137,7 +186,7 @@ namespace ABMod.Generation
 						tileType = TileTypeCheck(Y, limit, deepLimit);
 						wallType = WallTypeCheck(Y, limit, deepLimit);
 
-						if (WorldgenTools.NoFloatingIslands(X, Y, 45))
+						if (WorldgenTools.NoFloatingIslands(X, Y) && !BiomeTile.IsFloatingIslandTile(X, Y))
 						{
 							Tile tile = Main.tile[X, Y];
 
@@ -176,7 +225,7 @@ namespace ABMod.Generation
 					Tile tile = Main.tile[X, Y];
 
 					//Replace tiles
-					if (tile.HasTile && tile.TileType != TileID.Cloud && tile.TileType != TileID.RainCloud && !BiomeTile.IsSwampTile(X, Y))
+					if (tile.HasTile && !BiomeTile.IsSwampTile(X, Y))
 					{
 						if (WorldGen.SolidTile(X, Y) && WorldGen.genRand.NextBool())
 						{
@@ -522,6 +571,43 @@ namespace ABMod.Generation
 			progress.Set(0.7);
 
 			//Vegetation
+		}
+
+		//Tile check for jungle and desert
+		public static bool CanBePlaced(int i, int j)
+		{
+			int jungleTiles = 0;
+
+			for(int x = i - 50; x <= i + 50; x++)
+			{
+				for(int y = j - 50; y <= j + 50; y++)
+				{
+					if (WorldGen.InWorld(i, j) && Main.tile[i, j].HasTile && BiomeTile.IsJungleTile(x, y))
+					{
+						jungleTiles++;
+					}
+				}
+			}
+
+			int desertTiles = 0;
+
+			for(int x = i - 200; x <= i + 200; x++)
+			{
+				for(int y = j - 50; y <= j + 50; y++)
+				{
+					if (WorldGen.InWorld(i, j) && Main.tile[i, j].HasTile && BiomeTile.IsDesertTile(x, y))
+					{
+						desertTiles++;
+					}
+				}
+			}
+
+			if (jungleTiles > 500 || desertTiles > 500)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		//Check the tile type
@@ -899,12 +985,12 @@ namespace ABMod.Generation
 			//Find values
 			while (!foundGround && attemptsLeft++ < 100000)
 			{
-				if (!BiomeTile.IsSwampTile(x, y) || !WorldgenTools.NoFloatingIslands(x, y, 45) && y < Main.maxTilesY)
+				if (!BiomeTile.IsSwampTile(x, y) || BiomeTile.IsFloatingIslandTile(x, y) || !WorldgenTools.NoFloatingIslands(x, y) && y < Main.maxTilesY)
 				{
 					y++;
 				}
 
-				if ((WorldGen.SolidTile(x, y) || Main.tile[x, y].WallType > WallID.None) && WorldgenTools.NoFloatingIslands(x, y, 45))
+				if ((WorldGen.SolidTile(x, y) || Main.tile[x, y].WallType > WallID.None) && WorldgenTools.NoFloatingIslands(x, y) && !BiomeTile.IsFloatingIslandTile(x, y))
 				{
 					foundGround = true;
 				}

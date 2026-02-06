@@ -1,13 +1,5 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Terraria.GameContent.Generation;
 using Terraria;
-using Terraria.IO;
 using Terraria.ID;
-using Terraria.WorldBuilding;
 using Terraria.ModLoader;
 
 using ABMod.Tiles.AncientSwampBiome;
@@ -16,7 +8,6 @@ namespace ABMod.Common
 {
 	public class BiomeTile
     {
-        //Check if the tile is a swamp tile
 		public static bool IsSwampTile(int x, int y)
 		{
 			return Main.tile[x, y].TileType == (ushort)ModContent.TileType<PreservedDirt>() ||
@@ -31,6 +22,20 @@ namespace ABMod.Common
 				Main.tile[x, y].TileType == TileID.RainCloud ||
 				Main.tile[x, y].TileType == TileID.SnowCloud ||
 				Main.tile[x, y].TileType == TileID.Sunplate;
+		}
+
+		public static bool IsDesertTile(int x, int y)
+		{
+			return Main.tile[x, y].TileType == TileID.Sand ||
+				Main.tile[x, y].TileType == TileID.Sandstone ||
+				Main.tile[x, y].TileType == TileID.HardenedSand;
+		}
+
+		public static bool IsJungleTile(int x, int y)
+		{
+			return Main.tile[x, y].TileType == TileID.Mud ||
+				Main.tile[x, y].TileType == TileID.JungleGrass ||
+				Main.tile[x, y].TileType == TileID.LihzahrdBrick;
 		}
     }
 }
