@@ -47,7 +47,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Ambient
 			Color col = Lighting.GetColor(i, j);
 
             Vector2 pos = TileGlobal.TileCustomPosition(i, j);
-            Vector2 offset = new Vector2(34, 62);
+            Vector2 offset = new Vector2(34, 58);
 
             Main.spriteBatch.Draw(PlantTexture.Value, pos, new Rectangle(0, 0, 84, 76), new Color(col.R, col.G, col.B, 255), 0f, offset, 1f, SpriteEffects.None, 0f);
             

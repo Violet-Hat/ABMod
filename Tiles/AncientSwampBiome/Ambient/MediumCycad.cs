@@ -23,7 +23,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Ambient
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.ReplaceTileBreakUp[Type] = true;
             TileID.Sets.BreakableWhenPlacing[Type] = false;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
             TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.newTile.AnchorValidTiles = new int[]
             {
@@ -50,7 +50,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Ambient
             Vector2 pos = TileGlobal.TileCustomPosition(i, j);
             Vector2 offset = new Vector2(20, 64);
 
-            if(tile.TileFrameY == 18 && tile.TileFrameX == 0)
+            if(tile.TileFrameX == 0)
 			{
 				Main.spriteBatch.Draw(PlantTexture.Value, pos, new Rectangle(0, 0, 72, 82), new Color(col.R, col.G, col.B, 255), 0f, offset, 1f, SpriteEffects.None, 0f);
 			}

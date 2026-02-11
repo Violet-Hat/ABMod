@@ -75,7 +75,7 @@ namespace ABMod.Generation
 								}
 							}
 
-							if (WorldGen.genRand.NextBool(4))
+							if (WorldGen.genRand.NextBool(5))
 							{
 								switch (WorldGen.genRand.Next(3))
 								{
