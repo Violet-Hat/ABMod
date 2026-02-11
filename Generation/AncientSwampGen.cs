@@ -930,7 +930,7 @@ namespace ABMod.Generation
 		//Get the structure offset
 		public static int GetStructureOffset(string structureFile)
 		{
-			if (structureFile == "SwampStruct1" || structureFile == "SwampStruct6")
+			if (structureFile == "SwampStruct1")
 			{
 				return 5;
 			}
@@ -941,6 +941,10 @@ namespace ABMod.Generation
 			else if (structureFile == "SwampStruct3" || structureFile == "SwampStruct5")
 			{
 				return 3;
+			}
+			else if (structureFile == "SwampStruct6")
+			{
+				return 6;
 			}
 			else
 			{

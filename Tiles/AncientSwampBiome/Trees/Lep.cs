@@ -292,7 +292,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			Vector2 pos = TileGlobal.TileCustomPosition(i, j);
 			Vector2 TopRootOffSet = new Vector2(10, 0);
 			Vector2 BottomRootOffSet = new Vector2(44, 0);
-			Vector2 treeOffset = new Vector2(96, 144);
+			Vector2 treeOffset = new Vector2(96, 114);
 			
 			//Time to draw the actual tree
 			spriteBatch.Draw(StemTexture.Value, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(col.R, col.G, col.B, 255), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -314,7 +314,7 @@ namespace ABMod.Tiles.AncientSwampBiome.Trees
 			//Draw the top
 			if(Framing.GetTileSafely(i, j).TileFrameY == 0 && Framing.GetTileSafely(i, j).TileFrameX == 72)
 			{
-				Main.spriteBatch.Draw(TopTexture.Value, pos, new Rectangle(0, 0, 222, 158), new Color(col.R, col.G, col.B, 255), 0f, treeOffset, 1f, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(TopTexture.Value, pos, new Rectangle(0, 0, 222, 128), new Color(col.R, col.G, col.B, 255), 0f, treeOffset, 1f, SpriteEffects.None, 0f);
 			}
 			
 			return false;

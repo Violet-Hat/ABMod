@@ -11,7 +11,6 @@ namespace ABMod.Tiles.AncientSwampBiome.Ambient
         public override void SetStaticDefaults()
         {
             Main.tileSolidTop[Type] = false;
-            Main.tileCut[Type] = false;
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;

@@ -57,26 +57,45 @@ namespace ABMod.Generation
 						}
 
 						//Ambient decorations
-						if (WorldGen.genRand.NextBool(4) && !WorldgenTools.IsTreeType(x, y - 1))
+						if (!WorldgenTools.IsTreeType(x, y - 1))
                         {
-                            switch (WorldGen.genRand.Next(3))
-                            {
-								default: 
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargeAmbientPlant>(), true, WorldGen.genRand.Next(9));
-									break;
-                                case 1:
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargePrehistoricMossRock>(), true, WorldGen.genRand.Next(3));
-									break;
-								case 2:
-									WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MediumAmbientPlant>(), true, WorldGen.genRand.Next(12));
-									break;
-                            }
-                        }
+							if (WorldGen.genRand.NextBool(3))
+							{
+								switch (WorldGen.genRand.Next(3))
+								{
+									default: 
+										WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargeAmbientPlant>(), true, WorldGen.genRand.Next(9));
+										break;
+									case 1:
+										WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargePrehistoricMossRock>(), true, WorldGen.genRand.Next(3));
+										break;
+									case 2:
+										WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MediumAmbientPlant>(), true, WorldGen.genRand.Next(12));
+										break;
+								}
+							}
 
-						//Grass
-						if (WorldGen.genRand.NextBool(3) && !WorldgenTools.IsTreeType(x, y - 1))
-                        {
-                            WorldGen.PlaceObject(x, y - 1, ModContent.TileType<SwampGrass>(), true, WorldGen.genRand.Next(28));
+							if (WorldGen.genRand.NextBool(4))
+							{
+								switch (WorldGen.genRand.Next(3))
+								{
+									default: 
+										WorldGen.PlaceObject(x, y - 1, ModContent.TileType<SmallCycad>(), true);
+										break;
+									case 1:
+										WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MediumCycad>(), true);
+										break;
+									case 2:
+										WorldGen.PlaceObject(x, y - 1, ModContent.TileType<LargeCycad>(), true);
+										break;
+								}
+							}
+
+							//Grass
+							if (WorldGen.genRand.NextBool(3))
+							{
+								WorldGen.PlaceObject(x, y - 1, ModContent.TileType<SwampGrass>(), true, WorldGen.genRand.Next(28));
+							}
                         }
 					}
 
