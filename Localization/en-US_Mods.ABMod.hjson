@@ -23,7 +23,7 @@ Items: {
 
 	FungusSword: {
 		DisplayName: Green Mushsword
-		Tooltip: Infects your foes with aggressive fungi, reducing their defense
+		Tooltip: ""
 	}
 
 	FungusHammer: {
@@ -38,7 +38,7 @@ Items: {
 
 	FungusPotion: {
 		DisplayName: Green Healing Potion
-		Tooltip: Gives a temporal boost of life regeneration
+		Tooltip: ""
 	}
 
 	PreservedDirtItem: {
@@ -276,14 +276,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	LepSapplingItem: {
-		Tooltip: Grows into a Lepidodendron when planted on prehistoric moss
-		DisplayName: Spore Pod
-	}
-
 	MossSpores: {
 		DisplayName: Prehistoric Moss Spores
-		Tooltip: Places prehistoric moss on preserved dirt
+		Tooltip: Places prehistoric moss on peat soil
 	}
 
 	AsteroidRockItem: {
@@ -357,52 +352,42 @@ Items: {
 	}
 
 	AncientDirtItem: {
-		DisplayName: Ancient Dirt Item
+		DisplayName: Ancient Dirt
 		Tooltip: ""
 	}
 
 	AncientDirtWallItem: {
-		DisplayName: Ancient Dirt Wall Item
+		DisplayName: Ancient Dirt Wall
 		Tooltip: ""
 	}
 
 	AncientStoneWallItem: {
-		DisplayName: Ancient Stone Wall Item
+		DisplayName: Ancient Stone Wall
 		Tooltip: ""
 	}
 
 	PrehistoricMossWallItem: {
-		DisplayName: Prehistoric Moss Wall Item
+		DisplayName: Prehistoric Moss Wall
 		Tooltip: ""
 	}
 
 	PreservedDirtWallItem: {
-		DisplayName: Preserved Dirt Wall Item
+		DisplayName: Peat Soil Wall Item
 		Tooltip: ""
 	}
 
 	LepSeed: {
-		DisplayName: Lep Seed
-		Tooltip: ""
+		Tooltip: Grows into a Lepidodendron when planted on prehistoric moss
+		DisplayName: Spore Pod
 	}
 
 	SkinnySeed: {
-		DisplayName: Skinny Seed
-		Tooltip: ""
-	}
-
-	PitfallTrapItem: {
-		DisplayName: Pitfall Trap Item
-		Tooltip: ""
-	}
-
-	ActivePitfallTrapItem: {
-		DisplayName: Active Pitfall Trap Item
-		Tooltip: ""
+		DisplayName: Odd Spore Pod
+		Tooltip: Grows into an Asterophyllites when planted on prehistoric moss
 	}
 
 	EvilSpikesItem: {
-		DisplayName: Evil Spikes Item
+		DisplayName: Scalewood Spikes
 		Tooltip: ""
 	}
 }
@@ -426,7 +411,6 @@ Biomes: {
 
 Tiles: {
 	GreenFungusTree.MapEntry: Giant Green Mushroom
-	Lep_Trunk.MapEntry: Lepidodendron
 	GreenMushroomBathtub.MapEntry: Green Mushroom Bathtub
 	GreenMushroomBed.MapEntry: Green Mushroom Bed
 	GreenMushroomBookcase.MapEntry: Green Mushroom Bookcase
@@ -469,15 +453,15 @@ Tiles: {
 	ScaleToilet.MapEntry: Scalewood Toilet
 	ScaleWorkbench.MapEntry: Scalewood Workbench
 	LepSappling.MapEntry: Spore Pod
-	Lep.MapEntry: Lep
-	BluMossTree.MapEntry: Blu Moss Tree
-	OrgMossTree.MapEntry: Org Moss Tree
-	PurMossTree.MapEntry: Pur Moss Tree
-	RedMossTree.MapEntry: Red Moss Tree
-	VioMossTree.MapEntry: Vio Moss Tree
-	Skinny.MapEntry: Skinny
-	Equi.MapEntry: Equi
-	SkinnySappling.MapEntry: Skinny Sappling
+	Lep.MapEntry: Lepidodendron
+	BluMossTree.MapEntry: Horizon Tree
+	OrgMossTree.MapEntry: Horizon Tree
+	PurMossTree.MapEntry: Horizon Tree
+	RedMossTree.MapEntry: Horizon Tree
+	VioMossTree.MapEntry: Horizon Tree
+	Skinny.MapEntry: Asterophyllites
+	Equi.MapEntry: Equisetum
+	SkinnySappling.MapEntry: Odd Spore Pod
 }
 
 Buffs: {
