@@ -103,9 +103,6 @@ namespace ABMod.Generation
 			int tileType;
 			int wallType;
 
-			int limit = (int)Main.worldSurface + 30;
-			int deepLimit = (int)Main.worldSurface + 40;
-
 			for (int X = StartX; X <= EndX; X++)
 			{
 				//Progress setters
@@ -115,8 +112,8 @@ namespace ABMod.Generation
 				for (int Y = PlaceSwampY; Y < BiomeHeightLimit; Y++)
 				{
 					//Tile type check
-					tileType = TileTypeCheck(Y, limit, deepLimit);
-					wallType = WallTypeCheck(Y, limit, deepLimit);
+					tileType = TileTypeCheck(Y);
+					wallType = WallTypeCheck(Y);
 
 					if (WorldgenTools.NoFloatingIslands(X, Y) && !BiomeTile.IsFloatingIslandTile(X, Y))
 					{
@@ -166,8 +163,8 @@ namespace ABMod.Generation
 
 					if (!tile.HasTile)
 					{
-						tileType = TileTypeCheck(Y, limit, deepLimit);
-						wallType = WallTypeCheck(Y, limit, deepLimit);
+						tileType = TileTypeCheck(Y);
+						wallType = WallTypeCheck(Y);
 
 						WorldGen.PlaceTile(X, Y,tileType, true);
 						WorldGen.PlaceWall(X, Y, wallType, true);
@@ -183,8 +180,8 @@ namespace ABMod.Generation
 					for (int Y = PlaceSwampY; Y < BiomeHeightLimit; Y++)
 					{
 						//Tile type check
-						tileType = TileTypeCheck(Y, limit, deepLimit);
-						wallType = WallTypeCheck(Y, limit, deepLimit);
+						tileType = TileTypeCheck(Y);
+						wallType = WallTypeCheck(Y);
 
 						if (WorldgenTools.NoFloatingIslands(X, Y) && !BiomeTile.IsFloatingIslandTile(X, Y))
 						{
@@ -321,6 +318,38 @@ namespace ABMod.Generation
 		{
 			progress.Message = "Digging caves in the anomaly";
 
+			//Clean up the vanilla gen shenanigans
+			for (int X = PlaceSwampX - BiomeWidth; X <= PlaceSwampX + BiomeWidth; X++)
+			{
+				for (int Y = PlaceSwampY; Y <= BiomeHeightLimit; Y++)
+				{
+					if (WorldgenTools.NoFloatingIslands(X, Y))
+					{
+						Tile tile = Main.tile[X, Y];
+
+						//Make sure it's not a floating island or jungle structure tile
+						if (!BiomeTile.IsFloatingIslandTile(X, Y) && !BiomeTile.IsJungleStructureTile(X, Y) && !BiomeTile.IsTempleTile(X, Y))
+						{
+							//Remove vanilla tiles
+							if (tile.HasTile && !BiomeTile.IsSwampTile(X, Y))
+							{
+								WorldGen.KillTile(X, Y, noItem: true);
+								tile.HasTile = false;
+							}
+
+							//Place a tile if there's no tile and there's a wall
+							if (!tile.HasTile && tile.WallType > WallID.None)
+							{
+								int tileType = TileTypeCheck(Y);
+								WorldGen.PlaceTile(X, Y, tileType);
+							}
+						}
+					}
+				}
+			}
+
+			progress.Set(0.25);
+
 			int seed = WorldGen.genRand.Next();
 			int octaves = 5;
 			float clearChance = 0.6f;
@@ -333,18 +362,21 @@ namespace ABMod.Generation
 			{
 				for (int Y = CaveStart; Y < CaveEnd; Y++)
 				{
-					//Perlin noise values
-					//These are for transition purposes
-					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
-					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, seed) + 0.5f + horizontalOffsetNoise;
-					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, unchecked(seed - 1)) + 0.5f;
-					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.235f;
-
-					//Remove tiles based on the noise
-					if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+					if (BiomeTile.IsSwampTile(X, Y))
 					{
-						WorldGen.KillTile(X, Y);
+						//Perlin noise values
+						//These are for transition purposes
+						float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
+						float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, seed) + 0.5f + horizontalOffsetNoise;
+						float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 550f, Y / 300f, octaves, unchecked(seed - 1)) + 0.5f;
+						float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
+						float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.235f;
+
+						//Remove tiles based on the noise
+						if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+						{
+							WorldGen.KillTile(X, Y);
+						}
 					}
 				}
 			}
@@ -356,18 +388,21 @@ namespace ABMod.Generation
 			{
 				for (int Y = CaveStart; Y < CaveEnd; Y++)
 				{
-					//Perlin noise values
-					//Higher Y values for more vertical caves
-					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
-					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 350f, Y / 575f, octaves, seed) + 0.5f + horizontalOffsetNoise;
-					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 350f, Y / 575f, octaves, unchecked(seed - 1)) + 0.5f;
-					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.20f;
-
-					//Remove tiles based on the noise
-					if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+					if (BiomeTile.IsSwampTile(X, Y))
 					{
-						WorldGen.KillTile(X, Y);
+						//Perlin noise values
+						//Higher Y values for more vertical caves
+						float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
+						float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 350f, Y / 575f, octaves, seed) + 0.5f + horizontalOffsetNoise;
+						float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 350f, Y / 575f, octaves, unchecked(seed - 1)) + 0.5f;
+						float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
+						float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.20f;
+
+						//Remove tiles based on the noise
+						if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+						{
+							WorldGen.KillTile(X, Y);
+						}
 					}
 				}
 			}
@@ -382,18 +417,21 @@ namespace ABMod.Generation
 			{
 				for (int Y = CaveStart; Y < CaveEnd; Y++)
 				{
-					//Perlin noise values
-					//Higher X values for more horizontal caves
-					float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
-					float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 575f, Y / 350f, octaves, seed) + 0.5f + horizontalOffsetNoise;
-					float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 575f, Y / 350f, octaves, unchecked(seed - 1)) + 0.5f;
-					float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-					float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.20f;
-
-					//Remove tiles based on the noise
-					if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+					if (BiomeTile.IsSwampTile(X, Y))
 					{
-						WorldGen.KillTile(X, Y);
+						//Perlin noise values
+						//Higher X values for more horizontal caves
+						float horizontalOffsetNoise = WorldgenTools.PerlinNoise2D(X / 225f, Y / 225f, octaves, unchecked(seed + 1)) * 0.01f;
+						float cavePerlinValue = WorldgenTools.PerlinNoise2D(X / 575f, Y / 350f, octaves, seed) + 0.5f + horizontalOffsetNoise;
+						float cavePerlinValue2 = WorldgenTools.PerlinNoise2D(X / 575f, Y / 350f, octaves, unchecked(seed - 1)) + 0.5f;
+						float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
+						float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.20f;
+
+						//Remove tiles based on the noise
+						if ((caveNoiseMap * caveNoiseMap > caveCreationThreshold) && (WorldGen.genRand.NextFloat() < clearChance))
+						{
+							WorldGen.KillTile(X, Y);
+						}
 					}
 				}
 			}
@@ -422,8 +460,20 @@ namespace ABMod.Generation
                     }
                 }
             }
+
+			//Water
+			for (int x = PlaceSwampX - BiomeWidth; x <= PlaceSwampX + BiomeWidth; x++)
+            {
+                for(int y = (int)Main.worldSurface; y <= BiomeHeightLimit; y++)
+                {
+                    if(WorldGen.genRand.NextBool(8))
+					{
+						WorldGen.PlaceLiquid(x, y, 0, 255);
+					}
+                }
+            }
 		}
-		
+
 		private void SwampAmbience(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = "Adding a nice ambience";
@@ -504,6 +554,8 @@ namespace ABMod.Generation
                 }
 			}
 
+			progress.Set(0.75);
+
 			//Bush walls for pretty
 			int bushAmount = Main.maxTilesX >= 8400 ? 10 : Main.maxTilesX >= 6400 ? 8 : 6;
 			int halfBushAmount = bushAmount / 2;
@@ -567,10 +619,6 @@ namespace ABMod.Generation
 					bushAmount--;
 				}
 			}
-
-			progress.Set(0.7);
-
-			//Vegetation
 		}
 
 		//Tile check for jungle and desert
@@ -611,13 +659,13 @@ namespace ABMod.Generation
 		}
 
 		//Check the tile type
-		public static int TileTypeCheck(int Y, int limit, int deepLimit)
+		public static int TileTypeCheck(int Y)
 		{
-			if (Y >= deepLimit)
+			if (Y >= (int)Main.worldSurface + 30)
 			{
 				return ModContent.TileType<AncientStone>();
 			}
-			else if (Y >= limit)
+			else if (Y >= (int)Main.worldSurface + 40)
 			{
 				if (WorldGen.genRand.NextBool())
 				{
@@ -635,13 +683,13 @@ namespace ABMod.Generation
 		}
 
 		//Check the wall type
-		public static int WallTypeCheck(int Y, int limit, int deepLimit)
+		public static int WallTypeCheck(int Y)
 		{
-			if (Y >= deepLimit)
+			if (Y >= (int)Main.worldSurface + 30)
 			{
 				return ModContent.WallType<AncientStoneWall>();
 			}
-			else if (Y >= limit)
+			else if (Y >= (int)Main.worldSurface + 40)
 			{
 				if (WorldGen.genRand.NextBool())
 				{
@@ -765,6 +813,7 @@ namespace ABMod.Generation
                 }
             }
 
+			//Possibilities
 			if (softCount > dirtCount)
 			{
 				return ModContent.TileType<PreservedDirt>();
@@ -777,16 +826,13 @@ namespace ABMod.Generation
 			{
 				return ModContent.TileType<AncientStone>();
 			}
+			else if (softCount == dirtCount && softCount > 0)
+			{
+				return WorldGen.genRand.NextBool() ? ModContent.TileType<PreservedDirt>() : ModContent.TileType<AncientDirt>();
+			}
 			else
 			{
-				if (softCount == dirtCount)
-				{
-					return WorldGen.genRand.NextBool() ? ModContent.TileType<PreservedDirt>() : ModContent.TileType<AncientDirt>();
-				}
-				else
-				{
-					return WorldGen.genRand.NextBool() ? ModContent.TileType<AncientDirt>() : ModContent.TileType<AncientStone>();
-				}
+				return WorldGen.genRand.NextBool() ? ModContent.TileType<AncientDirt>() : ModContent.TileType<AncientStone>();
 			}
 		}
 
@@ -1006,13 +1052,20 @@ namespace ABMod.Generation
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 		{
 			//Add the biome in the worldgen task
+			//First make the base biome before the Temple is made
 			int BiomesIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Dirt Rock Wall Runner"));
 			if (BiomesIndex != -1)
 			{
 				tasks.Insert(BiomesIndex + 1, new PassLegacy("Ancient Swamp", SwampGen));
 				tasks.Insert(BiomesIndex + 2, new PassLegacy("Flattening", SwampFlattening));
-				tasks.Insert(BiomesIndex + 3, new PassLegacy("Swamp Cave", SwampCaves));
-				tasks.Insert(BiomesIndex + 4, new PassLegacy("Swamp Ambience", SwampAmbience));
+			}
+
+			//Generate the surface structures and underground before the liquids are settled again
+			int CaveIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Larva"));
+			if (BiomesIndex != -1)
+			{
+				tasks.Insert(CaveIndex + 1, new PassLegacy("Swamp Cave", SwampCaves));
+				tasks.Insert(CaveIndex + 2, new PassLegacy("Swamp Ambience", SwampAmbience));
 			}
 		}
 	}

@@ -34,8 +34,26 @@ namespace ABMod.Common
 		public static bool IsJungleTile(int x, int y)
 		{
 			return Main.tile[x, y].TileType == TileID.Mud ||
-				Main.tile[x, y].TileType == TileID.JungleGrass ||
-				Main.tile[x, y].TileType == TileID.LihzahrdBrick;
+				Main.tile[x, y].TileType == TileID.JungleGrass;
+		}
+
+		public static bool IsTempleTile(int x, int y)
+		{
+			return Main.tile[x, y].TileType == TileID.LihzahrdBrick ||
+				Main.tile[x, y].WallType == WallID.LihzahrdBrickUnsafe;
+		}
+
+		public static bool IsJungleStructureTile(int x, int y)
+		{
+			return Main.tile[x, y].TileType == TileID.LivingWood ||
+				Main.tile[x, y].TileType == TileID.LeafBlock ||
+				Main.tile[x, y].TileType == TileID.LivingMahogany ||
+				Main.tile[x, y].TileType == TileID.LivingMahoganyLeaves ||
+				Main.tile[x, y].TileType == TileID.Hive ||
+				Main.tile[x, y].WallType == WallID.LivingWoodUnsafe ||
+				Main.tile[x, y].WallType == WallID.LivingLeaf ||
+				Main.tile[x, y].WallType == WallID.LivingWood ||
+				Main.tile[x, y].WallType == WallID.HiveUnsafe;
 		}
     }
 }
