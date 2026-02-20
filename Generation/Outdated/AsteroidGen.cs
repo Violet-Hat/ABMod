@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Threading;
 using System.Collections.Generic;
@@ -143,8 +144,7 @@ namespace ABMod.Generation
 				i++;
 			}
 		}
-		
-		/*
+
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 		{
 			//Add the biome in the worldgen task
@@ -154,6 +154,6 @@ namespace ABMod.Generation
 				tasks.Insert(BiomesIndex + 1, new PassLegacy("Horizon's Edge", HorizonGen));
 			}
 		}
-		*/
 	}
 }
+*/
