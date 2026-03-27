@@ -3,16 +3,15 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 
-using ABMod.Bases.Tiles;
-using ABMod.Tiles.AsteroidBiome.Trees;
 using ABMod.Tiles.AsteroidBiome.Ambient.Grasses.Violet;
 using ABMod.Generation;
 
 namespace ABMod.Tiles.AsteroidBiome.Moss
 {
-	public class AsteroidMossVio : BaseMoss
+	public class AsteroidMossVio : ModTile
 	{
-		static ushort[] GrassRocks = new ushort[] {
+		//Ambient
+		static readonly ushort[] GrassRocks = new ushort[] {
 			(ushort)ModContent.TileType<GrassRockVio1>(),
 			(ushort)ModContent.TileType<GrassRockVio2>(),
 			(ushort)ModContent.TileType<GrassRockVio3>()
@@ -20,15 +19,45 @@ namespace ABMod.Tiles.AsteroidBiome.Moss
 		
 		public override void SetStaticDefaults()
 		{
-			base.SetStaticDefaults();
-			
+			TileID.Sets.Grass[Type] = true;
+            TileID.Sets.CanBeDugByShovel[Type] = true;
+			TileID.Sets.NeedsGrassFraming[Type] = true;
+			TileID.Sets.BlockMergesWithMergeAllBlock[Type] = true;
+			TileID.Sets.NeedsGrassFramingDirt[Type] = ModContent.TileType<AsteroidStone>();
+			TileID.Sets.SpreadOverground[Type] = true;
+			TileID.Sets.SpreadUnderground[Type] = true;
+			Main.tileMergeDirt[Type] = true;
+            Main.tileBlendAll[Type] = true;
+			Main.tileSolid[Type] = true;
+			Main.tileBlockLight[Type] = true;
+			Main.tileLighted[Type] = true;
+            RegisterItemDrop(ModContent.ItemType<AsteroidStoneItem>());
             AddMapEntry(new Color(212, 30, 220));
             DustType = DustID.PurpleTorch;
 			MineResist = 0.1f;
 		}
 
+		public override void NumDust(int i, int j, bool fail, ref int num)
+		{
+			num = fail ? 1 : 3;
+		}
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+		{
+			if (!fail && !WorldGen.gen)
+			{
+				fail = true;
+				Framing.GetTileSafely(i, j).TileType = (ushort)ModContent.TileType<AsteroidStone>();
+			}
+		}
+
 		public override bool CanReplace(int i, int j, int tileTypeBeingPlaced)
 		{
+			if(Main.tile[i, j - 1].HasTile && WorldgenTools.IsTreeType(i, j - 1))
+			{
+				return false;
+			}
+			
 			return tileTypeBeingPlaced != ModContent.TileType<AsteroidStone>();
 		}
 		
