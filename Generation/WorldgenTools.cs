@@ -29,20 +29,15 @@ namespace ABMod.Generation
 		
 		public static bool IsItPlaceable(Point origin, int r, StructureMap structures)
         {
-			//Generate the new radius with padding, the diameter and the area
-			int radius = r + 15;
-			int diameter = radius * 2;
-			Rectangle area = new Rectangle(origin.X - radius, origin.Y - radius, diameter, diameter);
-
 			//Check if it is inside the world borders
 			if (!WorldGen.InWorld(origin.X, origin.Y, r))
 			{
 				return false;
 			}
 
-			for (int i = area.Left; i < area.Right; i++)
+			for (int i = origin.X - r; i <= origin.X + r; i++)
 			{
-				for (int j = area.Top; j < area.Bottom; j++)
+				for (int j = origin.Y - r; j <= origin.Y + r; j++)
 				{
 					if (i < 41 || i > Main.maxTilesX - 42 || j < 41 || j > Main.maxTilesY)
 					{
@@ -52,29 +47,23 @@ namespace ABMod.Generation
 			}
 			
 			//Check if it is far away from the islands
-			for (int i = area.Left; i < area.Right; i++)
+			for (int i = origin.X - r; i <= origin.X + r; i++)
 			{
-				for (int j = area.Top; j < area.Bottom; j++)
+				for (int j = origin.Y - r; j <= origin.Y + r; j++)
 				{
-					if (NoFloatingIslands(i, j))
+					if (!NoFloatingIslands(i, j))
 					{
 						return false;
 					}
 				}
 			}
 			
-			//Check if it can be placed here using the structure map
-            if (!structures.CanPlace(area))
-            {
-                return false;
-            }
-			
 			//Check for solids
 			int count = 0;
 			
-            for (int i = area.Left; i < area.Right; i++)
+            for (int i = origin.X - r; i <= origin.X + r; i++)
 			{
-				for (int j = area.Top; j < area.Bottom; j++)
+				for (int j = origin.Y - r; j <= origin.Y + r; j++)
 				{
 					if(Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
 					{
@@ -83,7 +72,7 @@ namespace ABMod.Generation
                 }
             }
 			
-			if (count > 4)
+			if (count > 9)
             {
                 return false;
             }

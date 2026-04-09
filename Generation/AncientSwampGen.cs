@@ -1049,6 +1049,7 @@ namespace ABMod.Generation
 			return y;
 		}
 
+		/*
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 		{
 			//Add the biome in the worldgen task
@@ -1068,5 +1069,6 @@ namespace ABMod.Generation
 				tasks.Insert(CaveIndex + 2, new PassLegacy("Swamp Ambience", SwampAmbience));
 			}
 		}
+		*/
 	}
 }
