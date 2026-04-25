@@ -5,6 +5,8 @@ using Terraria;
 using Terraria.WorldBuilding;
 using Terraria.ModLoader;
 
+using ABMod.Content.Tiles.Swamp.Trees;
+
 namespace ABMod.Common
 {
     public class TreeTile
@@ -71,9 +73,13 @@ namespace ABMod.Common
 			return true;
 		}
 
+		//Check if the tile is a tree type
         public static bool IsTreeType(int X, int Y, int ignore = -1)
 		{
-			return true;
+			if (ignore != 0)
+				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>();
+
+			return false;
 		}
     }
 }
