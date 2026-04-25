@@ -1,12 +1,6 @@
-using Microsoft.Xna.Framework;
+using ABMod.Content.Tiles.Swamp;
 using System;
-using Terraria;
 using Terraria.ModLoader;
-
-using ABMod.Tiles.GreenMushroomBiome;
-using ABMod.Tiles.AncientSwampBiome;
-using ABMod.Tiles.AsteroidBiome;
-using ABMod.Tiles.AsteroidBiome.Moss;
 
 namespace ABMod.Common
 {
@@ -28,17 +22,18 @@ namespace ABMod.Common
 		//Add to the counters
 		public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
         {
-			GreenMushroom = tileCounts[ModContent.TileType<MushroomPasture>()];
-			AncientSwamp = tileCounts[ModContent.TileType<PrehistoricMoss>()]
-			+ tileCounts[ModContent.TileType<PreservedDirt>()]
-			+ tileCounts[ModContent.TileType<AncientStone>()];
-			HorizonEdge = tileCounts[ModContent.TileType<AsteroidStone>()]
-			+tileCounts[ModContent.TileType<AsteroidRock>()]
-			+tileCounts[ModContent.TileType<AsteroidMossRed>()]
-			+tileCounts[ModContent.TileType<AsteroidMossOrg>()]
-			+tileCounts[ModContent.TileType<AsteroidMossVio>()]
-			+tileCounts[ModContent.TileType<AsteroidMossPur>()]
-			+tileCounts[ModContent.TileType<AsteroidMossBlu>()];
+			//GreenMushroom = tileCounts[ModContent.TileType<MushroomPasture>()];
+			AncientSwamp = tileCounts[ModContent.TileType<SwampMoss>()]
+			+ tileCounts[ModContent.TileType<SwampSoil>()]
+			+ tileCounts[ModContent.TileType<SwampDirt>()]
+			+ tileCounts[ModContent.TileType<SwampStone>()];
+			//HorizonEdge = tileCounts[ModContent.TileType<AsteroidStone>()]
+			//+tileCounts[ModContent.TileType<AsteroidRock>()]
+			//+tileCounts[ModContent.TileType<AsteroidMossRed>()]
+			//+tileCounts[ModContent.TileType<AsteroidMossOrg>()]
+			//+tileCounts[ModContent.TileType<AsteroidMossVio>()]
+			//+tileCounts[ModContent.TileType<AsteroidMossPur>()]
+			//+tileCounts[ModContent.TileType<AsteroidMossBlu>()];
 		}
 	}
 }
