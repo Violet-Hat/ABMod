@@ -1,3 +1,4 @@
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -6,10 +7,9 @@ using Terraria.Localization;
 using ReLogic.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
-using ABMod.Common;
-using ABMod.Content.Tiles.Swamp;
+using ABMod.Common.Tiles;
+using ABMod.Common.Visuals;
 
 namespace ABMod.Content.Tiles.Swamp.Trees
 {
@@ -278,25 +278,35 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 
             //Time to draw the actual tree
 			spriteBatch.Draw(StemTexture.Value, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(col.R, col.G, col.B, 255), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+			bool topRoot = tile.TileFrameY == 0 && tile.TileFrameX == 0;
+			bool cutTopRoot = tile.TileFrameY == 0 && tile.TileFrameX == 54;
+			bool bottomRoot = tile.TileFrameY == 0 && tile.TileFrameX == 18;
+			bool top = tile.TileFrameY == 0 && tile.TileFrameX == 36;
 			
 			//Draw the roots
-			if(tile.TileFrameY == 0 && tile.TileFrameX == 0)
+			if(topRoot)
 			{
 				Main.spriteBatch.Draw(TopRootTexture.Value, pos, new Rectangle(0, 0, 54, 34), new Color(col.R, col.G, col.B, 255), 0f, TopRootOffSet, 1f, SpriteEffects.None, 0f);
 			}
-			if(tile.TileFrameY == 0 && tile.TileFrameX == 54)
+			if(cutTopRoot)
 			{
 				Main.spriteBatch.Draw(TopRootTexture.Value, pos, new Rectangle(0, 18, 54, 34), new Color(col.R, col.G, col.B, 255), 0f, TopRootOffSet, 1f, SpriteEffects.None, 0f);
 			}
-			if(tile.TileFrameY == 0 && tile.TileFrameX == 18)
+			if(bottomRoot)
 			{
 				Main.spriteBatch.Draw(BottomRootTexture.Value, pos, new Rectangle(0, 0, 124, 90), new Color(col.R, col.G, col.B, 255), 0f, BottomRootOffSet, 1f, SpriteEffects.None, 0f);
 			}
 			
 			//Draw the top
-			if(tile.TileFrameY == 0 && tile.TileFrameX == 36)
+			if(top)
 			{
-				Main.spriteBatch.Draw(TopTexture.Value, pos, new Rectangle(0, 0, 222, 128), new Color(col.R, col.G, col.B, 255), 0f, treeOffset, 1f, SpriteEffects.None, 0f);
+				//Tree wind sway, yaaay
+				Vector2 treeTopPos = pos;
+				float sway = Main.instance.TilesRenderer.GetWindCycle(i, j, TreeWindSway.GetTreeWindCounter());
+				treeTopPos.Y += Math.Abs(sway) * 2;
+
+				Main.spriteBatch.Draw(TopTexture.Value, treeTopPos, new Rectangle(0, 0, 222, 128), new Color(col.R, col.G, col.B, 255), sway * 0.04f, treeOffset, 1f, SpriteEffects.None, 0f);
 			}
 
             return false;

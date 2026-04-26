@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using ABMod.Content.Tiles.Swamp;
 
-namespace ABMod.Common
+namespace ABMod.Common.Tiles
 {
 	public class BiomeTile
     {

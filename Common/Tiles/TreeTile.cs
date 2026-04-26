@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.WorldBuilding;
 using Terraria.ModLoader;
 
 using ABMod.Content.Tiles.Swamp.Trees;
 
-namespace ABMod.Common
+namespace ABMod.Common.Tiles
 {
     public class TreeTile
     {
@@ -78,6 +74,8 @@ namespace ABMod.Common
 		{
 			if (ignore != 0)
 				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>();
+			if (ignore != 1)
+				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Astero>();
 
 			return false;
 		}

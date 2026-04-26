@@ -2,7 +2,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 
-namespace ABMod.Common
+namespace ABMod.Common.Tiles
 {
 	public class TileGlobal : GlobalTile
 	{

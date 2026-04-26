@@ -2,7 +2,7 @@ using ABMod.Content.Tiles.Swamp;
 using System;
 using Terraria.ModLoader;
 
-namespace ABMod.Common
+namespace ABMod.Common.Tiles
 {
 	public class TileCount : ModSystem
 	{
