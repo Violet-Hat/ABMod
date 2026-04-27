@@ -20,7 +20,6 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
             Main.tileObsidianKill[Type] = false;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
             TileObjectData.newTile.StyleHorizontal = true;
-            TileObjectData.newTile.RandomStyleRange = 3;
             TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(56, 49, 41));
@@ -53,8 +52,9 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
             base.SetStaticDefaults();
             TileID.Sets.BreakableWhenPlacing[Type] = true;
             TileID.Sets.ReplaceTileBreakUp[Type] = true;
-            TileObjectData.newTile.AnchorValidTiles = new int[] {  ModContent.TileType<SwampStone>() };
             TileObjectData.GetTileData(Type, 0).LavaDeath = false;
+            TileObjectData.GetTileData(Type, 0).RandomStyleRange = 3;
+            TileObjectData.GetTileData(Type, 0).AnchorValidTiles = new int[] {  ModContent.TileType<SwampStone>() };
         }
 
         public override void DropCritterChance(int i, int j, ref int wormChance, ref int grassHopperChance, ref int jungleGrubChance)

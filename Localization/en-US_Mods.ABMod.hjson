@@ -1,1 +1,62 @@
-# This file will automatically update with entries for new content after a build and reload.
+Items: {
+	SwampStoneWallItem: {
+		Tooltip: ""
+		DisplayName: Swamp Stone Wall Item
+	}
+
+	SwampStoneItem: {
+		Tooltip: ""
+		DisplayName: Swamp Stone Item
+	}
+
+	SwampSoilWallItem: {
+		Tooltip: ""
+		DisplayName: Swamp Soil Wall Item
+	}
+
+	SwampSoilItem: {
+		Tooltip: ""
+		DisplayName: Swamp Soil Item
+	}
+
+	SwampMossWallItem: {
+		Tooltip: ""
+		DisplayName: Swamp Moss Wall Item
+	}
+
+	SwampMossSpores: {
+		Tooltip: ""
+		DisplayName: Swamp Moss Spores
+	}
+
+	SwampDirtWallItem: {
+		Tooltip: ""
+		DisplayName: Swamp Dirt Wall Item
+	}
+
+	SwampDirtItem: {
+		Tooltip: ""
+		DisplayName: Swamp Dirt Item
+	}
+
+	ScaleWoodWallItem: {
+		Tooltip: ""
+		DisplayName: Scale Wood Wall Item
+	}
+
+	ScaleWoodItem: {
+		Tooltip: ""
+		DisplayName: Scale Wood Item
+	}
+
+	ScaleWoodFenceItem: {
+		Tooltip: ""
+		DisplayName: Scale Wood Fence Item
+	}
+}
+
+Tiles: {
+	Lep.MapEntry: Lep
+	Equi.MapEntry: Equi
+	Astero.MapEntry: Astero
+}

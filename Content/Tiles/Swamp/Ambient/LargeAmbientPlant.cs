@@ -20,7 +20,6 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
             Main.tileObsidianKill[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
             TileObjectData.newTile.StyleHorizontal = true;
-            TileObjectData.newTile.RandomStyleRange = 9;
             TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(80, 115, 54));
@@ -53,7 +52,8 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
             base.SetStaticDefaults();
             TileID.Sets.BreakableWhenPlacing[Type] = true;
             TileID.Sets.ReplaceTileBreakUp[Type] = true;
-            TileObjectData.newTile.AnchorValidTiles = new int[] {  ModContent.TileType<SwampMoss>() };
+            TileObjectData.GetTileData(Type, 0).RandomStyleRange = 9;
+            TileObjectData.GetTileData(Type, 0).AnchorValidTiles = new int[] {  ModContent.TileType<SwampMoss>() };
         }
     }
 }
