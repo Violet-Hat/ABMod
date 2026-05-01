@@ -8,17 +8,17 @@ using Terraria.ObjectData;
 namespace ABMod.Content.Tiles.Swamp.Ambient
 {
     //Base used by the fake and natural ambient tiles
-    public class LargeSwampStoneRockBase : ModTile
+    public class MediumSwampStoneRockBase : ModTile
     {
         //Both ambient tiles will have the same texture
-        public override string Texture => "ABMod/Content/Tiles/Swamp/Ambient/LargeSwampStoneRock";
+        public override string Texture => "ABMod/Content/Tiles/Swamp/Ambient/MediumSwampStoneRock";
 
         public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
-            Main.tileObsidianKill[Type] = false;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+            Main.tileObsidianKill[Type] = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.addTile(Type);
@@ -31,21 +31,21 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
         {
             num = fail ? 1: 3;
         }
-    }
+	}
 
     //Placed by rubblemaker
-    public class LargeSwampStoneRockFake : LargeSwampStoneRockBase
+    public class MediumSwampStoneRockFake : MediumSwampStoneRockBase
     {
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
-            FlexibleTileWand.RubblePlacementLarge.AddVariations(ModContent.ItemType<SwampStoneItem>(), Type, 0, 1, 2);
+            FlexibleTileWand.RubblePlacementMedium.AddVariations(ModContent.ItemType<SwampStoneItem>(), Type, 0, 1, 2);
             RegisterItemDrop(ModContent.ItemType<SwampStoneItem>());
         }
     }
 
     //Natural
-    public class LargeSwampStoneRockNatural : LargeSwampStoneRockBase
+    public class MediumSwampStoneRockNatural : MediumSwampStoneRockBase
     {
         public override void SetStaticDefaults()
         {

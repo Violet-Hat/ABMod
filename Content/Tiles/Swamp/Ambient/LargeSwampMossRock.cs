@@ -8,21 +8,21 @@ using Terraria.ObjectData;
 namespace ABMod.Content.Tiles.Swamp.Ambient
 {
     //Base used by the fake and natural ambient tiles
-    public class LargeSwampStoneRockBase : ModTile
+    public class LargeSwampMossRockBase : ModTile
     {
         //Both ambient tiles will have the same texture
-        public override string Texture => "ABMod/Content/Tiles/Swamp/Ambient/LargeSwampStoneRock";
+        public override string Texture => "ABMod/Content/Tiles/Swamp/Ambient/LargeSwampMossRock";
 
         public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
-            Main.tileObsidianKill[Type] = false;
+            Main.tileObsidianKill[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.addTile(Type);
-            AddMapEntry(new Color(56, 49, 41));
+            AddMapEntry(new Color(84, 73, 53));
             HitSound = SoundID.Tink;
             DustType = DustID.Stone;
         }
@@ -31,21 +31,21 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
         {
             num = fail ? 1: 3;
         }
-    }
+	}
 
     //Placed by rubblemaker
-    public class LargeSwampStoneRockFake : LargeSwampStoneRockBase
+    public class LargeSwampMossRockFake : LargeSwampMossRockBase
     {
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
-            FlexibleTileWand.RubblePlacementLarge.AddVariations(ModContent.ItemType<SwampStoneItem>(), Type, 0, 1, 2);
-            RegisterItemDrop(ModContent.ItemType<SwampStoneItem>());
+            FlexibleTileWand.RubblePlacementLarge.AddVariations(ModContent.ItemType<SwampSoilItem>(), Type, 0, 1, 2);
+            RegisterItemDrop(ModContent.ItemType<SwampSoilItem>());
         }
     }
 
     //Natural
-    public class LargeSwampStoneRockNatural : LargeSwampStoneRockBase
+    public class LargeSwampMossRockNatural : LargeSwampMossRockBase
     {
         public override void SetStaticDefaults()
         {

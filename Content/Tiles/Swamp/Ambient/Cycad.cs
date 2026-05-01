@@ -75,8 +75,6 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
             base.SetStaticDefaults();
             TileID.Sets.BreakableWhenPlacing[Type] = true;
             TileID.Sets.ReplaceTileBreakUp[Type] = true;
-            TileObjectData.GetTileData(Type, 0).RandomStyleRange = 3;
-            TileObjectData.GetTileData(Type, 0).AnchorValidTiles = new int[] {  ModContent.TileType<SwampMoss>() };
         }
     }
 }
