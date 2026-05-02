@@ -32,7 +32,7 @@ namespace ABMod.Content.Tiles.Swamp
 
             if(tile.HasTile && tile.TileType == ModContent.TileType<SwampDirt>() && player.IsInTileInteractionRange(Player.tileTargetX, Player.tileTargetY, TileReachCheckSettings.Simple))
             {
-                Main.tile[Player.tileTargetX, Player.tileTargetY].TileType = (ushort)ModContent.TileType<SwampMoss>();
+                Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY).TileType = (ushort)ModContent.TileType<SwampMoss>();
                 SoundEngine.PlaySound(SoundID.Dig, player.Center);
 
                 return true;

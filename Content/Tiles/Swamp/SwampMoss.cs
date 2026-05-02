@@ -44,7 +44,7 @@ namespace ABMod.Content.Tiles.Swamp
 
 		public override bool CanReplace(int i, int j, int tileTypeBeingPlaced)
 		{
-			if(Main.tile[i, j - 1].HasTile && TreeTile.IsTreeType(i, j))
+			if(Framing.GetTileSafely(i, j - 1).HasTile && TreeTile.IsTreeType(i, j - 1))
 			{
 				return false;
 			}
