@@ -22,7 +22,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			RegisterItemDrop(ModContent.ItemType<ScaleCandelabraItem>());
             DustType = DustID.Bone;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-			AdjTiles = new int[] { TileID.Candelabras };
+			AdjTiles = [TileID.Candelabras];
 		}
 		
 		public override void HitWire(int i, int j)

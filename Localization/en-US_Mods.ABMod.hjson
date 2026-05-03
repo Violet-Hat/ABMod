@@ -53,6 +53,41 @@ Items: {
 		Tooltip: ""
 		DisplayName: Scale Wood Fence Item
 	}
+
+	ScaleBathtubItem: {
+		DisplayName: Scale Bathtub Item
+		Tooltip: ""
+	}
+
+	ScaleBedItem: {
+		DisplayName: Scale Bed Item
+		Tooltip: ""
+	}
+
+	ScaleBookcaseItem: {
+		DisplayName: Scale Bookcase Item
+		Tooltip: ""
+	}
+
+	ScaleCandelabraItem: {
+		DisplayName: Scale Candelabra Item
+		Tooltip: ""
+	}
+
+	ScaleCandleItem: {
+		DisplayName: Scale Candle Item
+		Tooltip: ""
+	}
+
+	ScaleChairItem: {
+		DisplayName: Scale Chair Item
+		Tooltip: ""
+	}
+
+	ScaleChandelierItem: {
+		DisplayName: Scale Chandelier Item
+		Tooltip: ""
+	}
 }
 
 Tiles: {

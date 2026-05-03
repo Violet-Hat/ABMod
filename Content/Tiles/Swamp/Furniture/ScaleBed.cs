@@ -22,12 +22,12 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileID.Sets.IsValidSpawnPoint[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style4x2);
-			TileObjectData.newTile.CoordinateHeights = new int[]{ 16, 18 };
+			TileObjectData.newTile.CoordinateHeights = [16, 18];
 			TileObjectData.addTile(Type);
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Bed));
 			DustType = DustID.Bone;
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-			AdjTiles = new int[]{ TileID.Beds };
+			AdjTiles = [TileID.Beds];
 		}
 		
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)

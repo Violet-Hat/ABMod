@@ -16,14 +16,14 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.DisableSmartCursor[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
-            TileObjectData.newTile.CoordinateHeights = new int[] { 20 };
+            TileObjectData.newTile.CoordinateHeights = [20];
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.addTile(Type);
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Candle));
             RegisterItemDrop(ModContent.ItemType<ScaleCandleItem>());
 			DustType = DustID.Bone;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-			AdjTiles = new int[] { TileID.Candles };
+			AdjTiles = [TileID.Candles];
 		}
 		
 		public override void HitWire(int i, int j)

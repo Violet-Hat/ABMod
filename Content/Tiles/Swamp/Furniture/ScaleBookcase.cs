@@ -19,7 +19,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Bookcase));
 			DustType = DustID.Bone;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-            AdjTiles = new int[] { TileID.Bookcases };
+            AdjTiles = [TileID.Bookcases];
         }
 
         public override void NumDust(int i, int j, bool fail, ref int num)
