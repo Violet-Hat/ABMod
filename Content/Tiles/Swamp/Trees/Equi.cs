@@ -135,7 +135,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
         //Check the bamboo
 		private void CheckEntireBamboo(ref int x, ref int y)
 		{
-			while(Main.tile[x, y].TileType == Type)
+			while(Framing.GetTileSafely(x, y).TileType == Type)
 			{
 				y--;
 			}
@@ -187,7 +187,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
         {
             for (int j = 0; j < 25; j++)
             {
-                if (Main.tile[x, y + j].TileType != (ushort)ModContent.TileType<Equi>())
+                if (Framing.GetTileSafely(x, y + j).TileType != (ushort)ModContent.TileType<Equi>())
                 {
                     return false;
                 }
@@ -206,7 +206,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
             }
 
             //If the there's a tile on the way, return false
-            if (Main.tile[x, y - 1].HasTile)
+            if (Framing.GetTileSafely(x, y - 1).HasTile)
             {
                 return false;
             }
@@ -228,9 +228,9 @@ namespace ABMod.Content.Tiles.Swamp.Trees
                 if (WorldGen.genRand.NextBool(10))
                 {
                     short XFrame;
-
-                    Tile tile = Main.tile[i, j];
-                    Tile tileAbove = Main.tile[i, j - 1];
+                    
+                    Tile tile = Framing.GetTileSafely(i, j);
+                    Tile tileAbove = Framing.GetTileSafely(i, j - 1);
 
                     //Place the new tile
                     tileAbove.TileType = (ushort)ModContent.TileType<Equi>();
@@ -266,12 +266,12 @@ namespace ABMod.Content.Tiles.Swamp.Trees
         {
             StemTexture = ModContent.Request<Texture2D>(Texture);
 
-            //Get the tile, color and offsets
+            //Get the tile on this position, color and offsets
 			Tile tile = Framing.GetTileSafely(i, j);
 			Color col = Lighting.GetColor(i, j);
 
             Vector2 pos = TileGlobal.TileCustomPosition(i, j);
-            Vector2 stemOffset = new Vector2(8, 0);
+            Vector2 stemOffset = new(8, 0);
 
             //Time to draw the actual bamboo
             int frame = tile.TileFrameX / 18;

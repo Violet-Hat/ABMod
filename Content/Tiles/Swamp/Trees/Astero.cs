@@ -168,7 +168,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 		//Check the tree
 		private void CheckEntireTree(ref int x, ref int y)
 		{
-			while(Main.tile[x, y].TileType == Type)
+			while(Framing.GetTileSafely(x, y).TileType == Type)
 			{
 				y--;
 			}
@@ -236,13 +236,13 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 			RootTexture ??= ModContent.Request<Texture2D>(Texture + "_Root");
 			StemTexture = ModContent.Request<Texture2D>(Texture);
 			
-			//Get the tile, color and offsets
+			//Get the tile on this position, color and offsets
 			Tile tile = Framing.GetTileSafely(i, j);
 			Color col = Lighting.GetColor(i, j);
 
             Vector2 pos = TileGlobal.TileCustomPosition(i, j);
-            Vector2 rootOffset = new Vector2(0, -16);
-			Vector2 topOffset = new Vector2(16, 0);
+            Vector2 rootOffset = new(0, -16);
+			Vector2 topOffset = new(16, 0);
 
             //Time to draw the actual tree
 			spriteBatch.Draw(StemTexture.Value, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(col.R, col.G, col.B, 255), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);

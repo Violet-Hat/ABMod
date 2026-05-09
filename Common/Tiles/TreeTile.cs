@@ -8,14 +8,16 @@ namespace ABMod.Common.Tiles
     public class TreeTile
     {
         //Check if the tree can grow
-        public static bool GrowTreeCheck(int X, int Y, int distanceX, int distanceY)
+        public static bool GrowTreeCheck(int x, int y, int distanceX, int distanceY)
 		{
 			//If there's others around it, don't let it grow
-			for (int i = X - distanceX; i < X + distanceX; i++)
+			for (int i = x - distanceX; i < x + distanceX; i++)
 			{
-				for (int j = Y - 5; j < Y + 5; j++)
+				for (int j = y - 5; j < y + 5; j++)
 				{
-					if (Main.tile[i, j].HasTile && IsTreeType(i, j))
+					Tile tile = Framing.GetTileSafely(i, j);
+
+					if (tile.HasTile && IsTreeType(i, j))
 					{
 						return false;
 					}
@@ -23,12 +25,14 @@ namespace ABMod.Common.Tiles
 			}
 
 			//If there's not enought space, don't let it grow
-			for (int i = X - (distanceX / 2); i < X + (distanceX / 2); i++)
+			for (int i = x - (distanceX / 2); i < x + (distanceX / 2); i++)
 			{
-				for (int j = Y - distanceY; j < Y; j++)
+				for (int j = y - distanceY; j < y; j++)
 				{
+					Tile tile = Framing.GetTileSafely(i, j);
+
 					//only check for solid blocks
-					if (Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
+					if (tile.HasTile && Main.tileSolid[tile.TileType])
 					{
 						return false;
 					}
@@ -39,14 +43,16 @@ namespace ABMod.Common.Tiles
 		}
 
         //Check if the special tree can grow
-        public static bool GrowLepCheck(int X, int Y, int distanceX, int distanceY)
+        public static bool GrowLepCheck(int x, int y, int distanceX, int distanceY)
 		{
 			//If there's others around it, don't let it grow
-			for (int i = X - distanceX; i < X + distanceX + 1; i++)
+			for (int i = x - distanceX; i < x + distanceX + 1; i++)
 			{
-				for (int j = Y - 5; j < Y + 5; j++)
+				for (int j = y - 5; j < y + 5; j++)
 				{
-					if (Main.tile[i, j].HasTile && IsTreeType(i, j))
+					Tile tile = Framing.GetTileSafely(i, j);
+
+					if (tile.HasTile && IsTreeType(i, j))
 					{
 						return false;
 					}
@@ -54,12 +60,14 @@ namespace ABMod.Common.Tiles
 			}
 
 			//If there's not enought space, don't let it grow
-			for (int i = X - (distanceX / 2); i < X + (distanceX / 2) + 1; i++)
+			for (int i = x - (distanceX / 2); i < x + (distanceX / 2) + 1; i++)
 			{
-				for (int j = Y - distanceY; j < Y; j++)
+				for (int j = y - distanceY; j < y; j++)
 				{
+					Tile tile = Framing.GetTileSafely(i, j);
+
 					//only check for solid blocks
-					if (Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
+					if (tile.HasTile && Main.tileSolid[tile.TileType])
 					{
 						return false;
 					}
@@ -70,12 +78,14 @@ namespace ABMod.Common.Tiles
 		}
 
 		//Check if the tile is a tree type
-        public static bool IsTreeType(int X, int Y, int ignore = -1)
+        public static bool IsTreeType(int x, int y, int ignore = -1)
 		{
+			Tile tile = Framing.GetTileSafely(x, y);
+
 			if (ignore != 0)
-				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Lep>();
+				return tile.TileType == (ushort)ModContent.TileType<Lep>();
 			if (ignore != 1)
-				return Main.tile[X, Y].TileType == (ushort)ModContent.TileType<Astero>();
+				return tile.TileType == (ushort)ModContent.TileType<Astero>();
 
 			return false;
 		}

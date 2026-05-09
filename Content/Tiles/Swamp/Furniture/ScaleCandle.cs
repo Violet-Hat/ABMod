@@ -28,14 +28,16 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 		
 		public override void HitWire(int i, int j)
         {
+            Tile tile = Framing.GetTileSafely(i, j);
+
             //0 is ON, 18 is OFF
-            if (Main.tile[i, j].TileFrameX >= 18)
+            if (tile.TileFrameX >= 18)
 			{
-                Main.tile[i, j].TileFrameX -= 18;
+                tile.TileFrameX -= 18;
 			}
             else
 			{
-                Main.tile[i, j].TileFrameX += 18;
+                tile.TileFrameX += 18;
 			}
         }
 		

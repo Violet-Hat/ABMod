@@ -41,12 +41,12 @@ namespace ABMod.Content.Tiles.Swamp.Ambient
         {
             FoliageTexture ??= ModContent.Request<Texture2D>(Texture + "_Full");
 
-            //Get the tile, color and offsets
+            //Get the tile on this position, color and offsets
             Tile tile = Framing.GetTileSafely(i, j);
 			Color col = Lighting.GetColor(i, j);
 
             Vector2 pos = TileGlobal.TileCustomPosition(i, j);
-            Vector2 offset = new Vector2(40, 74);
+            Vector2 offset = new(40, 74);
 
             //Draw the full sprite
             int frame = tile.TileFrameX / 18;

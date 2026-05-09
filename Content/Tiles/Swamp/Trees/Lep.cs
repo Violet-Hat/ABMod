@@ -184,7 +184,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
         //Check the tree
 		private void CheckEntireTree(ref int x, ref int y)
 		{
-			while(Main.tile[x, y].TileType == Type)
+			while(Framing.GetTileSafely(x, y).TileType == Type)
 			{
 				y--;
 			}
@@ -267,14 +267,14 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 			BottomRootTexture ??= ModContent.Request<Texture2D>(Texture + "_RootsBottom");
 			StemTexture = ModContent.Request<Texture2D>(Texture);
 			
-			//Get the tile, color and offsets
+			//Get the tile on this position, color and offsets
 			Tile tile = Framing.GetTileSafely(i, j);
 			Color col = Lighting.GetColor(i, j);
 			
 			Vector2 pos = TileGlobal.TileCustomPosition(i, j);
-			Vector2 TopRootOffSet = new Vector2(10, 0);
-			Vector2 BottomRootOffSet = new Vector2(44, 0);
-			Vector2 treeOffset = new Vector2(96, 114);
+			Vector2 TopRootOffSet = new(10, 0);
+			Vector2 BottomRootOffSet = new(44, 0);
+			Vector2 treeOffset = new(96, 114);
 
             //Time to draw the actual tree
 			spriteBatch.Draw(StemTexture.Value, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(col.R, col.G, col.B, 255), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -303,7 +303,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 			{
 				//Tree wind sway, yaaay
 				Vector2 treeTopPos = pos;
-				float sway = Main.instance.TilesRenderer.GetWindCycle(i, j, TreeWindSway.GetTreeWindCounter());
+				float sway = Main.instance.TilesRenderer.GetWindCycle(i, j, TreeSwayHelper.TreeWindCounter);
 				treeTopPos.Y += Math.Abs(sway) * 2;
 
 				Main.spriteBatch.Draw(TopTexture.Value, treeTopPos, new Rectangle(0, 0, 222, 128), new Color(col.R, col.G, col.B, 255), sway * 0.04f, treeOffset, 1f, SpriteEffects.None, 0f);

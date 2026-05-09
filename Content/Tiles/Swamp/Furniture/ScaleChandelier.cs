@@ -37,21 +37,23 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 		public override void HitWire(int i, int j)
         {
             //Get the top left of the frame
-            int left = i - Main.tile[i, j].TileFrameX / 18 % 3;
-            int top = j - Main.tile[i, j].TileFrameY / 18 % 3;
+            int left = i - Framing.GetTileSafely(i, j).TileFrameX / 18 % 3;
+            int top = j - Framing.GetTileSafely(i, j).TileFrameY / 18 % 3;
 
             for (int x = left; x < left + 3; x++)
             {
                 for (int y = top; y < top + 3; y++)
                 {
+                    Tile tile = Framing.GetTileSafely(x, y);
+
                     //0 to 36 are ON frames, 54 to 90 are OFF frames
-                    if (Main.tile[x, y].TileFrameX >= 54)
+                    if (tile.TileFrameX >= 54)
                     {
-                        Main.tile[x, y].TileFrameX -= 54;
+                        tile.TileFrameX -= 54;
                     }
                     else
                     {
-                        Main.tile[x, y].TileFrameX += 54;
+                        tile.TileFrameX += 54;
                     }
 
                     Wiring.SkipWire(x, y);
@@ -82,7 +84,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
-			Tile tile = Main.tile[i, j];
+			Tile tile = Framing.GetTileSafely(i, j);
 
 			if (TileObjectData.IsTopLeft(tile))
             {

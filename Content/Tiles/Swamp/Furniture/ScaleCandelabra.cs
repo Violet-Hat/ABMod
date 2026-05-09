@@ -28,21 +28,23 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 		public override void HitWire(int i, int j)
         {
             //Get the top left of the frame
-            int left = i - Main.tile[i, j].TileFrameX / 18 % 2;
-            int top = j - Main.tile[i, j].TileFrameY / 18 % 2;
+            int left = i - Framing.GetTileSafely(i, j).TileFrameX / 18 % 2;
+            int top = j - Framing.GetTileSafely(i, j).TileFrameY / 18 % 2;
             
             for (int x = left; x < left + 2; x++)
             {
                 for (int y = top; y < top + 2; y++)
                 {
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    
                     //0 to 18 are ON frames, 36 to 54 are OFF frames
-                    if (Main.tile[x, y].TileFrameX >= 36)
+                    if (tile.TileFrameX >= 36)
                     {
-                        Main.tile[x, y].TileFrameX -= 36;
+                        tile.TileFrameX -= 36;
                     }
                     else
                     {
-                        Main.tile[x, y].TileFrameX += 36;
+                        tile.TileFrameX += 36;
                     }
 
                     Wiring.SkipWire(x, y);

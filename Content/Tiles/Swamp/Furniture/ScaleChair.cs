@@ -98,7 +98,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			player.cursorItemIconEnabled = true;
 			player.cursorItemIconID = ModContent.ItemType<ScaleChairItem>();
 
-			if (Main.tile[i, j].TileFrameX / 18 < 1)
+			if (Framing.GetTileSafely(i, j).TileFrameX / 18 < 1)
 			{
 				player.cursorItemIconReversed = true;
 			}
