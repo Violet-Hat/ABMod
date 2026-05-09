@@ -88,10 +88,32 @@ Items: {
 		DisplayName: Scale Chandelier Item
 		Tooltip: ""
 	}
+
+	ScaleChestItem: {
+		DisplayName: Scale Chest Item
+		Tooltip: ""
+	}
+
+	ScaleClockItem: {
+		DisplayName: Scale Clock Item
+		Tooltip: ""
+	}
+
+	ScaleDoorItem: {
+		DisplayName: Scale Door Item
+		Tooltip: ""
+	}
+
+	LepSeed: {
+		DisplayName: Lep Seed
+		Tooltip: ""
+	}
 }
 
 Tiles: {
 	Lep.MapEntry: Lep
 	Equi.MapEntry: Equi
 	Astero.MapEntry: Astero
+	ScaleChest.MapEntry: Scale Chest
+	LepSappling.MapEntry: Lep Sappling
 }
