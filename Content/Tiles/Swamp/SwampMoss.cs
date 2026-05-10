@@ -37,10 +37,7 @@ namespace ABMod.Content.Tiles.Swamp
 			}
 		}
 		
-		public override void NumDust(int i, int j, bool fail, ref int num)
-		{
-			num = fail ? 1 : 3;
-		}
+		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
 		public override bool CanReplace(int i, int j, int tileTypeBeingPlaced)
 		{

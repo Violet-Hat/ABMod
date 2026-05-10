@@ -20,9 +20,6 @@ namespace ABMod.Content.Tiles.Swamp
 			MineResist = 1.2f;
 		}
 		
-		public override void NumDust(int i, int j, bool fail, ref int num)
-		{
-			num = fail ? 1 : 3;
-		}
+		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 	}
 }

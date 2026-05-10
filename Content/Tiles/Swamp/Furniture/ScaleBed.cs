@@ -46,10 +46,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			info.VisualOffset.Y += 4f;
 		}
 
-		public override void NumDust(int i, int j, bool fail, ref int num) 
-        {
-            num = 1;
-        }
+		public override void NumDust(int i, int j, bool fail, ref int num) => num = 1;
 
 		public override bool RightClick(int i, int j)
 		{

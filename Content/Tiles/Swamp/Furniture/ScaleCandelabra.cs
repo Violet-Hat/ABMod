@@ -51,16 +51,14 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
                 }
             }
             
+            //Net shenanigans
             if (Main.netMode != NetmodeID.SinglePlayer)
             {
-				NetMessage.SendTileSquare(-1, left, top + 1, 2);
+				NetMessage.SendTileSquare(-1, left, top, 2, 2);
 			}
         }
 		
-		public override void NumDust(int i, int j, bool fail, ref int num) 
-        {
-            num = fail ? 1 : 3;
-        }
+		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {

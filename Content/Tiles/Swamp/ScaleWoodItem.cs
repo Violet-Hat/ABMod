@@ -2,6 +2,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using ABMod.Content.Tiles.Swamp.Furniture;
+
 namespace ABMod.Content.Tiles.Swamp
 {
 	public class ScaleWoodItem : ModItem
@@ -29,6 +31,11 @@ namespace ABMod.Content.Tiles.Swamp
 			
 			CreateRecipe()
             .AddIngredient(ModContent.ItemType<ScaleWoodFenceItem>(), 4)
+            .AddTile(TileID.WorkBenches)
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ModContent.ItemType<ScalePlatformItem>(), 2)
             .AddTile(TileID.WorkBenches)
             .Register();
         }

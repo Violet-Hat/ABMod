@@ -42,10 +42,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			VanillaFallbackOnModDeletion = TileID.Chairs;
 		}
 		
-		public override void NumDust(int i, int j, bool fail, ref int num) 
-        {
-            num = fail ? 1 : 3;
-        }
+		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
 		{

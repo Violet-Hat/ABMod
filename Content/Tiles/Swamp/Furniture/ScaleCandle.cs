@@ -16,7 +16,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.DisableSmartCursor[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
-            TileObjectData.newTile.CoordinateHeights = [20];
+            TileObjectData.newTile.CoordinateHeights = [22];
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.addTile(Type);
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Candle));
@@ -39,6 +39,9 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			{
                 tile.TileFrameX += 18;
 			}
+
+            //Net shenanigans
+            NetMessage.SendTileSquare(-1, i, j, 1, 1);
         }
 		
         public override bool RightClick(int i, int j)
@@ -47,10 +50,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             return true;
         }
 		
-        public override void NumDust(int i, int j, bool fail, ref int num)
-		{
-			num = fail ? 1 : 3;
-		}
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 		
         public override void MouseOver(int i, int j)
         {

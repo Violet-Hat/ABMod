@@ -75,10 +75,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             return true;
         }
 
-		public override void NumDust(int i, int j, bool fail, ref int num) 
-        {
-            num = 1;
-        }
+		public override void NumDust(int i, int j, bool fail, ref int num) => num = 1;
 
         public override void MouseOver(int i, int j)
         {

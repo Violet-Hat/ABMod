@@ -63,14 +63,14 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 			//Check if there's a sapling and destroy it
 			if (saplingExists)
 			{
-				WorldGen.KillTile(i, j, false, false, true);
-				WorldGen.KillTile(i, j - 1, false, false, true);
-				WorldGen.KillTile(i + 1, j, false, false, true);
-				WorldGen.KillTile(i + 1, j - 1, false, false, true);
+				WorldGen.KillTile(i, j, noItem: true);
+				WorldGen.KillTile(i, j - 1, noItem: true);
+				WorldGen.KillTile(i + 1, j, noItem: true);
+				WorldGen.KillTile(i + 1, j - 1, noItem: true);
 				
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
-					NetMessage.SendTileSquare(-1, i, j, 2, 2, TileChangeType.None);
+					NetMessage.SendTileSquare(-1, i, j - 1, 2, 2, TileChangeType.None);
 				}
 			}
 
@@ -106,8 +106,8 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 				
 					if (Main.netMode != NetmodeID.SinglePlayer)
 					{
-						NetMessage.SendTileSquare(-1, i, j, 1, 1, TileChangeType.None);
-						NetMessage.SendTileSquare(-1, i + 1, j, 1, 1, TileChangeType.None);
+						NetMessage.SendTileSquare(-1, i, j, 1, 1);
+						NetMessage.SendTileSquare(-1, i + 1, j, 1, 1);
 					}
 				}
 			}
@@ -173,8 +173,8 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 				
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
-					NetMessage.SendTileSquare(-1, i, j - numSegments, 1, 1, TileChangeType.None);
-					NetMessage.SendTileSquare(-1, i + 1, j - numSegments, 1, 1, TileChangeType.None);
+					NetMessage.SendTileSquare(-1, i, j - numSegments, 1, 1);
+					NetMessage.SendTileSquare(-1, i + 1, j - numSegments, 1, 1);
 				}
             }
 
