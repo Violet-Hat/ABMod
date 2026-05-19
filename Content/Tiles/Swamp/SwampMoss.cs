@@ -15,7 +15,7 @@ namespace ABMod.Content.Tiles.Swamp
             TileID.Sets.CanBeDugByShovel[Type] = true;
 			TileID.Sets.NeedsGrassFraming[Type] = true;
 			TileID.Sets.BlockMergesWithMergeAllBlock[Type] = true;
-			TileID.Sets.NeedsGrassFramingDirt[Type] = ModContent.TileType<SwampDirt>();
+			TileID.Sets.NeedsGrassFramingDirt[Type] = ModContent.TileType<SwampSoil>();
 			TileID.Sets.SpreadOverground[Type] = true;
 			TileID.Sets.SpreadUnderground[Type] = true;
 			Main.tileMergeDirt[Type] = true;
@@ -23,7 +23,7 @@ namespace ABMod.Content.Tiles.Swamp
 			Main.tileSolid[Type] = true;
 			Main.tileBlockLight[Type] = true;
             AddMapEntry(new Color(80, 115, 54));
-            RegisterItemDrop(ModContent.ItemType<SwampDirtItem>());
+            RegisterItemDrop(ModContent.ItemType<SwampSoilItem>());
             DustType = DustID.GreenMoss;
 			MineResist = 0.1f;
 		}
@@ -33,7 +33,7 @@ namespace ABMod.Content.Tiles.Swamp
 			if (!fail && !WorldGen.gen)
 			{
 				fail = true;
-				Framing.GetTileSafely(i, j).TileType = (ushort)ModContent.TileType<SwampDirt>();
+				Framing.GetTileSafely(i, j).TileType = (ushort)ModContent.TileType<SwampSoil>();
 			}
 		}
 		
@@ -46,7 +46,7 @@ namespace ABMod.Content.Tiles.Swamp
 				return false;
 			}
 			
-			return tileTypeBeingPlaced != ModContent.TileType<SwampDirt>();
+			return tileTypeBeingPlaced != ModContent.TileType<SwampSoil>();
 		}
 		
 		public override void RandomUpdate(int i, int j)
@@ -64,23 +64,6 @@ namespace ABMod.Content.Tiles.Swamp
 					//NetMessage.SendTileSquare(-1, i, j - 1, 1, TileChangeType.None);
 				}
 			}
-        }
-
-		//Basically the same code of Spooky Mod's 'HasOpening' class
-		private bool IsOpen(int i, int j)
-        	{
-            	for (int x = -1; x < 2; x++)
-            	{
-                	for (int y = -1; y < 2; y++)
-                	{
-                    	if (!Framing.GetTileSafely(i + x, j + y).HasTile)
-                    	{
-                        	return true;
-                    	}
-                	}
-            	}
-                    
-            return false;
         }
 	}
 }

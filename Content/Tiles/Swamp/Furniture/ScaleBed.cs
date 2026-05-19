@@ -15,18 +15,23 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 		public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
+			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.CanBeSleptIn[Type] = true;
 			TileID.Sets.InteractibleByNPCs[Type] = true;
 			TileID.Sets.IsValidSpawnPoint[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
+
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style4x2);
 			TileObjectData.newTile.CoordinateHeights = [16, 18];
+			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Bed));
-			DustType = DustID.Bone;
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
+			DustType = DustID.Bone;
 			AdjTiles = [TileID.Beds];
 		}
 		

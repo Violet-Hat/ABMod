@@ -19,15 +19,18 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
 			Main.tileFrameImportant[Type] = true;
+
             TileID.Sets.DisableSmartCursor[Type] = true;
 			TileID.Sets.IgnoredByNpcStepUp[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
 			TileObjectData.newTile.StyleHorizontal = true;
 			TileObjectData.addTile(Type);
+
             LocalizedText name = CreateMapEntryName();
             AddMapEntry(new Color(96, 109, 78), name);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
             DustType = DustID.Bone;
-			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
             AdjTiles = [TileID.Pianos];
         }
 

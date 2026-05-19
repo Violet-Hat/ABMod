@@ -16,8 +16,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileSolid[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileTable[Type] = true;
+
 			TileID.Sets.Platforms[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
+
             TileObjectData.newTile.CoordinateHeights = [16];
 			TileObjectData.newTile.CoordinateWidth = 16;
 			TileObjectData.newTile.CoordinatePadding = 2;
@@ -27,9 +29,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileObjectData.newTile.UsesCustomCanPlace = false;
 			TileObjectData.newTile.LavaDeath = true;
 			TileObjectData.addTile(Type);
+
             AddMapEntry(new Color(96, 109, 78));
-            DustType = DustID.Bone;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+            DustType = DustID.Bone;
             AdjTiles = [TileID.Platforms];
             VanillaFallbackOnModDeletion = TileID.Platforms;
         }

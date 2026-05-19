@@ -14,12 +14,14 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style4x2);
 			TileObjectData.newTile.Origin = new Point16(1, 1);
 			TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Bathtub));
-			DustType = DustID.Bone;
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
+			DustType = DustID.Bone;
 			AdjTiles = [TileID.Bathtubs];
 		}
 		

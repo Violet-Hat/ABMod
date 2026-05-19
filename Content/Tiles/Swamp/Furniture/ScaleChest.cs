@@ -22,6 +22,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileOreFinderPriority[Type] = 500;
+
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.BasicChest[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
@@ -30,6 +31,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileID.Sets.IsAContainer[Type] = true;
 			TileID.Sets.FriendlyFairyCanLureTo[Type] = true;
 			TileID.Sets.GeneralPlacementTiles[Type] = false;
+
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 			TileObjectData.newTile.Origin = new Point16(0, 1);
 			TileObjectData.newTile.CoordinateHeights = [16, 18];
@@ -46,6 +48,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileObjectData.newTile.LavaDeath = false;
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 			TileObjectData.addTile(Type);
+			
 			LocalizedText name = CreateMapEntryName();
 			AddMapEntry(new Color(96, 109, 78), name);
 			RegisterItemDrop(ModContent.ItemType<ScaleChestItem>(), 1);

@@ -19,12 +19,14 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileNoAttach[Type] = true;
 			Main.tileTable[Type] = true;
 			Main.tileContainer[Type] = true;
+
             TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			TileID.Sets.BasicDresser[Type] = true;
 			TileID.Sets.AvoidedByNPCs[Type] = true;
 			TileID.Sets.InteractibleByNPCs[Type] = true;
 			TileID.Sets.IsAContainer[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
 			TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(Chest.FindEmptyChest, -1, 0, true);
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(Chest.AfterPlacement_Hook, -1, 0, false);
@@ -37,9 +39,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			];
 			TileObjectData.newTile.LavaDeath = false;
 			TileObjectData.addTile(Type);
+
             AddMapEntry(new Color(96, 109, 78), CreateMapEntryName(), MapChestName);
-            DustType = DustID.Bone;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
+            DustType = DustID.Bone;
             AdjTiles = [TileID.Dressers];
         }
 
@@ -157,7 +160,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
         }
 
         // This is not a hook, this is just a normal method used by the MouseOver and MouseOverFar hooks to avoid repeating code.
-        public void MouseOverNearAndFarSharedLogic(Player player, int i, int j)
+        public static void MouseOverNearAndFarSharedLogic(Player player, int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
 			int left = i;

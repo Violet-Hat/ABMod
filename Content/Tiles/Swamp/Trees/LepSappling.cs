@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.Enums;
 using Microsoft.Xna.Framework;
 
 using ABMod.Common.Tiles;
@@ -16,14 +17,18 @@ namespace ABMod.Content.Tiles.Swamp.Trees
             Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+
             TileID.Sets.CommonSapling[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.StyleHorizontal = true;
-            TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SwampMoss>()];
+            TileObjectData.newTile.DrawYOffset = 2;
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.WaterPlacement = LiquidPlacement.NotAllowed;
+            TileObjectData.newTile.LavaDeath = true;
             TileObjectData.addTile(Type);
-            LocalizedText name = CreateMapEntryName();
-            AddMapEntry(new Color(96, 109, 78), name);
+
+            AddMapEntry(new Color(96, 109, 78), Language.GetText("MapObject.Sapling"));
             DustType = DustID.Bone;
             AdjTiles = [TileID.Saplings];
         }

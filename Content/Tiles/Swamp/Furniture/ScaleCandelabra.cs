@@ -14,14 +14,16 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileNoAttach[Type] = true;
 			Main.tileLighted[Type] = true;
             Main.tileLavaDeath[Type] = true;
+
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 			TileObjectData.newTile.StyleHorizontal = true;
 			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Candelabra));
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
 			RegisterItemDrop(ModContent.ItemType<ScaleCandelabraItem>());
             DustType = DustID.Bone;
-            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
 			AdjTiles = [TileID.Candelabras];
 		}
 		

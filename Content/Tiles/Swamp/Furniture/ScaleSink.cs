@@ -14,10 +14,12 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = true;
+
             TileID.Sets.CountsAsWaterSource[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 			TileObjectData.newTile.CoordinateHeights = [16, 18];
 			TileObjectData.addTile(Type);
+            
             AddMapEntry(new Color(100, 100, 100), Language.GetText("MapObject.Sink"));
             DustType = DustID.Bone;
 			AdjTiles = [TileID.Sinks];

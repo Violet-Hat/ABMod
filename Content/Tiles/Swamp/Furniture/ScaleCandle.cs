@@ -14,15 +14,18 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             Main.tileNoAttach[Type] = true;
             Main.tileLighted[Type] = true;
             Main.tileLavaDeath[Type] = true;
+
             TileID.Sets.DisableSmartCursor[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
             TileObjectData.newTile.CoordinateHeights = [22];
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Lang.GetItemName(ItemID.Candle));
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
             RegisterItemDrop(ModContent.ItemType<ScaleCandleItem>());
 			DustType = DustID.Bone;
-            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
 			AdjTiles = [TileID.Candles];
 		}
 		

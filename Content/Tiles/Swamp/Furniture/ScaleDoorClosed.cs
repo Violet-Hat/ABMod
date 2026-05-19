@@ -17,16 +17,19 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileSolid[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+
 			TileID.Sets.NotReallySolid[Type] = true;
 			TileID.Sets.DrawsWalls[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
             TileID.Sets.OpenDoorID[Type] = ModContent.TileType<ScaleDoorOpen>();
+
             TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.ClosedDoor, 0));
 			TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Language.GetText("MapObject.Door"));
+			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 			DustType = DustID.Bone;
-            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
             AdjTiles = [TileID.ClosedDoor];
 		}
 

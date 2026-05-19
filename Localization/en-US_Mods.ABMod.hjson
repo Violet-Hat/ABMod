@@ -1,119 +1,186 @@
 Items: {
 	SwampStoneWallItem: {
 		Tooltip: ""
-		DisplayName: Swamp Stone Wall Item
+		DisplayName: Ancient Stone Wall
 	}
 
 	SwampStoneItem: {
 		Tooltip: ""
-		DisplayName: Swamp Stone Item
+		DisplayName: Ancient Stone
 	}
 
 	SwampSoilWallItem: {
 		Tooltip: ""
-		DisplayName: Swamp Soil Wall Item
+		DisplayName: Peat Soil Wall
 	}
 
 	SwampSoilItem: {
 		Tooltip: ""
-		DisplayName: Swamp Soil Item
+		DisplayName: Peat Soil
 	}
 
 	SwampMossWallItem: {
 		Tooltip: ""
-		DisplayName: Swamp Moss Wall Item
+		DisplayName: Club Moss Wall
 	}
 
 	SwampMossSpores: {
 		Tooltip: ""
-		DisplayName: Swamp Moss Spores
+		DisplayName: Club Moss Spores
 	}
 
 	SwampDirtWallItem: {
 		Tooltip: ""
-		DisplayName: Swamp Dirt Wall Item
+		DisplayName: Ancient Dirt Wall
 	}
 
 	SwampDirtItem: {
 		Tooltip: ""
-		DisplayName: Swamp Dirt Item
+		DisplayName: Ancient Dirt
 	}
 
 	ScaleWoodWallItem: {
 		Tooltip: ""
-		DisplayName: Scale Wood Wall Item
+		DisplayName: Scale Wood Wall
 	}
 
 	ScaleWoodItem: {
 		Tooltip: ""
-		DisplayName: Scale Wood Item
+		DisplayName: Scale Wood
 	}
 
 	ScaleWoodFenceItem: {
 		Tooltip: ""
-		DisplayName: Scale Wood Fence Item
+		DisplayName: Scale Wood Fence
 	}
 
 	ScaleBathtubItem: {
-		DisplayName: Scale Bathtub Item
+		DisplayName: Scale Wood Bathtub
 		Tooltip: ""
 	}
 
 	ScaleBedItem: {
-		DisplayName: Scale Bed Item
+		DisplayName: Scale Wood Bed
 		Tooltip: ""
 	}
 
 	ScaleBookcaseItem: {
-		DisplayName: Scale Bookcase Item
+		DisplayName: Scale Wood Bookcase
 		Tooltip: ""
 	}
 
 	ScaleCandelabraItem: {
-		DisplayName: Scale Candelabra Item
+		DisplayName: Scale Wood Candelabra
 		Tooltip: ""
 	}
 
 	ScaleCandleItem: {
-		DisplayName: Scale Candle Item
+		DisplayName: Scale Wood Candle
 		Tooltip: ""
 	}
 
 	ScaleChairItem: {
-		DisplayName: Scale Chair Item
+		DisplayName: Scale Wood Chair
 		Tooltip: ""
 	}
 
 	ScaleChandelierItem: {
-		DisplayName: Scale Chandelier Item
+		DisplayName: Scale Wood Chandelier
 		Tooltip: ""
 	}
 
 	ScaleChestItem: {
-		DisplayName: Scale Chest Item
+		DisplayName: Scale Wood Basket
 		Tooltip: ""
 	}
 
 	ScaleClockItem: {
-		DisplayName: Scale Clock Item
+		DisplayName: Scale Wood Clock
 		Tooltip: ""
 	}
 
 	ScaleDoorItem: {
-		DisplayName: Scale Door Item
+		DisplayName: Scale Wood Door
 		Tooltip: ""
 	}
 
 	LepSeed: {
-		DisplayName: Lep Seed
+		DisplayName: Spore Pod
+		Tooltip: Grows into a Lepidodendron
+	}
+
+	ScaleDresserItem: {
+		DisplayName: Scale Wood Dresser
+		Tooltip: ""
+	}
+
+	ScaleLampItem: {
+		DisplayName: Scale Wood Lamp
+		Tooltip: ""
+	}
+
+	ScaleLanternItem: {
+		DisplayName: Scale Wood Lantern
+		Tooltip: ""
+	}
+
+	ScalePianoItem: {
+		DisplayName: Scale Wood Xylophone
+		Tooltip: ""
+	}
+
+	ScalePlatformItem: {
+		DisplayName: Scale Wood Platform
+		Tooltip: ""
+	}
+
+	ScaleSinkItem: {
+		DisplayName: Scale Wood Sink
+		Tooltip: ""
+	}
+
+	ScaleSofaItem: {
+		DisplayName: Scale Wood Sofa
+		Tooltip: ""
+	}
+
+	ScaleTableItem: {
+		DisplayName: Scale Wood Table
+		Tooltip: ""
+	}
+
+	ScaleToiletItem: {
+		DisplayName: Scale Wood Toilet
+		Tooltip: ""
+	}
+
+	ScaleWorkbenchItem: {
+		DisplayName: Scale Wood Workbench
+		Tooltip: ""
+	}
+
+	LabBlockItem: {
+		DisplayName: Laboratory Block
+		Tooltip: ""
+	}
+
+	AsteroSeed: {
+		DisplayName: Astero Seed (Placeholder name)
+		Tooltip: ""
+	}
+
+	ScaleSpikesItem: {
+		DisplayName: Scale Wood Spikes
 		Tooltip: ""
 	}
 }
 
 Tiles: {
-	Lep.MapEntry: Lep
-	Equi.MapEntry: Equi
-	Astero.MapEntry: Astero
-	ScaleChest.MapEntry: Scale Chest
-	LepSappling.MapEntry: Lep Sappling
+	Lep.MapEntry: Lepidodendron
+	Equi.MapEntry: Equisetum
+	Astero.MapEntry: Asterophyllites
+	ScaleChest.MapEntry: Scale Wood Basket
+	ScaleDresser.MapEntry: Scale Wood Dresser
+	ScalePiano.MapEntry: Scale Wood Xylophone
+	ScaleWorkbench.MapEntry: Scale Wood Workbench
 }

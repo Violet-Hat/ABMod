@@ -18,8 +18,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileLavaDeath[Type] = true;
+
             TileID.Sets.MultiTileSway[Type] = true;
 			TileID.Sets.IsAMechanism[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
             TileObjectData.newTile.Origin = new Point16(1, 0);
             TileObjectData.newTile.DrawYOffset = -2;
@@ -28,9 +30,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             TileObjectData.newTile.LavaDeath = true;
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Language.GetText("MapObject.Chandelier"));
-			DustType = DustID.Bone;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+			DustType = DustID.Bone;
             AdjTiles = [TileID.Chandeliers];
 		}
 		

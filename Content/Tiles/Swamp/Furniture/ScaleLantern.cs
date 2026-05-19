@@ -15,6 +15,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileLavaDeath[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2Top);
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.DrawYOffset = -2;
@@ -22,9 +23,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             TileObjectData.newTile.LavaPlacement = LiquidPlacement.NotAllowed;
             TileObjectData.newTile.WaterPlacement = LiquidPlacement.NotAllowed;
             TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Language.GetText("MapObject.Lantern"));
-			DustType = DustID.Bone;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+			DustType = DustID.Bone;
             AdjTiles = [TileID.HangingLanterns];
 		}
 		

@@ -18,6 +18,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileNoAttach[Type] = true;
 			Main.tileWaterDeath[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1xX);
 			TileObjectData.newTile.DrawFlipHorizontal = true;
 			TileObjectData.newTile.StyleLineSkip = 2;
@@ -26,9 +27,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileObjectData.newTile.WaterPlacement = LiquidPlacement.NotAllowed;
 			TileObjectData.newTile.LavaPlacement = LiquidPlacement.NotAllowed;
 			TileObjectData.addTile(Type);
+
             AddMapEntry(new Color(96, 109, 78), Language.GetText("MapObject.FloorLamp"));
+			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
             DustType = DustID.Bone;
-            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
             AdjTiles = [TileID.Lamps];
 		}
 		

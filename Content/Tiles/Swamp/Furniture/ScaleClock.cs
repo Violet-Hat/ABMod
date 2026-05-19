@@ -15,13 +15,17 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+
 			TileID.Sets.Clock[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
 			TileObjectData.newTile.Height = 5;
 			TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
+			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.addTile(Type);
+			
 			AddMapEntry(new Color(96, 109, 78), Language.GetText("ItemName.GrandfatherClock"));
 			DustType = DustID.Bone;
 			AdjTiles = [TileID.GrandfatherClocks];

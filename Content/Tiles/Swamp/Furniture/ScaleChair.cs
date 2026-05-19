@@ -20,10 +20,12 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.CanBeSatOnForNPCs[Type] = true; // Facilitates calling ModifySittingTargetInfo for NPCs
 			TileID.Sets.CanBeSatOnForPlayers[Type] = true; // Facilitates calling ModifySittingTargetInfo for Players
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
 			TileObjectData.newTile.CoordinateHeights = [16, 18];
 			TileObjectData.newTile.CoordinatePaddingFix = new Point16(0, 2);
@@ -35,9 +37,10 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
 			TileObjectData.addAlternate(1); // Facing right will use the second texture style
 			TileObjectData.addTile(Type);
+
 			AddMapEntry(new Color(96, 109, 78), Language.GetText("MapObject.Chair"));
-			DustType = DustID.Bone;
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
+			DustType = DustID.Bone;
 			AdjTiles = [TileID.Chairs];
 			VanillaFallbackOnModDeletion = TileID.Chairs;
 		}
