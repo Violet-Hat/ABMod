@@ -63,9 +63,17 @@ namespace ABMod.Content.Generation
 			int SwampIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Dirt Rock Wall Runner"));
 			if (SwampIndex != -1)
 			{
-				tasks.Insert(SwampIndex + 1, new PassLegacy("Ancient Swamp", AncientSwampGen.SwampGen));
-				tasks.Insert(SwampIndex + 2, new PassLegacy("Flattening", AncientSwampGen.SwampFlattening));
+				tasks.Insert(SwampIndex + 1, new PassLegacy("Ancient Swamps", AncientSwampGen.SwampGen));
+				tasks.Insert(SwampIndex + 2, new PassLegacy("Swamp Flattening", AncientSwampGen.SwampFlattening));
 			}
+
+            //Add the Ancient Swamps biome caves and ambience in the worldgen before the liquids are settled
+            int SwampIndex2 = tasks.FindIndex(genpass => genpass.Name.Equals("Larva"));
+            if (SwampIndex2 != -1)
+            {
+                tasks.Insert(SwampIndex2 + 1, new PassLegacy("Swamp Caves", AncientSwampGen.SwampCaves));
+                tasks.Insert(SwampIndex2 + 2, new PassLegacy("Swamp Ambience", AncientSwampGen.SwampAmbience));
+            }
         }
     }
 }

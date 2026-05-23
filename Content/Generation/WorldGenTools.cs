@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.WorldBuilding;
 
 namespace ABMod.Content.Generation
@@ -62,7 +63,9 @@ namespace ABMod.Content.Generation
 			{
 				for (int j = origin.Y - r; j <= origin.Y + r; j++)
 				{
-					if(Main.tile[i, j].HasTile && Main.tileSolid[Main.tile[i, j].TileType])
+					Tile tile = Framing.GetTileSafely(i, j);
+
+					if(tile.HasTile && Main.tileSolid[tile.TileType])
 					{
 						count++;
 					}
@@ -77,7 +80,37 @@ namespace ABMod.Content.Generation
             return true;
         }
 
-		static public int MooreTiles(int x, int y)
+		public static void PlaceOrReplaceWall(int x, int y, int wallType)
+		{
+			Tile tile = Framing.GetTileSafely(x, y);
+
+			if (tile.WallType > WallID.None)
+			{
+				tile.WallType = (ushort)wallType;
+			}
+			else
+			{
+				WorldGen.PlaceWall(x, y, (ushort)wallType, true);
+			}
+		}
+
+		public static bool IsTouchingAir(int x, int y)
+		{
+			for (int i = x - 1; i <= x + 1; i++)
+			{
+				for (int j = y - 1; j <= y + 1; j++)
+				{
+					if (!Framing.GetTileSafely(i, j).HasTile)
+					{
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		}
+
+		public static int MooreTiles(int x, int y)
         {
             int count = 0;
 
@@ -87,7 +120,7 @@ namespace ABMod.Content.Generation
                 {
                     if (nebX != x || nebY != y)
                     {
-                        if (Main.tile[nebX, nebY].HasTile)
+                        if (Framing.GetTileSafely(nebX, nebY).HasTile)
                         {
                             count++;
                         }
@@ -98,34 +131,38 @@ namespace ABMod.Content.Generation
             return count;
         }
 
-        static public int NeumanTiles(int x, int y)
+        public static int NeumanTiles(int x, int y)
         {
             int count = 0;
 
-            if (Main.tile[x, y - 1].HasTile) count++;
-			if (Main.tile[x - 1, y].HasTile) count++;
-			if (Main.tile[x + 1, y].HasTile) count++;
-			if (Main.tile[x, y + 1].HasTile) count++;
+            if (Framing.GetTileSafely(x, y - 1).HasTile)
+				count++;
+			if (Framing.GetTileSafely(x - 1, y).HasTile)
+				count++;
+			if (Framing.GetTileSafely(x + 1, y).HasTile)
+				count++;
+			if (Framing.GetTileSafely(x, y + 1).HasTile)
+				count++;
 
             return count;
         }
 
 		public static bool IsSloped(int x, int y)
         {
-            return Main.tile[x, y].LeftSlope ||
-			Main.tile[x, y].RightSlope ||
-			Main.tile[x, y].TopSlope ||
-			Main.tile[x, y].BottomSlope ||
-			Main.tile[x, y].IsHalfBlock;
+            return Framing.GetTileSafely(x, y).LeftSlope ||
+			Framing.GetTileSafely(x, y).RightSlope ||
+			Framing.GetTileSafely(x, y).TopSlope ||
+			Framing.GetTileSafely(x, y).BottomSlope ||
+			Framing.GetTileSafely(x, y).IsHalfBlock;
         }
 
-		public static bool TooMuchLiquid(int x, int y, int amount = 1, int liquidAmount = 99)
+		public static bool TooMuchLiquid(int x, int y, int amount = 1, int liquidAmount = 0)
 		{
 			int count = 0;
 
 			for (int j = 1; j <= amount; j++)
 			{
-				if (Main.tile[x, y - j].LiquidAmount > liquidAmount)
+				if (Framing.GetTileSafely(x, y - j).LiquidAmount > liquidAmount)
 				{
 					count++;
 				}
