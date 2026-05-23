@@ -58,6 +58,14 @@ namespace ABMod.Content.Generation
                 int ProtectionSize = 200;
                 GenVars.structures.AddProtectedStructure(new Rectangle(AetherX - ProtectionSize / 2, AetherY - ProtectionSize / 2, ProtectionSize, ProtectionSize));
             });
+
+            //Add the Ancient Swamps biome in the worldgen task before the temple is made
+			int SwampIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Dirt Rock Wall Runner"));
+			if (SwampIndex != -1)
+			{
+				tasks.Insert(SwampIndex + 1, new PassLegacy("Ancient Swamp", AncientSwampGen.SwampGen));
+				tasks.Insert(SwampIndex + 2, new PassLegacy("Flattening", AncientSwampGen.SwampFlattening));
+			}
         }
     }
 }
