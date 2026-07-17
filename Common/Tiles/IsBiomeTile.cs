@@ -6,7 +6,7 @@ using ABMod.Content.Tiles.Swamp;
 
 namespace ABMod.Common.Tiles
 {
-	public class BiomeTile
+	public class IsBiomeTile
     {
 		//Swamp
 		public static bool IsSwampTile(int x, int y)

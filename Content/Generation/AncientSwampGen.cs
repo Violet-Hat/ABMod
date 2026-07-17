@@ -11,6 +11,8 @@ using Terraria.Localization;
 using ABMod.Common;
 using ABMod.Common.Tiles;
 using ABMod.Content.Tiles.Swamp;
+using ABMod.Content.Generation.Helpers;
+using ABMod.Content.Generation.Objects;
 
 namespace ABMod.Content.Generation
 {
@@ -21,9 +23,9 @@ namespace ABMod.Content.Generation
 		static readonly int PlaceSwampY = (int)(Main.maxTilesY * 0.15f);
 
 		static readonly int BiomeWidth = Main.maxTilesX >= 8400 ? 355 : (Main.maxTilesX >= 6400 ? 250 : 175);
-        static readonly int BiomeHeightLimit = (int)(Main.maxTilesY / 1.75f);
+        static readonly int BiomeDepth = (int)(Main.maxTilesY * 0.57f);
 
-        //Main method : Generate the base terrain
+        //Main methods
         public static void SwampGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = Language.GetOrRegister("Mods.ABMod.WorldgenTasks.Swamp1").Value;
@@ -96,12 +98,12 @@ namespace ABMod.Content.Generation
             {
 				progress.Set((float)(x - StartX) / (EndX - StartX));
                 
-				for (int y = PlaceSwampY; y <= BiomeHeightLimit; y++)
+				for (int y = PlaceSwampY; y <= BiomeDepth; y++)
                 {
-                    tileType = CheckTileOrWall(y);
-					wallType = CheckTileOrWall(y, true);
+                    tileType = GetTileByDepth(y);
+					wallType = GetWallByDepth(y);
 
-                    if (WorldGenTools.NoFloatingIslands(x, y) && !BiomeTile.IsFloatingIslandTile(x, y))
+                    if (WorldGenTools.NoFloatingIslands(x, y) && !IsBiomeTile.IsFloatingIslandTile(x, y))
                     {
                         Tile tile = Framing.GetTileSafely(x, y);
 
@@ -141,14 +143,14 @@ namespace ABMod.Content.Generation
             //Fixed base and hole fill
 			for (int x = StartX; x <= EndX; x++)
 			{
-				for (int y = (int)Main.worldSurface - 70; y <= BiomeHeightLimit; y++)
+				for (int y = (int)Main.worldSurface - 70; y <= BiomeDepth; y++)
 				{
 					Tile tile = Main.tile[x, y];
 
 					if (!tile.HasTile)
 					{
-						tileType = CheckTileOrWall(y);
-						wallType = CheckTileOrWall(y, true);
+						tileType = GetTileByDepth(y);
+						wallType = GetWallByDepth(y);
 
 						WorldGen.PlaceTile(x, y,tileType, true);
 						WorldGen.PlaceWall(x, y, wallType, true);
@@ -159,15 +161,15 @@ namespace ABMod.Content.Generation
 			//Dithering
 			for (int x = StartX - 10; x <= EndX + 10; x++)
 			{
-				for (int y = PlaceSwampY; y <= BiomeHeightLimit + 10; y++)
+				for (int y = PlaceSwampY; y <= BiomeDepth + 10; y++)
 				{
 					//If outside of the main area, add dither
-					if (x < StartX || x > EndX || y > BiomeHeightLimit)
+					if (x < StartX || x > EndX || y > BiomeDepth)
 					{
-						tileType = CheckTileOrWall(y);
-						wallType = CheckTileOrWall(y, true);
+						tileType = GetTileByDepth(y);
+						wallType = GetWallByDepth(y);
 
-						if (WorldGenTools.NoFloatingIslands(x, y) && !BiomeTile.IsFloatingIslandTile(x, y))
+						if (WorldGenTools.NoFloatingIslands(x, y) && !IsBiomeTile.IsFloatingIslandTile(x, y))
 						{
 							Tile tile = Framing.GetTileSafely(x, y);
 
@@ -198,7 +200,6 @@ namespace ABMod.Content.Generation
 			}
         }
 
-		//Main method : Flatten the terrain, place soil tiles, patches of dirt and stone
 		public static void SwampFlattening(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = Language.GetOrRegister("Mods.ABMod.WorldgenTasks.Swamp2").Value;
@@ -208,8 +209,8 @@ namespace ABMod.Content.Generation
 			int EndX = PlaceSwampX + BiomeWidth + 1; //+1 so the linear bezier reaches the end of the biome
 
 			//Ground points
-			int LeftY = FindGround(StartX);
-			int RightY = FindGround(EndX);
+			int LeftY = FindValidGround(StartX);
+			int RightY = FindValidGround(EndX);
 
 			ConnectPoints(new Vector2(StartX, LeftY), new Vector2(EndX, RightY));
 
@@ -218,12 +219,12 @@ namespace ABMod.Content.Generation
 
 			for (int x = StartX - 10; x < EndX + 10; x++)
 			{
-				int startY = FindGround(x, highestPoint);
+				int startY = FindValidGround(x, highestPoint);
 
 				//Place soil tiles and walls
 				for (int y = startY; y <= startY + 50; y++)
 				{
-					if (BiomeTile.IsSwampTile(x, y))
+					if (IsBiomeTile.IsSwampTile(x, y))
 					{
 						Tile tile = Framing.GetTileSafely(x, y);
 
@@ -251,7 +252,7 @@ namespace ABMod.Content.Generation
 				{
 					Tile tile = Framing.GetTileSafely(x, y);
 
-					if (BiomeTile.IsSwampTile(x, y) && tile.WallType > WallID.None && WorldGenTools.IsTouchingAir(x, y))
+					if (IsBiomeTile.IsSwampTile(x, y) && tile.WallType > WallID.None && WorldGenTools.IsTouchingAir(x, y))
 					{
 						WorldGen.KillWall(x, y);
 					}
@@ -269,7 +270,7 @@ namespace ABMod.Content.Generation
 				int x = WorldGen.genRand.Next(StartX, EndX);
 				int y = WorldGen.genRand.Next(highestPoint, (int)Main.worldSurface + 25);
 
-				if (BiomeTile.IsSwampTile(x, y))
+				if (IsBiomeTile.IsSwampTile(x, y))
 				{
 					Tile tile = Framing.GetTileSafely(x, y);
 					int type = (tile.TileType == ModContent.TileType<SwampSoil>()) ? ModContent.TileType<SwampDirt>() : ModContent.TileType<SwampStone>();
@@ -285,9 +286,9 @@ namespace ABMod.Content.Generation
 			while (patchCount > 0 && i++ < 10000)
 			{
 				int x = WorldGen.genRand.Next(StartX, EndX);
-				int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, BiomeHeightLimit - 25);
+				int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, BiomeDepth - 25);
 
-				if (BiomeTile.IsSwampTile(x, y))
+				if (IsBiomeTile.IsSwampTile(x, y))
 				{
 					int type = ModContent.TileType<SwampDirt>();
 					WorldGen.TileRunner(x, y, WorldGen.genRand.Next(10, 21), WorldGen.genRand.Next(50, 71), type, false, 0f, 0f, false, true);
@@ -296,7 +297,6 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		//Main method : Cave generation
 		public static void SwampCaves(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = Language.GetOrRegister("Mods.ABMod.WorldgenTasks.Swamp3").Value;
@@ -308,17 +308,17 @@ namespace ABMod.Content.Generation
 			//Clean up the vanilla gen shenanigans
 			for (int x = StartX; x <= EndX; x++)
 			{
-				for (int y = PlaceSwampY; y <= BiomeHeightLimit; y++)
+				for (int y = PlaceSwampY; y <= BiomeDepth; y++)
 				{
 					if (WorldGenTools.NoFloatingIslands(x, y))
 					{
 						Tile tile = Framing.GetTileSafely(x, y);
 
 						//Make sure it's not a floating island or jungle structure tile
-						if (!BiomeTile.IsFloatingIslandTile(x, y) && !BiomeTile.IsJungleStructureTile(x, y) && !BiomeTile.IsTempleTile(x, y))
+						if (!IsBiomeTile.IsFloatingIslandTile(x, y) && !IsBiomeTile.IsJungleStructureTile(x, y) && !IsBiomeTile.IsTempleTile(x, y))
 						{
 							//Remove vanilla tiles
-							if (tile.HasTile && !BiomeTile.IsSwampTile(x, y))
+							if (tile.HasTile && !IsBiomeTile.IsSwampTile(x, y))
 							{
 								WorldGen.KillTile(x, y, noItem: true);
 								tile.HasTile = false;
@@ -327,7 +327,7 @@ namespace ABMod.Content.Generation
 							//Place a tile if there's no tile and there's a wall
 							if (!tile.HasTile && tile.WallType > WallID.None && tile.WallType != WallID.LihzahrdBrickUnsafe)
 							{
-								int tileType = CheckTileOrWall(y);
+								int tileType = GetTileByDepth(y);
 								WorldGen.PlaceTile(x, y, tileType);
 							}
 						}
@@ -345,7 +345,7 @@ namespace ABMod.Content.Generation
 			float clearChance = 0.6f;
 
 			int[] caveStart = [(int)(Main.worldSurface - 5), (int)(Main.worldSurface + 30), (int)Main.rockLayer];
-			int[] caveEnd = [(int)(Main.worldSurface + 45), (int)(Main.rockLayer + 15), BiomeHeightLimit];
+			int[] caveEnd = [(int)(Main.worldSurface + 45), (int)(Main.rockLayer + 15), BiomeDepth];
 
 			//A higher x div value creates more horizontal caves, a higher y div value creates more vertical ones
 			float[] caveXDiv = [550f, 350f, 575f];
@@ -357,7 +357,7 @@ namespace ABMod.Content.Generation
 				{
 					for (int y = caveStart[i]; y <= caveEnd[i]; y++)
 					{
-						if (BiomeTile.IsSwampTile(x, y))
+						if (IsBiomeTile.IsSwampTile(x, y))
 						{
 							//Perlin noise values
 							float horizontalOffsetNoise = WorldGenTools.PerlinNoise2D(x / divConstant, y / divConstant, octaves, unchecked(seed + 1)) * 0.01f;
@@ -386,13 +386,13 @@ namespace ABMod.Content.Generation
 			{
 				for (int x = StartX; x <= EndX; x++)
 				{
-					for(int y = (int)Main.worldSurface - 10; y <= BiomeHeightLimit; y++)
+					for(int y = (int)Main.worldSurface - 10; y <= BiomeDepth; y++)
 					{
 						int tileCount = WorldGenTools.MooreTiles(x, y);
 
 						if (tileCount > 4)
 						{
-							int tileType = TilesAround(x, y);
+							int tileType = GetSurroundingTiles(x, y);
 							WorldGen.PlaceTile(x, y, tileType, true);
 						}
 						else if (tileCount < 4)
@@ -406,7 +406,7 @@ namespace ABMod.Content.Generation
 			//Place liquids
 			for (int x = StartX; x <= EndX; x++)
 			{
-				for(int y = (int)Main.worldSurface; y <= BiomeHeightLimit; y++)
+				for(int y = (int)Main.worldSurface; y <= BiomeDepth; y++)
 				{
 					if(WorldGen.genRand.NextBool(8))
 						WorldGen.PlaceLiquid(x, y, 0, 255);
@@ -414,7 +414,6 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		//Main method : Generate grass and structures
 		public static void SwampAmbience(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = Language.GetOrRegister("Mods.ABMod.WorldgenTasks.Swamp4").Value;
@@ -480,31 +479,58 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-        //Helper method : Return a tile / wall based on deepness
-		private static int CheckTileOrWall(int y, bool returnWall = false)
+		public static void Testing(GenerationProgress progress, GameConfiguration configuration)
+		{
+			progress.Message = "Testing";
+
+			Point origin = new(Main.maxTilesX / 2, Main.maxTilesY / 2);
+			int width = 19;
+			int height = 9;
+
+			DomeLabBuilder dome = new(false, false, false);
+			dome.Place(origin, width, height);
+
+			Point origin2 = new((Main.maxTilesX / 2) + 100, Main.maxTilesY / 2);
+
+			RectangleLabBuilder rectangle = new(false, false, false, false);
+			rectangle.Place(origin2, width, height);
+		}
+
+        //Helper methods
+		private static int GetTileByDepth(int y)
 		{
 			if (y >= (int)Main.worldSurface + 40)
 			{
-				return returnWall ? ModContent.WallType<SwampStoneWall>() : ModContent.TileType<SwampStone>();
+				return ModContent.TileType<SwampStone>();
 			}
 			else if (y >= (int)Main.worldSurface + 30)
 			{
-				if (WorldGen.genRand.NextBool())
-				{
-					return returnWall ? ModContent.WallType<SwampStoneWall>() :  ModContent.TileType<SwampStone>();
-				}
-				else
-				{
-					return returnWall ? ModContent.WallType<SwampDirtWall>() :  ModContent.TileType<SwampDirt>();
-				}
+				bool rand = WorldGen.genRand.NextBool();
+				return rand ? ModContent.TileType<SwampStone>() : ModContent.TileType<SwampDirt>();
 			}
 			else
 			{
-				return returnWall ? ModContent.WallType<SwampDirtWall>() :  ModContent.TileType<SwampDirt>();
+				return ModContent.TileType<SwampDirt>();
 			}
 		}
 
-		//Helper method : Connect 2 points with a bezier curve
+		private static int GetWallByDepth(int y)
+		{
+			if (y >= (int)Main.worldSurface + 40)
+			{
+				return ModContent.WallType<SwampStoneWall>();
+			}
+			else if (y >= (int)Main.worldSurface + 30)
+			{
+				bool rand = WorldGen.genRand.NextBool();
+				return rand ? ModContent.WallType<SwampStoneWall>() : ModContent.WallType<SwampDirtWall>();
+			}
+			else
+			{
+				return ModContent.WallType<SwampDirtWall>();
+			}
+		}
+
 		private static void ConnectPoints(Vector2 p0, Vector2 p1)
 		{
 			//HashSet to save the X coordinates we already visited
@@ -556,7 +582,7 @@ namespace ABMod.Content.Generation
 
 				for (int y = heightLimit; y < posY - perlinHeight; y++)
 				{
-					if (BiomeTile.IsSwampTile(posX, y) || Main.tile[posX, y].WallType == ModContent.WallType<SwampDirtWall>())
+					if (IsBiomeTile.IsSwampTile(posX, y) || Main.tile[posX, y].WallType == ModContent.WallType<SwampDirtWall>())
 					{
 						Framing.GetTileSafely(posX, y).ClearEverything();
 					}
@@ -564,36 +590,31 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-        //Helper method : Tile check for jungle and desert
 		private static bool CanBePlaced(int i, int j)
 		{
 			int jungleTiles = 0;
-
-			for(int x = i - 50; x <= i + 50; x++)
-			{
-				for(int y = j - 50; y <= j + 50; y++)
-				{
-					if (WorldGen.InWorld(i, j) && Main.tile[i, j].HasTile && BiomeTile.IsJungleTile(x, y))
-					{
-						jungleTiles++;
-					}
-				}
-			}
-
 			int desertTiles = 0;
 
+			//Search for desert and jungle tiles
 			for(int x = i - 200; x <= i + 200; x++)
 			{
 				for(int y = j - 50; y <= j + 50; y++)
 				{
-					if (WorldGen.InWorld(i, j) && Main.tile[i, j].HasTile && BiomeTile.IsDesertTile(x, y))
+					if (WorldGen.InWorld(i, j) && Main.tile[i, j].HasTile && IsBiomeTile.IsJungleTile(x, y))
+					{
+						jungleTiles++;
+					}
+
+					if (WorldGen.InWorld(i, j) && Main.tile[i, j].HasTile && IsBiomeTile.IsDesertTile(x, y))
 					{
 						desertTiles++;
 					}
 				}
 			}
 
-			if (jungleTiles > 500 || desertTiles > 500)
+			int maxTilesArea = (int)(200 * 50 * 0.45f);
+
+			if (jungleTiles >= maxTilesArea || desertTiles >= maxTilesArea)
 			{
 				return false;
 			}
@@ -601,8 +622,7 @@ namespace ABMod.Content.Generation
 			return true;
 		}
 
-		//Helper method : Check tiles around and return which one is more present
-		private static int TilesAround(int x, int y)
+		private static int GetSurroundingTiles(int x, int y)
 		{
 			int soilCount = 0;
 			int dirtCount = 0;
@@ -638,22 +658,21 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		//Helper method : Find ground
-		private static int FindGround(int x, int startY = -1)
+		private static int FindValidGround(int x, int startY = -1)
 		{
-			int y = (startY == -1) ? PlaceSwampY : startY;
+			int y = (startY == -1) ? 25 : startY;
 
 			bool foundGround = false;
 			int attemptsLeft = 0;
 
 			while (!foundGround && attemptsLeft++ < 100000)
 			{
-				if (!BiomeTile.IsSwampTile(x, y) || BiomeTile.IsFloatingIslandTile(x, y) || !WorldGenTools.NoFloatingIslands(x, y) && y < Main.maxTilesY)
+				if (!IsBiomeTile.IsSwampTile(x, y) || IsBiomeTile.IsFloatingIslandTile(x, y) || !WorldGenTools.NoFloatingIslands(x, y) && y < Main.maxTilesY)
 				{
 					y++;
 				}
 
-				if ((WorldGen.SolidTile(x, y) || Main.tile[x, y].WallType > WallID.None) && WorldGenTools.NoFloatingIslands(x, y) && !BiomeTile.IsFloatingIslandTile(x, y))
+				if ((WorldGen.SolidTile(x, y) || Main.tile[x, y].WallType > WallID.None) && WorldGenTools.NoFloatingIslands(x, y) && !IsBiomeTile.IsFloatingIslandTile(x, y))
 				{
 					foundGround = true;
 				}
@@ -661,11 +680,10 @@ namespace ABMod.Content.Generation
 			
 			return y;
 		}
-		
-		//Helper method : Generate a tunnel
+
 		private static void GenerateTunnel(int x)
 		{
-			int y = FindGround(x) - 5;
+			int y = FindValidGround(x) - 5;
 
 			//Tunnel time
 			int area = Main.maxTilesX >= 8400 ? 55 : Main.maxTilesX >= 6400 ? 45 : 35;
@@ -732,7 +750,7 @@ namespace ABMod.Content.Generation
 
 						if (tileCount > 4)
 						{
-							int tileType = TilesAround(i, j);
+							int tileType = GetSurroundingTiles(i, j);
 							WorldGen.PlaceTile(i, j, tileType, true);
 						}
 						else if (tileCount < 4)

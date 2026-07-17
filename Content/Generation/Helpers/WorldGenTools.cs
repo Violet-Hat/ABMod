@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.WorldBuilding;
 
-namespace ABMod.Content.Generation
+namespace ABMod.Content.Generation.Helpers
 {
 	public class WorldGenTools
 	{	
