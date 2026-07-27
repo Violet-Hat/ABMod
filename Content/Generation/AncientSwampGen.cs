@@ -492,7 +492,7 @@ namespace ABMod.Content.Generation
 
 			Point origin2 = new((Main.maxTilesX / 2) + 100, Main.maxTilesY / 2);
 
-			RectangleLabBuilder rectangle = new(false, false, false, false);
+			RectangleLabBuilder rectangle = new(true, true, true, true);
 			rectangle.Place(origin2, width, height);
 		}
 
