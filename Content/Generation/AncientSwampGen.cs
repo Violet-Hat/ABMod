@@ -484,16 +484,22 @@ namespace ABMod.Content.Generation
 			progress.Message = "Testing";
 
 			Point origin = new(Main.maxTilesX / 2, Main.maxTilesY / 2);
-			int width = 19;
-			int height = 9;
+			Point origin2 = new(origin.X - 150, origin.Y);
+			Point origin3 = new(origin.X - 300, origin.Y);
+			Point origin4 = new(origin.X + 150, origin.Y);
+			Point origin5 = new(origin.X + 300, origin.Y);
 
-			DomeLabBuilder dome = new(false, false, false);
-			dome.Place(origin, width, height);
+			LabBuilder labBuilder = new(WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool());
+			LabBuilder labBuilder2 = new(WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool());
+			LabBuilder labBuilder3 = new(WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool());
+			LabBuilder labBuilder4 = new(WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool());
+			LabBuilder labBuilder5 = new(WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool(), WorldGen.genRand.NextBool());
 
-			Point origin2 = new((Main.maxTilesX / 2) + 100, Main.maxTilesY / 2);
-
-			RectangleLabBuilder rectangle = new(true, true, true, true);
-			rectangle.Place(origin2, width, height);
+			labBuilder.Place(origin);
+			labBuilder2.Place(origin2);
+			labBuilder3.Place(origin3);
+			labBuilder4.Place(origin4);
+			labBuilder5.Place(origin5);
 		}
 
         //Helper methods

@@ -13,358 +13,202 @@ using ABMod.Common.Tiles;
 
 namespace ABMod.Content.Generation.Objects
 {
-    public abstract class LabBuilder(bool hasLeftRoom, bool hasRightRoom, bool hasBottomRoom)
-    {
-        public bool HasLeftRoom { get; set; } = hasLeftRoom;
-        public bool HasRightRoom { get; set; } = hasRightRoom;
-        public bool HasBottomRoom { get; set; } = hasBottomRoom;
-
-        public abstract bool Place(Point origin, int width, int height);
-
-        public static bool IsValidRectangleSpot(Point origin, int width, int height)
-        {
-            for (int x = origin.X - width; x <= origin.X + width; x++)
-            {
-                for (int y = origin.Y - height; y <= origin.Y; y++)
-                {
-                    if (IsBiomeTile.IsTempleTile(x, y))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public static bool IsValidDomeSpot(Point origin, int radius)
-        {
-            for (int x = origin.X - radius; x <= origin.X + radius; x++)
-            {
-                for (int y = origin.Y - radius; y <= origin.Y; y++)
-                {
-                    if (IsBiomeTile.IsTempleTile(x, y))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public static void PlaceRectangle(Point origin, int tileType, int wallType, int width, int height)
-        {
-            //Inner outline
-            ShapeData rectangle = new();
-            WorldUtils.Gen(origin, new Shapes.Rectangle(width, height), Actions.Chain(
-            [
-                new Actions.Blank().Output(rectangle)
-            ]));
-
-            //Clear tiles
-            WorldUtils.Gen(origin, new Shapes.Rectangle(width, height), Actions.Chain(
-            [
-                new Actions.ClearTile(), new Actions.SetLiquid(0, 0)
-            ]));
-
-            //Place tiles
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(rectangle, true), Actions.Chain(
-            [
-                new Actions.PlaceTile((ushort)tileType)
-            ]));
-
-            //Walls
-            WorldUtils.Gen(origin, new Shapes.Rectangle(width, height), Actions.Chain(
-            [
-                new Actions.ClearWall(), new Actions.PlaceWall((ushort)wallType)
-            ]));
-
-            //Clear walls on edges
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(rectangle, true), Actions.Chain(
-            [
-                new Actions.ClearWall()
-            ]));
-        }
-
-        public static void PlaceDome(Point origin, int tileType, int wallType, int radius)
-        {
-            //Inner outline
-            ShapeData halfCircle = new();
-            WorldUtils.Gen(origin, new Shapes.HalfCircle(radius), Actions.Chain(
-            [
-                new Actions.Blank().Output(halfCircle)
-            ]));
-
-            //Clear tiles
-            WorldUtils.Gen(origin, new Shapes.HalfCircle(radius), Actions.Chain(
-            [
-                new Actions.ClearTile(), new Actions.SetLiquid(0, 0)
-            ]));
-
-            //Place tiles
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(halfCircle, true), Actions.Chain(
-            [
-                new Actions.PlaceTile((ushort)tileType)
-            ]));
-
-            //Walls
-            WorldUtils.Gen(origin, new Shapes.HalfCircle(radius), Actions.Chain(
-            [
-                new Actions.ClearWall(), new Actions.PlaceWall((ushort)wallType)
-            ]));
-
-            //Clear walls on edges
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(halfCircle, true), Actions.Chain(
-            [
-                new Actions.ClearWall()
-            ]));
-        }
-
-        public static void PlaceLeftStaircase(Point origin, int tileType, int wallType, int width, int height, bool direction)
-        {
-            //True is up, false is down
-            int directionMultiplier = direction ? -1 : 1;
-
-            //Inner outline
-            ShapeData rectangle = new();
-            WorldUtils.Gen(origin, new Shapes.Rectangle(width, height), Actions.Chain(
-            [
-                new Actions.Blank().Output(rectangle)
-            ]));
-            WorldUtils.Gen(origin, new Shapes.Rectangle(width, height), Actions.Chain(
-            [
-                new Modifiers.Offset(-width, 5 * directionMultiplier), new Actions.Blank().Output(rectangle)
-            ]));
-
-            for (int i = 0; i <= 5; i++)
-            {
-                int offsetX = -i;
-                int offsetY = i * directionMultiplier;
-
-                WorldUtils.Gen(origin, new Shapes.Rectangle(height, height), Actions.Chain(
-                [
-                    new Modifiers.Offset(offsetX, offsetY), new Actions.Blank().Output(rectangle)
-                ]));
-            }
-
-            //Clear tiles
-            WorldUtils.Gen(origin, new ModShapes.All(rectangle), Actions.Chain(
-            [
-                new Actions.ClearTile(), new Actions.SetLiquid(0, 0)
-            ]));
-
-            //Place tiles
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(rectangle, true), Actions.Chain(
-            [
-                new Actions.PlaceTile((ushort)tileType)
-            ]));
-
-            //Walls
-            WorldUtils.Gen(origin, new ModShapes.All(rectangle), Actions.Chain(
-            [
-                new Actions.ClearWall(), new Actions.PlaceWall((ushort)wallType)
-            ]));
-
-            //Clear walls on edges
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(rectangle, true), Actions.Chain(
-            [
-                new Actions.ClearWall()
-            ]));
-        }
-
-        public static void PlaceRightStaircase(Point origin, int tileType, int wallType, int width, int height, bool direction)
-        {
-            //True is up, false is down
-            int directionMultiplier = direction ? -1 : 1;
-
-            //Inner outline
-            ShapeData rectangle = new();
-            WorldUtils.Gen(origin, new Shapes.Rectangle(width, height), Actions.Chain(
-            [
-                new Modifiers.Offset(-width, 0), new Actions.Blank().Output(rectangle)
-            ]));
-            WorldUtils.Gen(origin, new Shapes.Rectangle(width, height), Actions.Chain(
-            [
-                new Modifiers.Offset(0, 5 * directionMultiplier), new Actions.Blank().Output(rectangle)
-            ]));
-
-            int stairOffsetX = -height / 2;
-
-            for (int i = 0; i <= 5; i++)
-            {
-                int offsetX = stairOffsetX + i;
-                int offsetY = i * directionMultiplier;
-
-                WorldUtils.Gen(origin, new Shapes.Rectangle(height, height), Actions.Chain(
-                [
-                    new Modifiers.Offset(offsetX, offsetY), new Actions.Blank().Output(rectangle)
-                ]));
-            }
-
-            //Clear tiles
-            WorldUtils.Gen(origin, new ModShapes.All(rectangle), Actions.Chain(
-            [
-                new Actions.ClearTile(), new Actions.SetLiquid(0, 0)
-            ]));
-
-            //Place tiles
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(rectangle, true), Actions.Chain(
-            [
-                new Actions.PlaceTile((ushort)tileType)
-            ]));
-
-            //Walls
-            WorldUtils.Gen(origin, new ModShapes.All(rectangle), Actions.Chain(
-            [
-                new Actions.ClearWall(), new Actions.PlaceWall((ushort)wallType)
-            ]));
-
-            //Clear walls on edges
-            WorldUtils.Gen(origin, new ModShapes.InnerOutline(rectangle, true), Actions.Chain(
-            [
-                new Actions.ClearWall()
-            ]));
-        }
-    }
-
-    public class RectangleLabBuilder(bool hasLeftRoom, bool hasRightRoom, bool hasTopRoom, bool hasBottomRoom) : LabBuilder(hasLeftRoom, hasRightRoom, hasBottomRoom)
+    public class LabBuilder(bool hasTopRoom, bool hasLeftRoom, bool hasRightRoom, bool hasBottomRoom)
     {
         bool HasTopRoom { get; set; } = hasTopRoom;
+        bool HasLeftRoom { get; set; } = hasLeftRoom;
+        bool HasRightRoom { get; set; } = hasRightRoom;
+        bool HasBottomRoom { get; set; } = hasBottomRoom;
 
-        public override bool Place(Point origin, int width, int height)
+        static readonly string path = "Content/Generation/Structures/Swamp/";
+        static readonly string fileType = ".shstruct";
+
+        public bool Place(Point origin)
         {
-            Point trueOrigin = new(origin.X - width, origin.Y - height);
-            int trueWidth = (width * 2) + 1;
-            int trueHeight = height + 1;
+            string middle = "LabStruct_1_Middle";
+            string leftSide;
+            string rightSide;
 
-            //Main room
-            bool check = WorldGen.genRand.NextBool(5);
+            //Middle segment variety
+            int middlePadding = WorldGen.genRand.Next(6);
+            for(int i = -middlePadding; i <= middlePadding; i++)
+            {
+                Vector2 middleOrigin = new(origin.X + i, origin.Y - 14);
+                StructureHelper.API.Generator.GenerateStructure(path + middle + fileType, middleOrigin.ToPoint16(), ABMod.Instance);
+            }
+
+            //Main room, 33% of it being a two sided stair style room if alone
+            bool check = WorldGen.genRand.NextBool(3);
             if (!HasLeftRoom && !HasRightRoom && !HasTopRoom && !HasBottomRoom && check)
             {
-                trueWidth = (int)(trueWidth * 0.6f);
-
-                //Check specific for stair style
-                trueOrigin = new(origin.X, origin.Y - height);
-                Point originCheck = new(origin.X, origin.Y + height);
-
-                if (!IsValidRectangleSpot(originCheck, width * 2, height * 2))
-                {
-                    return false;
-                }
-
-                //Place
                 if (WorldGen.genRand.NextBool())
                 {
-                    PlaceRightStaircase(trueOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, trueWidth, trueHeight, WorldGen.genRand.NextBool());
+                    leftSide = "LabStruct_16_UpStairLeft";
+                    rightSide = "LabStruct_15_DownStairRight";
                 }
                 else
                 {
-                    PlaceLeftStaircase(trueOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, trueWidth, trueHeight, WorldGen.genRand.NextBool());
+                    leftSide = "LabStruct_14_DownStairLeft";
+                    rightSide = "LabStruct_17_UpStairRight";
                 }
+
+                Vector2 stairLeftOrigin = new(origin.X - 28 - middlePadding, origin.Y - 14);
+                Vector2 stairRightOrigin = new(origin.X + 1 + middlePadding, origin.Y - 14);
+
+                StructureHelper.API.Generator.GenerateStructure(path + leftSide + fileType, stairLeftOrigin.ToPoint16(), ABMod.Instance);
+                StructureHelper.API.Generator.GenerateStructure(path + rightSide + fileType, stairRightOrigin.ToPoint16(), ABMod.Instance);
             }
             else
             {
-                //Check for regular style
-                if (!IsValidRectangleSpot(origin, width, height))
+                if (!HasLeftRoom)
                 {
-                    return false;
+                    leftSide = "LabStruct_2_Left";
+                    Vector2 leftOrigin = new(origin.X - 14 - middlePadding, origin.Y - 14);
+                    StructureHelper.API.Generator.GenerateStructure(path + leftSide + fileType, leftOrigin.ToPoint16(), ABMod.Instance);
                 }
-
-                PlaceRectangle(trueOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, trueWidth, trueHeight);
+                if (!HasRightRoom)
+                {
+                    rightSide = "LabStruct_3_Right";
+                    Vector2 rightOrigin = new(origin.X + 1 + middlePadding, origin.Y - 14);
+                    StructureHelper.API.Generator.GenerateStructure(path + rightSide + fileType, rightOrigin.ToPoint16(), ABMod.Instance);
+                }
             }
 
             //Extra rooms
-            int padding = width + height + 5;
-
             if (HasLeftRoom)
             {
-                Point leftOrigin = new(origin.X - padding, origin.Y);
-
-                if (!IsValidDomeSpot(leftOrigin, height))
-                {
-                    return false;
-                }
-
-                //Place
-                PlaceDome(leftOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, height);
+                leftSide = "LabStruct_4_LeftDome";
+                Vector2 leftOrigin = new(origin.X - 32 - middlePadding, origin.Y - 14);
+                StructureHelper.API.Generator.GenerateStructure(path + leftSide + fileType, leftOrigin.ToPoint16(), ABMod.Instance);
             }
             if (HasRightRoom)
             {
-                Point rightOrigin = new(origin.X + padding, origin.Y);
-
-                if (!IsValidDomeSpot(rightOrigin, height))
-                {
-                    return false;
-                }
-
-                //Place
-                PlaceDome(rightOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, height);
+                rightSide = "LabStruct_5_RightDome";
+                Vector2 rightOrigin = new(origin.X + 1 + middlePadding, origin.Y - 14);
+                StructureHelper.API.Generator.GenerateStructure(path + rightSide + fileType, rightOrigin.ToPoint16(), ABMod.Instance);
             }
-
-            trueWidth = (int)(trueWidth * 0.6f);
-            padding = trueHeight + 5;
-
             if (HasTopRoom)
             {
-                Point topOrigin = new(origin.X, trueOrigin.Y - padding);
+                int topMiddlePadding = WorldGen.genRand.Next(6);
 
-                //Check specific for stair style
-                Point originCheck = new(origin.X, topOrigin.Y + height);
+                string topLeftSide;
+                string topRightSide;
 
-                if (!IsValidRectangleSpot(originCheck, width * 2, height * 2))
+                Vector2 topMiddleOrigin;
+                Vector2 topLeftOrigin;
+                Vector2 topRightOrigin;
+
+                //33% of the top room being a special room
+                if (WorldGen.genRand.NextBool(3))
                 {
-                    return false;
-                }
+                    //Left or right
+                    if (WorldGen.genRand.NextBool())
+                    {
+                        topLeftSide = "LabStruct_16_UpStairLeft";
+                        topRightSide = "LabStruct_11_UpRightLarge";
 
-                //Place
-                if (WorldGen.genRand.NextBool())
-                {
-                    PlaceLeftStaircase(topOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, trueWidth, trueHeight, true);
+                        topLeftOrigin = new(origin.X - 28 - topMiddlePadding, origin.Y - 26);
+                        topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
+                    }
+                    else
+                    {
+                        topLeftSide = "LabStruct_10_UpLeftLarge";
+                        topRightSide = "LabStruct_17_UpStairRight";
+
+                        topLeftOrigin = new(origin.X - 19 - topMiddlePadding, origin.Y - 26);
+                        topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
+                    }
                 }
                 else
                 {
-                    PlaceLeftStaircase(topOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, trueWidth, trueHeight, true);
+                    if (WorldGen.genRand.NextBool())
+                    {
+                        topLeftSide = "LabStruct_6_UpLeftSmall";
+                        topRightSide = "LabStruct_3_Right";
+
+                        topLeftOrigin = new(origin.X - 14 - topMiddlePadding, origin.Y - 26);
+                        topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
+                    }
+                    else
+                    {
+                        topLeftSide = "LabStruct_2_Left";
+                        topRightSide = "LabStruct_7_UpRightSmall";
+
+                        topLeftOrigin = new(origin.X - 14 - topMiddlePadding, origin.Y - 26);
+                        topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
+                    }
                 }
+
+                for(int i = -topMiddlePadding; i <= topMiddlePadding; i++)
+                {
+                    topMiddleOrigin = new(origin.X + i, origin.Y - 26);
+                    StructureHelper.API.Generator.GenerateStructure(path + middle + fileType, topMiddleOrigin.ToPoint16(), ABMod.Instance);
+                }
+
+                StructureHelper.API.Generator.GenerateStructure(path + topLeftSide + fileType, topLeftOrigin.ToPoint16(), ABMod.Instance);
+                StructureHelper.API.Generator.GenerateStructure(path + topRightSide + fileType, topRightOrigin.ToPoint16(), ABMod.Instance);
             }
             if (HasBottomRoom)
             {
-                Point bottomOrigin = new(origin.X, trueOrigin.Y + padding);
+                int bottomMiddlePadding = WorldGen.genRand.Next(6);
 
-                //Check specific for stair style
-                Point originCheck = new(origin.X, bottomOrigin.Y + height);
+                string bottomLeftSide;
+                string bottomRightSide;
 
-                if (!IsValidRectangleSpot(originCheck, width * 2, height * 2))
+                Vector2 bottomMiddleOrigin;
+                Vector2 bottomLeftOrigin;
+                Vector2 bottomRightOrigin;
+
+                //33% of the top room being a special room
+                if (WorldGen.genRand.NextBool(3))
                 {
-                    return false;
-                }
+                    //Left or right
+                    if (WorldGen.genRand.NextBool())
+                    {
+                        bottomLeftSide = "LabStruct_14_DownStairLeft";
+                        bottomRightSide = "LabStruct_13_DownRightLarge";
 
-                //Place
-                if (WorldGen.genRand.NextBool())
-                {
-                    PlaceLeftStaircase(bottomOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, trueWidth, trueHeight, false);
+                        bottomLeftOrigin = new(origin.X - 28 - bottomMiddlePadding, origin.Y - 2);
+                        bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);
+                    }
+                    else
+                    {
+                        bottomLeftSide = "LabStruct_12_DownLeftLarge";
+                        bottomRightSide = "LabStruct_15_DownStairRight";
+
+                        bottomLeftOrigin = new(origin.X - 19 - bottomMiddlePadding, origin.Y - 2);
+                        bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);
+                    }
                 }
                 else
                 {
-                    PlaceLeftStaircase(bottomOrigin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, trueWidth, trueHeight, false);
+                    if (WorldGen.genRand.NextBool())
+                    {
+                        bottomLeftSide = "LabStruct_8_DownLeftSmall";
+                        bottomRightSide = "LabStruct_3_Right";
+
+                        bottomLeftOrigin = new(origin.X - 14 - bottomMiddlePadding, origin.Y - 2);
+                        bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);
+                    }
+                    else
+                    {
+                        bottomLeftSide = "LabStruct_2_Left";
+                        bottomRightSide = "LabStruct_9_DownRightSmall";
+
+                        bottomLeftOrigin = new(origin.X - 14 - bottomMiddlePadding, origin.Y - 2);
+                        bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);
+                    }
                 }
-            }
 
-            return true;
-        }
-    }
+                for(int i = -bottomMiddlePadding; i <= bottomMiddlePadding; i++)
+                {
+                    bottomMiddleOrigin = new(origin.X + i, origin.Y - 2);
+                    StructureHelper.API.Generator.GenerateStructure(path + middle + fileType, bottomMiddleOrigin.ToPoint16(), ABMod.Instance);
+                }
 
-    public class DomeLabBuilder(bool hasLeftRoom, bool hasRightRoom, bool hasBottomRoom) : LabBuilder(hasLeftRoom, hasRightRoom, hasBottomRoom)
-    {
-        public override bool Place(Point origin, int width, int height)
-        {
-            if (!IsValidDomeSpot(origin, height))
-            {
-                return false;
+                StructureHelper.API.Generator.GenerateStructure(path + bottomLeftSide + fileType, bottomLeftOrigin.ToPoint16(), ABMod.Instance);
+                StructureHelper.API.Generator.GenerateStructure(path + bottomRightSide + fileType, bottomRightOrigin.ToPoint16(), ABMod.Instance);
             }
-            
-            //Place
-            PlaceDome(origin, TileID.EmeraldGemspark, WallID.EmeraldGemspark, height);
 
             return true;
         }
