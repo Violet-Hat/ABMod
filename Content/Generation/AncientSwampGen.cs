@@ -503,7 +503,7 @@ namespace ABMod.Content.Generation
 		}
 
         //Helper methods
-		private static int GetTileByDepth(int y)
+		public static int GetTileByDepth(int y)
 		{
 			if (y >= (int)Main.worldSurface + 40)
 			{
@@ -520,7 +520,7 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		private static int GetWallByDepth(int y)
+		public static int GetWallByDepth(int y)
 		{
 			if (y >= (int)Main.worldSurface + 40)
 			{
@@ -537,7 +537,7 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		private static void ConnectPoints(Vector2 p0, Vector2 p1)
+		public static void ConnectPoints(Vector2 p0, Vector2 p1)
 		{
 			//HashSet to save the X coordinates we already visited
 			HashSet <int> visitedX = [];
@@ -596,7 +596,7 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		private static bool CanBePlaced(int i, int j)
+		public static bool CanBePlaced(int i, int j)
 		{
 			int jungleTiles = 0;
 			int desertTiles = 0;
@@ -628,7 +628,7 @@ namespace ABMod.Content.Generation
 			return true;
 		}
 
-		private static int GetSurroundingTiles(int x, int y)
+		public static int GetSurroundingTiles(int x, int y)
 		{
 			int soilCount = 0;
 			int dirtCount = 0;
@@ -664,7 +664,7 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		private static int FindValidGround(int x, int startY = -1)
+		public static int FindValidGround(int x, int startY = -1)
 		{
 			int y = (startY == -1) ? 25 : startY;
 
@@ -687,7 +687,7 @@ namespace ABMod.Content.Generation
 			return y;
 		}
 
-		private static void GenerateTunnel(int x)
+		public static void GenerateTunnel(int x)
 		{
 			int y = FindValidGround(x) - 5;
 

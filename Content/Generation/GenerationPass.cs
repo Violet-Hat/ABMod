@@ -81,6 +81,7 @@ namespace ABMod.Content.Generation
             if (TestingIndex != -1)
             {
                 tasks.Insert(TestingIndex + 1, new PassLegacy("Swamp Caves", AncientSwampGen.Testing));
+                tasks.Insert(TestingIndex + 2, new PassLegacy("Green Mushroom Caves", GreenMushroomGen.GreenMushGen));
             }
         }
     }

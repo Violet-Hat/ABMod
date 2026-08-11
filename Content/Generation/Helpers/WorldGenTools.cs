@@ -110,6 +110,25 @@ namespace ABMod.Content.Generation.Helpers
 			return false;
 		}
 
+		public static bool IsInEllipse(int h, int k, int a, int b, int x, int y)
+        {
+            double powXH = Math.Pow(x - h, 2);
+            double powYK = Math.Pow(y - k, 2);
+            double powA = Math.Pow(a, 2);
+            double powB = Math.Pow(b, 2);
+
+            return (powXH / powA) + (powYK / powB) <= 1;
+        }
+
+		public static bool IsInCircle(int x, int y, int cx, int cy, int r)
+		{
+			double powXCX = Math.Pow(x - cx, 2);
+			double powYCY = Math.Pow(y - cy, 2);
+			double powR = Math.Pow(r, 2);
+
+			return powXCX + powYCY <= powR;
+		}
+
 		public static int MooreTiles(int x, int y)
         {
             int count = 0;

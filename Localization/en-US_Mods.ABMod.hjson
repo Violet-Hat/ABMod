@@ -184,3 +184,10 @@ Tiles: {
 	ScalePiano.MapEntry: Scale Wood Xylophone
 	ScaleWorkbench.MapEntry: Scale Wood Workbench
 }
+
+Biomes: {
+	SwampBiome: {
+		DisplayName: Swamp Biome
+		TownNPCDialogueName: the Swamp Biome
+	}
+}
