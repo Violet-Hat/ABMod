@@ -191,3 +191,10 @@ Biomes: {
 		TownNPCDialogueName: the Swamp Biome
 	}
 }
+
+NPCs: {
+	Caddisfly.DisplayName: Caddisfly
+	Cockroach.DisplayName: Cockroach
+	Pulmonoscorpious_Walker.DisplayName: Pulmonoscorpious_ Walker
+	Pulmonoscorpious_Crawler.DisplayName: Pulmonoscorpious_ Crawler
+}
