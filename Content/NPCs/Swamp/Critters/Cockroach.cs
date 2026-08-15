@@ -22,7 +22,6 @@ namespace ABMod.Content.NPCs.Swamp.Critters
             NPC.CloneDefaults(ClonedNPCID);
             NPC.width = 26;
             NPC.height = 20;
-            
             AIType = ClonedNPCID;
             AnimationType = ClonedNPCID;
 		}
