@@ -1,0 +1,24 @@
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace ABMod.Content.Tiles.Swamp.Furniture
+{
+	public class ScalePianoItem : ModItem
+	{
+		public override void SetDefaults()
+		{
+			Item.width = 16;
+			Item.height = 16;
+			Item.DefaultToPlaceableTile(ModContent.TileType<ScalePiano>());
+		}
+		
+		public override void AddRecipes()
+		{
+			CreateRecipe()
+			.AddIngredient(ModContent.ItemType<ScaleWoodItem>(), 15)
+			.AddIngredient(ItemID.Bone, 4)
+			.AddTile(TileID.WorkBenches)
+			.Register();
+		}
+	}
+}

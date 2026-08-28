@@ -1,0 +1,201 @@
+Items: {
+	SwampStoneWallItem: {
+		Tooltip: ""
+		DisplayName: Ancient Stone Wall
+	}
+
+	SwampStoneItem: {
+		Tooltip: ""
+		DisplayName: Ancient Stone
+	}
+
+	SwampSoilWallItem: {
+		Tooltip: ""
+		DisplayName: Peat Soil Wall
+	}
+
+	SwampSoilItem: {
+		Tooltip: ""
+		DisplayName: Peat Soil
+	}
+
+	SwampMossWallItem: {
+		Tooltip: ""
+		DisplayName: Club Moss Wall
+	}
+
+	SwampMossSpores: {
+		Tooltip: ""
+		DisplayName: Club Moss Spores
+	}
+
+	SwampDirtWallItem: {
+		Tooltip: ""
+		DisplayName: Ancient Dirt Wall
+	}
+
+	SwampDirtItem: {
+		Tooltip: ""
+		DisplayName: Ancient Dirt
+	}
+
+	ScaleWoodWallItem: {
+		Tooltip: ""
+		DisplayName: Scale Wood Wall
+	}
+
+	ScaleWoodItem: {
+		Tooltip: ""
+		DisplayName: Scale Wood
+	}
+
+	ScaleWoodFenceItem: {
+		Tooltip: ""
+		DisplayName: Scale Wood Fence
+	}
+
+	ScaleBathtubItem: {
+		DisplayName: Scale Wood Bathtub
+		Tooltip: ""
+	}
+
+	ScaleBedItem: {
+		DisplayName: Scale Wood Bed
+		Tooltip: ""
+	}
+
+	ScaleBookcaseItem: {
+		DisplayName: Scale Wood Bookcase
+		Tooltip: ""
+	}
+
+	ScaleCandelabraItem: {
+		DisplayName: Scale Wood Candelabra
+		Tooltip: ""
+	}
+
+	ScaleCandleItem: {
+		DisplayName: Scale Wood Candle
+		Tooltip: ""
+	}
+
+	ScaleChairItem: {
+		DisplayName: Scale Wood Chair
+		Tooltip: ""
+	}
+
+	ScaleChandelierItem: {
+		DisplayName: Scale Wood Chandelier
+		Tooltip: ""
+	}
+
+	ScaleChestItem: {
+		DisplayName: Scale Wood Basket
+		Tooltip: ""
+	}
+
+	ScaleClockItem: {
+		DisplayName: Scale Wood Clock
+		Tooltip: ""
+	}
+
+	ScaleDoorItem: {
+		DisplayName: Scale Wood Door
+		Tooltip: ""
+	}
+
+	LepSeed: {
+		DisplayName: Spore Pod
+		Tooltip: Grows into a Lepidodendron
+	}
+
+	ScaleDresserItem: {
+		DisplayName: Scale Wood Dresser
+		Tooltip: ""
+	}
+
+	ScaleLampItem: {
+		DisplayName: Scale Wood Lamp
+		Tooltip: ""
+	}
+
+	ScaleLanternItem: {
+		DisplayName: Scale Wood Lantern
+		Tooltip: ""
+	}
+
+	ScalePianoItem: {
+		DisplayName: Scale Wood Xylophone
+		Tooltip: ""
+	}
+
+	ScalePlatformItem: {
+		DisplayName: Scale Wood Platform
+		Tooltip: ""
+	}
+
+	ScaleSinkItem: {
+		DisplayName: Scale Wood Sink
+		Tooltip: ""
+	}
+
+	ScaleSofaItem: {
+		DisplayName: Scale Wood Sofa
+		Tooltip: ""
+	}
+
+	ScaleTableItem: {
+		DisplayName: Scale Wood Table
+		Tooltip: ""
+	}
+
+	ScaleToiletItem: {
+		DisplayName: Scale Wood Toilet
+		Tooltip: ""
+	}
+
+	ScaleWorkbenchItem: {
+		DisplayName: Scale Wood Workbench
+		Tooltip: ""
+	}
+
+	LabBlockItem: {
+		DisplayName: Laboratory Block
+		Tooltip: ""
+	}
+
+	AsteroSeed: {
+		DisplayName: Astero Seed (Placeholder name)
+		Tooltip: ""
+	}
+
+	ScaleSpikesItem: {
+		DisplayName: Scale Wood Spikes
+		Tooltip: ""
+	}
+}
+
+Tiles: {
+	Lep.MapEntry: Lepidodendron
+	Equi.MapEntry: Equisetum
+	Astero.MapEntry: Asterophyllites
+	ScaleChest.MapEntry: Scale Wood Basket
+	ScaleDresser.MapEntry: Scale Wood Dresser
+	ScalePiano.MapEntry: Scale Wood Xylophone
+	ScaleWorkbench.MapEntry: Scale Wood Workbench
+}
+
+Biomes: {
+	SwampBiome: {
+		DisplayName: Swamp Biome
+		TownNPCDialogueName: the Swamp Biome
+	}
+}
+
+NPCs: {
+	Caddisfly.DisplayName: Caddisfly
+	Cockroach.DisplayName: Cockroach
+	Pulmonoscorpious_Walker.DisplayName: Pulmonoscorpious
+	Pulmonoscorpious_Crawler.DisplayName: Pulmonoscorpious
+	GargantuanCaddisfly.DisplayName: Gargantuan Caddisfly
+}

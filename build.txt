@@ -1,0 +1,7 @@
+displayName = Ancient Biomes Mod
+author = The Ancient Studios Team
+version = 0.1
+
+dllReferences = StructureHelper
+
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
