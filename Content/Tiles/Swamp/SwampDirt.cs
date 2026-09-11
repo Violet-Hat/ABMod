@@ -11,7 +11,6 @@ namespace ABMod.Content.Tiles.Swamp
 		{
 			TileID.Sets.CanBeDugByShovel[Type] = true;
 			TileID.Sets.BlockMergesWithMergeAllBlock[Type] = true;
-            Main.tileMergeDirt[Type] = true;
             Main.tileBlendAll[Type] = true;
 			Main.tileSolid[Type] = true;
 			Main.tileBlockLight[Type] = true;

@@ -20,7 +20,6 @@ namespace ABMod.Content.Tiles.Swamp.Trees
         public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
-			Main.tileMergeDirt[Type] = false;
 			Main.tileSolid[Type] = false;
 			Main.tileLighted[Type] = true;
 			Main.tileBlockLight[Type] = false;

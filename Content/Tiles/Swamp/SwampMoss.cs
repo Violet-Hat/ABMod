@@ -18,7 +18,6 @@ namespace ABMod.Content.Tiles.Swamp
 			TileID.Sets.NeedsGrassFramingDirt[Type] = ModContent.TileType<SwampSoil>();
 			TileID.Sets.SpreadOverground[Type] = true;
 			TileID.Sets.SpreadUnderground[Type] = true;
-			Main.tileMergeDirt[Type] = true;
             Main.tileBlendAll[Type] = true;
 			Main.tileSolid[Type] = true;
 			Main.tileBlockLight[Type] = true;

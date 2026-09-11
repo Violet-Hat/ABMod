@@ -173,6 +173,16 @@ Items: {
 		DisplayName: Scale Wood Spikes
 		Tooltip: ""
 	}
+
+	LabBlockWallItemUnsafe: {
+		Tooltip: ""
+		DisplayName: Lab Block Wall Item Unsafe
+	}
+
+	LabBlockWallItem: {
+		Tooltip: ""
+		DisplayName: Lab Block Wall Item
+	}
 }
 
 Tiles: {

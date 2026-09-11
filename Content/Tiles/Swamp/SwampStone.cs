@@ -10,7 +10,6 @@ namespace ABMod.Content.Tiles.Swamp
 		public override void SetStaticDefaults()
 		{
 			TileID.Sets.BlockMergesWithMergeAllBlock[Type] = true;
-            Main.tileMergeDirt[Type] = true;
             Main.tileBlendAll[Type] = true;
 			Main.tileSolid[Type] = true;
 			Main.tileBlockLight[Type] = true;

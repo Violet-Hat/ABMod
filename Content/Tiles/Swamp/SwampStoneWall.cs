@@ -5,6 +5,20 @@ using Microsoft.Xna.Framework;
 
 namespace ABMod.Content.Tiles.Swamp
 {
+    public class SwampStoneWallUnsafe : ModWall 
+    {
+        public override string Texture => "ABMod/Content/Tiles/Swamp/SwampStoneWall";
+
+        public override void SetStaticDefaults()
+        {
+            Main.wallHouse[Type] = false;
+            AddMapEntry(new Color(38, 34, 29));
+            DustType = DustID.Stone;
+        }
+
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
+    }
+
     public class SwampStoneWall : ModWall 
     {
         public override void SetStaticDefaults()
@@ -13,5 +27,7 @@ namespace ABMod.Content.Tiles.Swamp
             AddMapEntry(new Color(38, 34, 29));
             DustType = DustID.Stone;
         }
+
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
     }
 }

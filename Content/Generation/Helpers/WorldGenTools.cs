@@ -25,17 +25,17 @@ namespace ABMod.Content.Generation.Helpers
 			return true;
 		}
 		
-		public static bool IsItPlaceable(Point origin, int r)
+		public static bool IsItPlaceable(Point origin, int area)
         {
 			//Check if it is inside the world borders
-			if (!WorldGen.InWorld(origin.X, origin.Y, r))
+			if (!WorldGen.InWorld(origin.X, origin.Y, area))
 			{
 				return false;
 			}
 
-			for (int i = origin.X - r; i <= origin.X + r; i++)
+			for (int i = origin.X - area; i <= origin.X + area; i++)
 			{
-				for (int j = origin.Y - r; j <= origin.Y + r; j++)
+				for (int j = origin.Y - area; j <= origin.Y + area; j++)
 				{
 					if (i < 41 || i > Main.maxTilesX - 42 || j < 41 || j > Main.maxTilesY)
 					{
@@ -45,9 +45,9 @@ namespace ABMod.Content.Generation.Helpers
 			}
 			
 			//Check if it is far away from the islands
-			for (int i = origin.X - r; i <= origin.X + r; i++)
+			for (int i = origin.X - area; i <= origin.X + area; i++)
 			{
-				for (int j = origin.Y - r; j <= origin.Y + r; j++)
+				for (int j = origin.Y - area; j <= origin.Y + area; j++)
 				{
 					if (!NoFloatingIslands(i, j))
 					{
@@ -59,9 +59,9 @@ namespace ABMod.Content.Generation.Helpers
 			//Check for solids
 			int count = 0;
 			
-            for (int i = origin.X - r; i <= origin.X + r; i++)
+            for (int i = origin.X - area; i <= origin.X + area; i++)
 			{
-				for (int j = origin.Y - r; j <= origin.Y + r; j++)
+				for (int j = origin.Y - area; j <= origin.Y + area; j++)
 				{
 					Tile tile = Framing.GetTileSafely(i, j);
 

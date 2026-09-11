@@ -27,7 +27,6 @@ namespace ABMod.Content.Tiles.Swamp.Trees
 			TileID.Sets.IsATreeTrunk[Type] = true;
 			Main.tileAxe[Type] = true;
 			Main.tileFrameImportant[Type] = true;
-			Main.tileMergeDirt[Type] = false;
 			Main.tileSolid[Type] = false;
 			Main.tileLighted[Type] = true;
 			Main.tileBlockLight[Type] = false;

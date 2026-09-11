@@ -233,13 +233,13 @@ namespace ABMod.Content.Generation
 							if (WorldGen.genRand.NextBool())
 							{
 								tile.TileType = (ushort)ModContent.TileType<SwampSoil>();
-								WorldGenTools.PlaceOrReplaceWall(x, y, ModContent.WallType<SwampSoilWall>());
+								WorldGenTools.PlaceOrReplaceWall(x, y, ModContent.WallType<SwampSoilWallUnsafe>());
 							}
 						}
 						else
 						{
 							tile.TileType = (ushort)ModContent.TileType<SwampSoil>();
-							WorldGenTools.PlaceOrReplaceWall(x, y, ModContent.WallType<SwampSoilWall>());
+							WorldGenTools.PlaceOrReplaceWall(x, y, ModContent.WallType<SwampSoilWallUnsafe>());
 						}
 					}
 				}
@@ -524,16 +524,16 @@ namespace ABMod.Content.Generation
 		{
 			if (y >= (int)Main.worldSurface + 40)
 			{
-				return ModContent.WallType<SwampStoneWall>();
+				return ModContent.WallType<SwampStoneWallUnsafe>();
 			}
 			else if (y >= (int)Main.worldSurface + 30)
 			{
 				bool rand = WorldGen.genRand.NextBool();
-				return rand ? ModContent.WallType<SwampStoneWall>() : ModContent.WallType<SwampDirtWall>();
+				return rand ? ModContent.WallType<SwampStoneWallUnsafe>() : ModContent.WallType<SwampDirtWallUnsafe>();
 			}
 			else
 			{
-				return ModContent.WallType<SwampDirtWall>();
+				return ModContent.WallType<SwampDirtWallUnsafe>();
 			}
 		}
 
@@ -579,7 +579,7 @@ namespace ABMod.Content.Generation
 					if (!tile.HasTile)
 					{
 						WorldGen.PlaceTile(posX, y, ModContent.TileType<SwampDirt>(), true);
-						WorldGen.PlaceWall(posX, y, ModContent.WallType<SwampDirtWall>(), true);
+						WorldGen.PlaceWall(posX, y, ModContent.WallType<SwampDirtWallUnsafe>(), true);
 					}
 				}
 
@@ -588,7 +588,7 @@ namespace ABMod.Content.Generation
 
 				for (int y = heightLimit; y < posY - perlinHeight; y++)
 				{
-					if (IsBiomeTile.IsSwampTile(posX, y) || Main.tile[posX, y].WallType == ModContent.WallType<SwampDirtWall>())
+					if (IsBiomeTile.IsSwampTile(posX, y) || Main.tile[posX, y].WallType == ModContent.WallType<SwampDirtWallUnsafe>())
 					{
 						Framing.GetTileSafely(posX, y).ClearEverything();
 					}
