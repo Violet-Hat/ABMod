@@ -15,21 +15,6 @@ namespace ABMod.Common.Bases
         protected Asset<Texture2D> TreeTex2; //Use it as desired, in this case the tops
         protected Asset<Texture2D> TreeTrunkTex; //Trunk
 
-        /*
-        --List of X frames-- (Gotta update)
-        Tree Top = 0;
-        Tree Bottom (bidirectional) = 18;
-        Tree Bottom (unidirectional)= 36;
-        Tree Roots = 54;
-        Tree Trunk = 72;
-        Tree Trunk Alt 1 = 90;
-        Tree Trunk Alt 2 = 108;
-        Tree Branch Base (bidirectional)= 126;
-        Tree Branch Base (unidirectional) = 144;
-        Tree Branches Small = 162;
-        Tree Branches Large = 180;
-        */
-
         public override void SetStaticDefaults()
 		{
 			//This makes the tile a tree trunk
@@ -45,7 +30,12 @@ namespace ABMod.Common.Bases
 		}
 
         //Update tile because it was placed or the neighbor got nuked (set to false)
-		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => false;
+		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+        {
+            resetFrame = false;
+			noBreak = true;
+            return false;
+        }
 
         //Check if the tile is solid
 		public static bool SolidTile(int i, int j) 
@@ -58,6 +48,41 @@ namespace ABMod.Common.Bases
         {
             return Framing.GetTileSafely(i, j).HasTile &&
             (Main.tileSolidTop[Framing.GetTileSafely(i, j).TileType] || Main.tileSolid[Framing.GetTileSafely(i, j).TileType]);
+        }
+
+        //Place roots
+        public static void PlaceBidirectionalRoot(Tile tile, Tile left, Tile right, int i, int j, short frameY)
+        {
+            tile.TileFrameX = 18;
+            tile.TileFrameY = frameY;
+            
+            WorldGen.PlaceTile(i - 1, j, ModContent.TileType<CustomTree>(), true);
+            left.TileFrameX = 72;
+            left.TileFrameY = frameY;
+            
+            WorldGen.PlaceTile(i + 1, j, ModContent.TileType<CustomTree>(), true);
+            right.TileFrameX = 90;
+            right.TileFrameY = frameY;
+        }
+
+        public static void PlaceLeftRoot(Tile tile, Tile left, int i, int j, short frameY)
+        {
+            tile.TileFrameX = 36;
+            tile.TileFrameY = frameY;
+            
+            WorldGen.PlaceTile(i - 1, j, ModContent.TileType<CustomTree>(), true);
+            left.TileFrameX = 72;
+            left.TileFrameY = frameY;
+        }
+
+        public static void PlaceRightRoot(Tile tile, Tile right, int i, int j, short frameY)
+        {
+            tile.TileFrameX = 54;
+            tile.TileFrameY = frameY;
+
+            WorldGen.PlaceTile(i + 1, j, ModContent.TileType<CustomTree>(), true);
+            right.TileFrameX = 90;
+            right.TileFrameY = frameY;
         }
 
         //Let it grow
@@ -98,50 +123,74 @@ namespace ABMod.Common.Bases
 			if((SolidTopTile(i, j + 1) || SolidTile(i, j + 1)) && !Framing.GetTileSafely(i, j).HasTile)
 			{
                 //Place the base of the tree
+                WorldGen.PlaceTile(i, j, ModContent.TileType<CustomTree>(), true);
+
+                //Acquire the tiles on center, left and right
                 Tile tile = Framing.GetTileSafely(i, j);
                 Tile left = Framing.GetTileSafely(i - 1, j);
                 Tile right = Framing.GetTileSafely(i + 1, j);
 
-                tile.TileType = (ushort)ModContent.TileType<CustomTree>();
-     
-                if((!left.HasTile || !right.HasTile) && WorldGen.genRand.NextBool(3))
+                //For the Net shenanigans
+                bool placedLeftRoot = false;
+                bool placedRightRoot = false;
+
+                //Root checks. If there's no tile and the tile below is solid, it is valid
+                bool canPlaceLeftRoot = !left.HasTile && SolidTile(i - 1, j + 1);
+                bool canPlaceRightRoot = !right.HasTile && SolidTile(i + 1, j + 1);
+
+                //If there's roots can be placed and the random hits the 33%, try placing roots
+                if ((canPlaceLeftRoot || canPlaceRightRoot) && WorldGen.genRand.NextBool(3))
                 {
-                    if (!left.HasTile && !right.HasTile)
+                    //Y frame
+                    short frameY = (short)(WorldGen.genRand.Next(3) * 18);
+
+                    //Bidirectional check
+                    bool canBeBidirectional = canPlaceLeftRoot && canPlaceLeftRoot;
+
+                    //If it can be bidirectional, call random to choose between bidirectional, left or right
+                    if (canBeBidirectional)
                     {
-                        if (WorldGen.genRand.NextBool()) // Bidirectional
+                        int rand = WorldGen.genRand.Next(3);
+                        switch(rand)
                         {
-                            tile.TileFrameX = 18;
-                            tile.TileFrameY = (short)(WorldGen.genRand.Next(3) * 18);
-
-                            /*Place roots
-                            left.TileType = (ushort)ModContent.TileType<CustomTree>();
-                            left.TileFrameX = 54;
-                            left.TileFrameY = tile.TileFrameY;
-
-                            right.TileType = (ushort)ModContent.TileType<CustomTree>();
-                            right.TileFrameX = 54;
-                            right.TileFrameY = tile.TileFrameY;
-                            */
-                        }
-                        else //Unidirectional
-                        {
-                            if(WorldGen.genRand.NextBool()) //Left
-                            {
-                                tile.TileFrameX = 18;
-                                tile.TileFrameY = (short)(WorldGen.genRand.Next(3) * 18);
-                            }
+                            case 0: //Bidirectional
+                                PlaceBidirectionalRoot(tile, left, right, i, j, frameY);
+                                placedLeftRoot = true;
+                                placedRightRoot = true;
+                                break;
+                            
+                            case 1: //Left
+                                PlaceLeftRoot(tile, left, i, j, frameY);
+                                placedLeftRoot = true;
+                                break;
+                            
+                            case 2: //Right
+                                PlaceRightRoot(tile, right, i, j, frameY);
+                                placedRightRoot = true;
+                                break;
                         }
                     }
-                }
-                else
-                {
-                    tile.TileFrameX = 72;
-                    tile.TileFrameY = (short)(WorldGen.genRand.Next(3) * 18);
+                    else if (canPlaceLeftRoot) //Just place left
+                    {
+                        PlaceLeftRoot(tile, left, i, j, frameY);
+                        placedLeftRoot = true;
+                    }
+                    else //Just place right
+                    {
+                        PlaceRightRoot(tile, right, i, j, frameY);
+                        placedRightRoot = true;
+                    }
                 }
                 
                 if (Main.netMode != NetmodeID.SinglePlayer)
                 {
                     NetMessage.SendTileSquare(-1, i, j, 1, 1, TileChangeType.None);
+
+                    if (placedLeftRoot)
+                        NetMessage.SendTileSquare(-1, i - 1, j, 1, 1, TileChangeType.None);
+                    
+                    if (placedRightRoot)
+                        NetMessage.SendTileSquare(-1, i + 1, j, 1, 1, TileChangeType.None);
                 }
 			}
 			else
@@ -152,11 +201,26 @@ namespace ABMod.Common.Bases
             //Time to put the tile frames
             for(int numSegments = 1; numSegments < height; numSegments++)
             {
-                //The first segment will be a regular trunk
-                if (numSegments == 1)
+                //Place tile
+                WorldGen.PlaceTile(i, j - numSegments, ModContent.TileType<CustomTree>(), true);
+
+                Tile tile = Framing.GetTileSafely(i, j - numSegments);
+                Tile left = Framing.GetTileSafely(i - 1, j - numSegments);
+                Tile right = Framing.GetTileSafely(i + 1, j - numSegments);
+
+                bool canPlaceBranch = !left.HasTile && !right.HasTile;
+
+                if (canPlaceBranch && WorldGen.genRand.NextBool(3)) //Branch segment
                 {
                     
                 }
+                else //Trunk segment
+                {
+                    
+                }
+
+                if(Main.netMode != NetmodeID.SinglePlayer)
+					NetMessage.SendTileSquare(-1, i, j - numSegments, 1, 1, TileChangeType.None);
             }
 
             return true;

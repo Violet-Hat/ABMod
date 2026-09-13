@@ -1,0 +1,25 @@
+--List of X frames--
+Tree Top = 0;
+Tree Bottom (bidirectional) = 18;
+Tree Bottom (left) = 36;
+Tree Bottom (right) = 54;
+Tree Roots (left) = 72;
+Tree Roots (right) = 90;
+Tree Trunk = 108;
+Tree Trunk (alt 1) = 126;
+Tree Trunk (alt 2) = 144;
+Tree Arm (bidirectional) = 162;
+Tree Arm (left) = 180;
+Tree Arm (right) = 198;
+Tree branch (left) = 216;
+Tree branch (right) = 234;
+Tree Large branch (left) = 252;
+Tree Large branch (right) = 270;
+Tree Trunk Alts Cut (alt 1) = 252;
+Tree Trunk Alts Cut (alt 2) = 270;
+
+--List of Y frames--
+Every Frame (except trunk alt) = 3 * 18;
+Every Cut Frame (except trunk alt) = (3 * 18) + 54;
+Trunk Alt Frames = 6 * 18;
+Trunk Alt Cut Frames = (3 * 18) + 54;
