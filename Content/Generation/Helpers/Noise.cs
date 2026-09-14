@@ -1,5 +1,6 @@
 namespace ABMod.Content.Generation.Helpers
 {
+    //Credits to the people behind OpenSimplex2
     public class SimplexNoise
     {
         private const long PRIME_X = 0x5205402B9270C86FL;
@@ -16,6 +17,7 @@ namespace ABMod.Content.Generation.Helpers
         private const float RSQUARED = 0.5f;
         
         /*
+        * Custom fractal noise method
         * Constant Y : Keeping Y constant (in this case 0) theorically makes the 2D noise be used as 1D noise.
         * Octaves : Low octaves gives a smooth, blurry noise. High octaves gives sharper, organic noise.
         * Frequency / baseScale : Low frequency creates large, wide and smooth structures. High frequency creates thinner, rapidly changing structures.
@@ -46,10 +48,11 @@ namespace ABMod.Content.Generation.Helpers
                 frequency *= lacunarity;
             }
 
-            // Normalize result back to a standard [-1.0, 1.0] range
+            // Normalize result back to a standard range
             return totalNoise / maxPossibleAmplitude;
         }
 
+        //Standard 2D simplex noise
         public static float Noise2(long seed, double x, double y = 0.0)
         {
             // Get points for A2* lattice

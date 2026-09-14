@@ -34,37 +34,50 @@ namespace ABMod.Content.Generation
             float scaleY = 25;
             float threshold = 0.05f;
 
-            for (int x = PlaceMushX - BiomeWidth; x <= PlaceMushX + BiomeWidth; x++)
+            int startX = PlaceMushX - BiomeWidth;
+            int endX = PlaceMushX + BiomeWidth;
+
+            int startY = PlaceMushY - BiomeHeight;
+            int endY = PlaceMushY + BiomeHeight;
+
+            for (int x = startX; x <= endX; x++) //Loop to go through every x coordinate in the area
             {
-                for (int y = PlaceMushY - BiomeHeight; y <= PlaceMushY + BiomeHeight; y++)
+                for (int y = startY; y <= endY; y++) //Loop to go through every y coordinate in the area
                 {
-                    bool isMud = Framing.GetTileSafely(x, y).TileType == TileID.Mudstone;
-                    bool isInOval = WorldGenTools.IsInEllipse(PlaceMushX, PlaceMushY, BiomeWidth + 1, BiomeHeight + 1, x, y);
+                    bool isInsideOval = WorldGenTools.IsInEllipse(PlaceMushX, PlaceMushY, BiomeWidth + 1, BiomeHeight + 1, x, y);
 
-                    if (isMud && isInOval)
-                    {
-                        float noiseVal = SimplexNoise.FractalNoise2(seed, x / scaleX, y / scaleY);
+                    //Get the noise value
+                    float noiseVal = SimplexNoise.FractalNoise2(seed, x / scaleX, y / scaleY);
 
-                        if (noiseVal < threshold)
-                            WorldGen.KillTile(x, y, noItem: true);
-                    }
+                    //If the value is smaller than the threshold, kill the tile
+                    if (noiseVal < threshold && isInsideOval)
+                        WorldGen.KillTile(x, y, noItem: true);
                 }
             }
 
-            for (int l = 0; l < 5; l++)
+            //Smoothing
+            startX = PlaceMushX - BiomeWidth - 5;
+            endX = PlaceMushX + BiomeWidth + 5;
+
+            startY = PlaceMushY - BiomeHeight - 5;
+            endY = PlaceMushY + BiomeHeight + 5;
+
+            for (int l = 0; l < 5; l++) //Smoothing loop
             {
-                for (int x = PlaceMushX - BiomeWidth - 5; x <= PlaceMushX + BiomeWidth + 5; x++)
+                for (int x = startX; x <= endX; x++) //Loop to go through every x coordinate in the area
                 {
-                    for (int y = PlaceMushY - BiomeHeight - 5; y <= PlaceMushY + BiomeHeight + 5; y++)
+                    for (int y = startY; y <= endY; y++) //Loop to go through every y coordinate in the area
                     {
-                        bool isInOval = WorldGenTools.IsInEllipse(PlaceMushX, PlaceMushY, BiomeWidth + 1, BiomeHeight + 1, x, y);
+                        bool isInsideOval = WorldGenTools.IsInEllipse(PlaceMushX, PlaceMushY, BiomeWidth + 1, BiomeHeight + 1, x, y);
+
+                        //Get the number of neighbors using Moore Neighborhood
                         int tileCount = WorldGenTools.MooreTiles(x, y);
 
-                        if (tileCount > 4 && isInOval)
+                        if (tileCount > 4 && isInsideOval) //If there's more than 4 neighbors, place a cell
                         {
                             WorldGen.PlaceTile(x, y, TileID.Mudstone, true);
                         }
-                        else if (tileCount < 4 && isInOval)
+                        else if (tileCount < 4 && isInsideOval) //If there's less than 4 neighbors, kill the cell
                         {
                             WorldGen.KillTile(x, y, noItem: true);
                         }
