@@ -30,12 +30,9 @@ namespace ABMod.Content.Generation
 
             //Cave creation
 			int seed = WorldGen.genRand.Next();
-            int octaves = 5;
-
-            float clearChance = 0.65f;
-
-            float caveXDiv = 1550f;
-			float caveYDiv = 350f;
+            float scaleX = 75;
+            float scaleY = 25;
+            float threshold = 0.05f;
 
             for (int x = PlaceMushX - BiomeWidth; x <= PlaceMushX + BiomeWidth; x++)
             {
@@ -46,26 +43,15 @@ namespace ABMod.Content.Generation
 
                     if (isMud && isInOval)
                     {
-                        //Perlin noise values
-						float horizontalOffsetNoise = WorldGenTools.PerlinNoise2D(x / caveXDiv, y / caveYDiv, octaves, unchecked(seed + 1)) * 0.01f;
-						float cavePerlinValue = WorldGenTools.PerlinNoise2D(x / caveXDiv, y / caveYDiv, octaves, seed) + 0.5f + horizontalOffsetNoise;
-						float cavePerlinValue2 = WorldGenTools.PerlinNoise2D(x / caveXDiv, y / caveYDiv, octaves, unchecked(seed - 1)) + 0.5f;
-						float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-						float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.2f;
+                        float noiseVal = SimplexNoise.FractalNoise2(seed, x / scaleX, y / scaleY);
 
-						//Remove tiles based on the noise and a float value
-						bool noiseCheck = caveNoiseMap * caveNoiseMap > caveCreationThreshold;
-						bool floatCheck = WorldGen.genRand.NextFloat() < clearChance;
-
-						if (noiseCheck && floatCheck)
-						{
-							WorldGen.KillTile(x, y, noItem: true);
-						}
+                        if (noiseVal < threshold)
+                            WorldGen.KillTile(x, y, noItem: true);
                     }
                 }
             }
 
-            for (int l = 0; l < 10; l++)
+            for (int l = 0; l < 5; l++)
             {
                 for (int x = PlaceMushX - BiomeWidth - 5; x <= PlaceMushX + BiomeWidth + 5; x++)
                 {

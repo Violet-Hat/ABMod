@@ -4,7 +4,7 @@ namespace ABMod.Content.Generation
     {
         //Planned
         public static bool SwampGen { get; set; } = false;
-        public static bool GreenMushGen { get; set; } = false;
+        public static bool GreenMushGen { get; set; } = true;
         public static bool HorizonGen { get; set; } = false;
 
         //Future

@@ -193,6 +193,7 @@ Tiles: {
 	ScaleDresser.MapEntry: Scale Wood Dresser
 	ScalePiano.MapEntry: Scale Wood Xylophone
 	ScaleWorkbench.MapEntry: Scale Wood Workbench
+	CustomTree.MapEntry: Custom Tree
 }
 
 Biomes: {
