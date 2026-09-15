@@ -302,11 +302,11 @@ namespace ABMod.Content.Generation
 			progress.Message = Language.GetOrRegister("Mods.ABMod.WorldgenTasks.Swamp3").Value;
 
 			//Beginning and end of the biome
-			int StartX = PlaceSwampX - BiomeWidth;
-			int EndX = PlaceSwampX + BiomeWidth;
+			int startX = PlaceSwampX - BiomeWidth;
+			int endX = PlaceSwampX + BiomeWidth;
 
 			//Clean up the vanilla gen shenanigans
-			for (int x = StartX; x <= EndX; x++)
+			for (int x = startX; x <= endX; x++)
 			{
 				for (int y = PlaceSwampY; y <= BiomeDepth; y++)
 				{
@@ -338,43 +338,33 @@ namespace ABMod.Content.Generation
 			progress.Set(0.25);
 
 			//Cave creation
+			int startY = (int)(Main.worldSurface - 5);
+			int endY = BiomeDepth;
+
+			int transStartY = (int)Main.rockLayer;
+			int transEndY = (int)(Main.rockLayer + 50);
+
 			int seed = WorldGen.genRand.Next();
-			int octaves = 5;
 
-			float divConstant = 225f;
-			float clearChance = 0.6f;
+			float smallScale = 50;
+            float mediumScale = 70;
+			float largeScale = 90;
 
-			int[] caveStart = [(int)(Main.worldSurface - 5), (int)(Main.worldSurface + 30), (int)Main.rockLayer];
-			int[] caveEnd = [(int)(Main.worldSurface + 45), (int)(Main.rockLayer + 15), BiomeDepth];
+            float threshold = 0.07f;
 
-			//A higher x div value creates more horizontal caves, a higher y div value creates more vertical ones
-			float[] caveXDiv = [550f, 350f, 575f];
-			float[] caveYDiv = [300f, 575f, 350f];
-
-			for (int i = 0; i < 3; i++)
+			for (int x = startX; x <= endX; x++)
 			{
-				for (int x = StartX; x <= EndX; x++)
+				for (int y = startY; y <= endY; y++)
 				{
-					for (int y = caveStart[i]; y <= caveEnd[i]; y++)
+					if (IsBiomeTile.IsSwampTile(x, y))
 					{
-						if (IsBiomeTile.IsSwampTile(x, y))
-						{
-							//Perlin noise values
-							float horizontalOffsetNoise = WorldGenTools.PerlinNoise2D(x / divConstant, y / divConstant, octaves, unchecked(seed + 1)) * 0.01f;
-							float cavePerlinValue = WorldGenTools.PerlinNoise2D(x / caveXDiv[i], y / caveYDiv[i], octaves, seed) + 0.5f + horizontalOffsetNoise;
-							float cavePerlinValue2 = WorldGenTools.PerlinNoise2D(x / caveXDiv[i], y / caveYDiv[i], octaves, unchecked(seed - 1)) + 0.5f;
-							float caveNoiseMap = (cavePerlinValue + cavePerlinValue2) * 0.5f;
-							float caveCreationThreshold = horizontalOffsetNoise * 3.5f + 0.2f;
+						float verticalNoiseVal = SimplexNoise.FractalNoise2(seed, x / smallScale, y / mediumScale);
+						float horizontalNoiseVal = SimplexNoise.FractalNoise2(seed, x / largeScale, y / mediumScale);
 
-							//Remove tiles based on the noise and a float value
-							bool noiseCheck = caveNoiseMap * caveNoiseMap > caveCreationThreshold;
-							bool floatCheck = WorldGen.genRand.NextFloat() < clearChance;
+						float noiseVal = GetNoiseValue(y, verticalNoiseVal, horizontalNoiseVal, transStartY, transEndY);
 
-							if (noiseCheck && floatCheck)
-							{
-								WorldGen.KillTile(x, y, noItem: true);
-							}
-						}
+						if (noiseVal * noiseVal > threshold)
+							WorldGen.KillTile(x, y, noItem: true);
 					}
 				}
 			}
@@ -382,9 +372,9 @@ namespace ABMod.Content.Generation
 			progress.Set(0.75);
 
 			//Smooth the noise
-			for (int l = 0; l < 10; l++)
+			for (int l = 0; l < 8; l++)
 			{
-				for (int x = StartX; x <= EndX; x++)
+				for (int x = startX; x <= endX; x++)
 				{
 					for(int y = (int)Main.worldSurface - 10; y <= BiomeDepth; y++)
 					{
@@ -404,7 +394,7 @@ namespace ABMod.Content.Generation
 			}
 
 			//Place liquids
-			for (int x = StartX; x <= EndX; x++)
+			for (int x = startX; x <= endX; x++)
 			{
 				for(int y = (int)Main.worldSurface; y <= BiomeDepth; y++)
 				{
@@ -594,6 +584,25 @@ namespace ABMod.Content.Generation
 					}
 				}
 			}
+		}
+
+		public static float GetNoiseValue(int y, float noiseA, float noiseB, float transitionStart, float transitionEnd)
+		{
+			if (y <= transitionStart)
+				return noiseA;
+
+			if (y >= transitionEnd)
+				return noiseB;
+			
+			//Clamp y
+			float campledY = (y - transitionStart) / (transitionEnd - transitionStart);
+			float t = Math.Clamp(campledY, 0, 1);
+
+			//Smooth t
+			t = t * t * (3f - 2f * t);
+
+			//Lerp between the two noise values for a smooth transition
+			return (1f - t) * noiseA + t * noiseB;
 		}
 
 		public static bool CanBePlaced(int i, int j)
