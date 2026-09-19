@@ -25,6 +25,8 @@ namespace ABMod.Content.Generation
 		static readonly int BiomeWidth = Main.maxTilesX >= 8400 ? 355 : (Main.maxTilesX >= 6400 ? 250 : 175);
         static readonly int BiomeDepth = (int)(Main.maxTilesY * 0.57f);
 
+		static int HighestPoint = 0;
+
         //Main methods
         public static void SwampGen(GenerationProgress progress, GameConfiguration configuration)
         {
@@ -215,11 +217,11 @@ namespace ABMod.Content.Generation
 			ConnectPoints(new Vector2(StartX, LeftY), new Vector2(EndX, RightY));
 
 			//Place the soil surface
-			int highestPoint = Math.Min(LeftY, RightY) - 15;
+			HighestPoint = Math.Min(LeftY, RightY) - 25;
 
 			for (int x = StartX - 10; x < EndX + 10; x++)
 			{
-				int startY = FindValidGround(x, highestPoint);
+				int startY = FindValidGround(x, HighestPoint);
 
 				//Place soil tiles and walls
 				for (int y = startY; y <= startY + 50; y++)
@@ -248,7 +250,7 @@ namespace ABMod.Content.Generation
 			//Remove walls touching air
 			for (int x = StartX - 10; x < EndX + 10; x++)
 			{
-				for (int y = highestPoint; y < (int)Main.worldSurface; y++)
+				for (int y = HighestPoint; y < (int)Main.worldSurface; y++)
 				{
 					Tile tile = Framing.GetTileSafely(x, y);
 
@@ -268,7 +270,7 @@ namespace ABMod.Content.Generation
 			while (patchCount > 0 && i++ < 10000)
 			{
 				int x = WorldGen.genRand.Next(StartX, EndX);
-				int y = WorldGen.genRand.Next(highestPoint, (int)Main.worldSurface + 25);
+				int y = WorldGen.genRand.Next(HighestPoint, (int)Main.worldSurface + 25);
 
 				if (IsBiomeTile.IsSwampTile(x, y))
 				{
@@ -361,7 +363,7 @@ namespace ABMod.Content.Generation
 						float verticalNoiseVal = SimplexNoise.FractalNoise2(seed, x / smallScale, y / mediumScale);
 						float horizontalNoiseVal = SimplexNoise.FractalNoise2(seed, x / largeScale, y / mediumScale);
 
-						float noiseVal = GetNoiseValue(y, verticalNoiseVal, horizontalNoiseVal, transStartY, transEndY);
+						float noiseVal = GetCaveNoiseValue(y, verticalNoiseVal, horizontalNoiseVal, transStartY, transEndY);
 
 						if (noiseVal * noiseVal > threshold)
 							WorldGen.KillTile(x, y, noItem: true);
@@ -371,12 +373,14 @@ namespace ABMod.Content.Generation
 
 			progress.Set(0.75);
 
-			//Smooth the noise
+			//Smooth the surface and cave noise
+			int caveHeightCeiling = (int)Main.worldSurface - 10;
+
 			for (int l = 0; l < 8; l++)
 			{
 				for (int x = startX; x <= endX; x++)
 				{
-					for(int y = (int)Main.worldSurface - 10; y <= BiomeDepth; y++)
+					for(int y = HighestPoint; y <= BiomeDepth; y++)
 					{
 						int tileCount = WorldGenTools.MooreTiles(x, y);
 
@@ -388,6 +392,9 @@ namespace ABMod.Content.Generation
 						else if (tileCount < 4)
 						{
 							WorldGen.KillTile(x, y, noItem: true);
+
+							if (y < caveHeightCeiling)
+								WorldGen.KillWall(x, y);
 						}
 					}
 				}
@@ -534,35 +541,36 @@ namespace ABMod.Content.Generation
 
 			//Values for the perlin noise
 			int seed = WorldGen.genRand.Next();
-			int height = 12;
-			int perlinHeight;
+			int height = 10;
+			float scale = 100;
 
+			//Bezier curve
 			int segments = 10000;
 
 			for (int i = 0; i < segments; i++)
 			{
+				//Get the curve position
 				float t = i / (float)segments;
 				Vector2 Position = BezierCurve.LinearBezier(t, p0, p1);
 
 				int posX = (int)Position.X;
 				int posY = (int)Position.Y;
 
+				//If the X value of the position has been visited already, skip the rest of the code
 				if (visitedX.Contains(posX))
 					continue;
-				
-				//Noise moment
-				float dx = MathF.Abs(posX - PlaceSwampX);
-				float normalized = dx / BiomeWidth;
 
-				if (normalized > 1f)
-					continue;
-				
-				float topMask = MathF.Sqrt(1f - MathF.Pow(normalized, 2f));
-				float topNoise = WorldGenTools.Perlin(posX * 0.04f, seed, 3, 0.4f);
-				perlinHeight = (int)(topMask * height * topNoise);
+				//Noise to make the biome surface not so flat
+				float surfaceNoise = SimplexNoise.Noise2(seed, posX / scale);
+
+				//Normalize
+				float normalizedNoise = (surfaceNoise + 1) / 2;
+
+				//Height of the noise
+				int simplexHeight = (int)(normalizedNoise * height);
 
 				//Place tiles
-				for(int y = posY - perlinHeight; y <= Main.worldSurface; y++)
+				for(int y = posY + simplexHeight; y <= Main.worldSurface; y++)
 				{
 					Tile tile = Framing.GetTileSafely(posX, y);
 
@@ -576,7 +584,7 @@ namespace ABMod.Content.Generation
 				//Clear tiles above the line
 				int heightLimit = (int)(Main.worldSurface * 0.35f);
 
-				for (int y = heightLimit; y < posY - perlinHeight; y++)
+				for (int y = heightLimit; y < posY + simplexHeight; y++)
 				{
 					if (IsBiomeTile.IsSwampTile(posX, y) || Main.tile[posX, y].WallType == ModContent.WallType<SwampDirtWallUnsafe>())
 					{
@@ -586,7 +594,7 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		public static float GetNoiseValue(int y, float noiseA, float noiseB, float transitionStart, float transitionEnd)
+		public static float GetCaveNoiseValue(int y, float noiseA, float noiseB, float transitionStart, float transitionEnd)
 		{
 			if (y <= transitionStart)
 				return noiseA;
