@@ -40,7 +40,7 @@ namespace ABMod.Content.Tiles.Swamp
 
 		public override bool CanReplace(int i, int j, int tileTypeBeingPlaced)
 		{
-			if(Framing.GetTileSafely(i, j - 1).HasTile && TreeTile.IsTreeType(i, j - 1))
+			if(Framing.GetTileSafely(i, j - 1).HasTile && TreeGrowHelper.IsTreeType(i, j - 1))
 			{
 				return false;
 			}

@@ -44,7 +44,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
                 //The tree will grow from the bottom left of this sappling
                 if (tile.TileFrameX == 0 && tile.TileFrameY == 18)
                 {
-					if(TreeTile.GrowTreeCheck(i, j + 1, 6, 35))
+					if(TreeGrowHelper.GrowTreeCheck(i, j + 1, 6, 35))
 					{
 						Lep.Grow(i, j, 25, 30, true);
 					}

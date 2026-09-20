@@ -66,7 +66,7 @@ namespace ABMod.Content.Tiles.Swamp.Trees
                 //The tree will grow from the bottom of this sappling
                 if (tile.TileFrameY == 18)
                 {
-					if(TreeTile.GrowTreeCheck(i, j + 1, 5, 25))
+					if(TreeGrowHelper.GrowTreeCheck(i, j + 1, 5, 25))
 					{
 						Astero.Grow(i, j, 15, 20, true);
 					}
