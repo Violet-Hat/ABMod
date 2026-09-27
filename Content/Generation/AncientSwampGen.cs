@@ -462,33 +462,23 @@ namespace ABMod.Content.Generation
 			}
 
 			//Underground structures
-			int minValue = Main.maxTilesX >= 8400 ? 6 : (Main.maxTilesX >= 6400 ? 5 : 4);
-			int maxValue = Main.maxTilesX >= 8400 ? 11 : (Main.maxTilesX >= 6400 ? 9 : 7);
-			int numLaboratories = WorldGen.genRand.Next(minValue, maxValue + 1);
-
-			int labLimitLeft = StartX + 25;
-			int labLimitRight = EndX - 24;
-			int labLimitUp = (int)(Main.worldSurface + 50);
-			int labLimitDown = BiomeDepth - 24;
-
-			int attempts = 0;
-
-			while (numLaboratories > 0 && attempts++ < 10000)
+			for (int x = StartX + 25; x <= EndX - 25; x += 10)
 			{
-				int x = WorldGen.genRand.Next(labLimitLeft, labLimitRight);
-				int y = WorldGen.genRand.Next(labLimitUp, labLimitDown);
-
-				bool hasTopRoom = WorldGen.genRand.NextBool();
-				bool hasLeftRoom = WorldGen.genRand.NextBool();
-				bool hasRightRoom = WorldGen.genRand.NextBool();
-				bool hasBottomRoom = WorldGen.genRand.NextBool();
-
-				if (IsValidSpotForLab(x, y, hasTopRoom, hasLeftRoom, hasRightRoom, hasBottomRoom))
+				for (int y = (int)(Main.worldSurface + 50); y <= BiomeDepth - 25; y += 10)
 				{
-					LabBuilder lab = new(hasTopRoom, hasLeftRoom, hasRightRoom, hasBottomRoom);
-					lab.Place(new Point(x, y));
+					if (WorldGen.genRand.NextBool(65))
+					{
+						if (IsValidSpotForLab(x, y))
+						{
+							bool hasTopRoom = WorldGen.genRand.NextBool();
+							bool hasLeftRoom = WorldGen.genRand.NextBool();
+							bool hasRightRoom = WorldGen.genRand.NextBool();
+							bool hasBottomRoom = WorldGen.genRand.NextBool();
 
-					numLaboratories--;
+							LabBuilder lab = new(hasTopRoom, hasLeftRoom, hasRightRoom, hasBottomRoom);
+							lab.Place(new Point(x, y));
+						}
+					}
 				}
 			}
 
@@ -811,31 +801,19 @@ namespace ABMod.Content.Generation
 			}
 		}
 
-		public static bool IsValidSpotForLab(int x, int y, bool hasTopRoom, bool hasLeftRoom, bool hasRightRoom, bool hasBottomRoom)
+		public static bool IsValidSpotForLab(int x, int y)
 		{
-			//Gotta change this
-			int count = 0;
-			int maxTileAmount = (int)(80 * 45 * 0.65f);
-
 			//If there's laboratories or the jungle temple nearby, return false
-			for (int i = x - 40; i <= x + 40; i++)
+			for (int i = x - 50; i <= x + 50; i++)
 			{
-				for (int j = y - 34; j <= y + 11; y++)
+				for (int j = y - 50; j <= y + 50; j++)
 				{
 					Tile tile = Framing.GetTileSafely(i, j);
 
-					if (tile.HasTile)
-					{
-						if (IsBiomeTile.IsLabTile(i, j) || IsBiomeTile.IsTempleTile(i, j))
-							return false;
-						
-						count++;
-					}
+					if (tile.TileType == ModContent.TileType<LabBlock>() || IsBiomeTile.IsTempleTile(i, j))
+						return false;
 				}
 			}
-
-			if (count > maxTileAmount)
-				return false;
 
 			return true;
 		}

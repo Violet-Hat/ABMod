@@ -19,11 +19,6 @@ namespace ABMod.Common.Tiles
 				tile.TileType == (ushort)ModContent.TileType<SwampMoss>();
 		}
 
-		public static bool IsLabTile(int x, int y)
-		{
-			return Framing.GetTileSafely(x, y).TileType == (ushort)ModContent.TileType<LabBlock>();
-		}
-
 		//Floating island
 		public static bool IsFloatingIslandTile(int x, int y)
 		{
