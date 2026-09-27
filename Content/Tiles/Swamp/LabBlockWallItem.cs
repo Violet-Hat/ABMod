@@ -1,4 +1,5 @@
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace ABMod.Content.Tiles.Swamp
@@ -32,6 +33,14 @@ namespace ABMod.Content.Tiles.Swamp
             Item.width = 32;
 			Item.height = 32;
 			Item.maxStack = 9999;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe(4)
+            .AddIngredient(ModContent.ItemType<LabBlockItem>())
+            .AddTile(TileID.WorkBenches)
+            .Register();
         }
 	}
 }

@@ -374,8 +374,6 @@ namespace ABMod.Content.Generation
 			progress.Set(0.75);
 
 			//Smooth the surface and cave noise
-			int caveHeightCeiling = (int)Main.worldSurface - 10;
-
 			for (int l = 0; l < 8; l++)
 			{
 				for (int x = startX; x <= endX; x++)
@@ -392,9 +390,6 @@ namespace ABMod.Content.Generation
 						else if (tileCount < 4)
 						{
 							WorldGen.KillTile(x, y, noItem: true);
-
-							if (y < caveHeightCeiling)
-								WorldGen.KillWall(x, y);
 						}
 					}
 				}
@@ -419,7 +414,7 @@ namespace ABMod.Content.Generation
 			int StartX = PlaceSwampX - BiomeWidth;
 			int EndX = PlaceSwampX + BiomeWidth;
 
-			//Structure values
+			//Surface structure values
 			List<int> partitions = [];
 			List <String> structuresNames =
             [
@@ -448,12 +443,12 @@ namespace ABMod.Content.Generation
 
 			//Place the structures
 			int index;
-			int closestToCenter = (GenVars.dungeonSide == -1) ? partitions[0] : partitions[^1];
+			int farthestToCenter = (GenVars.dungeonSide == -1) ? partitions[0] : partitions[^1];
 			string structureFile;
 
 			foreach (int pos in partitions)
 			{
-				if (!placedTunnel && pos == closestToCenter)
+				if (!placedTunnel && pos == farthestToCenter)
 				{
 					index = 0;
 					structureFile = structuresNames[index];
@@ -463,6 +458,37 @@ namespace ABMod.Content.Generation
 					placedTunnel = true;
 
 					continue;
+				}
+			}
+
+			//Underground structures
+			int minValue = Main.maxTilesX >= 8400 ? 6 : (Main.maxTilesX >= 6400 ? 5 : 4);
+			int maxValue = Main.maxTilesX >= 8400 ? 11 : (Main.maxTilesX >= 6400 ? 9 : 7);
+			int numLaboratories = WorldGen.genRand.Next(minValue, maxValue + 1);
+
+			int labLimitLeft = StartX + 25;
+			int labLimitRight = EndX - 24;
+			int labLimitUp = (int)(Main.worldSurface + 50);
+			int labLimitDown = BiomeDepth - 24;
+
+			int attempts = 0;
+
+			while (numLaboratories > 0 && attempts++ < 10000)
+			{
+				int x = WorldGen.genRand.Next(labLimitLeft, labLimitRight);
+				int y = WorldGen.genRand.Next(labLimitUp, labLimitDown);
+
+				bool hasTopRoom = WorldGen.genRand.NextBool();
+				bool hasLeftRoom = WorldGen.genRand.NextBool();
+				bool hasRightRoom = WorldGen.genRand.NextBool();
+				bool hasBottomRoom = WorldGen.genRand.NextBool();
+
+				if (IsValidSpotForLab(x, y, hasTopRoom, hasLeftRoom, hasRightRoom, hasBottomRoom))
+				{
+					LabBuilder lab = new(hasTopRoom, hasLeftRoom, hasRightRoom, hasBottomRoom);
+					lab.Place(new Point(x, y));
+
+					numLaboratories--;
 				}
 			}
 
@@ -610,7 +636,7 @@ namespace ABMod.Content.Generation
 			t = t * t * (3f - 2f * t);
 
 			//Lerp between the two noise values for a smooth transition
-			return (1f - t) * noiseA + t * noiseB;
+			return noiseA * (1f - t) + noiseB * t;
 		}
 
 		public static bool CanBePlaced(int i, int j)
@@ -784,5 +810,34 @@ namespace ABMod.Content.Generation
 				}
 			}
 		}
-    }
+
+		public static bool IsValidSpotForLab(int x, int y, bool hasTopRoom, bool hasLeftRoom, bool hasRightRoom, bool hasBottomRoom)
+		{
+			//Gotta change this
+			int count = 0;
+			int maxTileAmount = (int)(80 * 45 * 0.65f);
+
+			//If there's laboratories or the jungle temple nearby, return false
+			for (int i = x - 40; i <= x + 40; i++)
+			{
+				for (int j = y - 34; j <= y + 11; y++)
+				{
+					Tile tile = Framing.GetTileSafely(i, j);
+
+					if (tile.HasTile)
+					{
+						if (IsBiomeTile.IsLabTile(i, j) || IsBiomeTile.IsTempleTile(i, j))
+							return false;
+						
+						count++;
+					}
+				}
+			}
+
+			if (count > maxTileAmount)
+				return false;
+
+			return true;
+		}
+	}
 }

@@ -1,3 +1,4 @@
+using ABMod.Content.Tiles.Swamp.Furniture;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,6 +19,19 @@ namespace ABMod.Content.Tiles.Swamp
 			Item.height = 16;
 			Item.maxStack = 9999;
 			Item.rare = ItemRarityID.White;
+        }
+
+        public override void AddRecipes()
+        {
+			CreateRecipe()
+            .AddIngredient(ModContent.ItemType<LabBlockWallItem>(), 4)
+            .AddTile(TileID.WorkBenches)
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ModContent.ItemType<LabPlatformItem>(), 2)
+            .AddTile(TileID.WorkBenches)
+            .Register();
         }
     }
 }

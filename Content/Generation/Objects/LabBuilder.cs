@@ -1,15 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.IO;
-using Terraria.ID;
-using Terraria.WorldBuilding;
-using Terraria.ModLoader;
-using Terraria.Localization;
-using Terraria.DataStructures;
-
-using ABMod.Common.Tiles;
 
 namespace ABMod.Content.Generation.Objects
 {
@@ -25,7 +15,7 @@ namespace ABMod.Content.Generation.Objects
 
         public bool Place(Point origin)
         {
-            string middle = "LabStruct_1_Middle";
+            string middle = "LabStruct_A";
             string leftSide;
             string rightSide;
 
@@ -37,53 +27,30 @@ namespace ABMod.Content.Generation.Objects
                 StructureHelper.API.Generator.GenerateStructure(path + middle + fileType, middleOrigin.ToPoint16(), ABMod.Instance);
             }
 
-            //Main room, 33% of it being a two sided stair style room if alone
-            bool check = WorldGen.genRand.NextBool(3);
-            if (!HasLeftRoom && !HasRightRoom && !HasTopRoom && !HasBottomRoom && check)
+            //Main room
+            if (!HasLeftRoom)
             {
-                if (WorldGen.genRand.NextBool())
-                {
-                    leftSide = "LabStruct_16_UpStairLeft";
-                    rightSide = "LabStruct_15_DownStairRight";
-                }
-                else
-                {
-                    leftSide = "LabStruct_14_DownStairLeft";
-                    rightSide = "LabStruct_17_UpStairRight";
-                }
-
-                Vector2 stairLeftOrigin = new(origin.X - 28 - middlePadding, origin.Y - 14);
-                Vector2 stairRightOrigin = new(origin.X + 1 + middlePadding, origin.Y - 14);
-
-                StructureHelper.API.Generator.GenerateStructure(path + leftSide + fileType, stairLeftOrigin.ToPoint16(), ABMod.Instance);
-                StructureHelper.API.Generator.GenerateStructure(path + rightSide + fileType, stairRightOrigin.ToPoint16(), ABMod.Instance);
+                leftSide = "LabStruct_B";
+                Vector2 leftOrigin = new(origin.X - 19 - middlePadding, origin.Y - 14);
+                StructureHelper.API.Generator.GenerateStructure(path + leftSide + fileType, leftOrigin.ToPoint16(), ABMod.Instance);
             }
-            else
+            if (!HasRightRoom)
             {
-                if (!HasLeftRoom)
-                {
-                    leftSide = "LabStruct_2_Left";
-                    Vector2 leftOrigin = new(origin.X - 14 - middlePadding, origin.Y - 14);
-                    StructureHelper.API.Generator.GenerateStructure(path + leftSide + fileType, leftOrigin.ToPoint16(), ABMod.Instance);
-                }
-                if (!HasRightRoom)
-                {
-                    rightSide = "LabStruct_3_Right";
-                    Vector2 rightOrigin = new(origin.X + 1 + middlePadding, origin.Y - 14);
-                    StructureHelper.API.Generator.GenerateStructure(path + rightSide + fileType, rightOrigin.ToPoint16(), ABMod.Instance);
-                }
+                rightSide = "LabStruct_C";
+                Vector2 rightOrigin = new(origin.X + 1 + middlePadding, origin.Y - 14);
+                StructureHelper.API.Generator.GenerateStructure(path + rightSide + fileType, rightOrigin.ToPoint16(), ABMod.Instance);
             }
 
             //Extra rooms
             if (HasLeftRoom)
             {
-                leftSide = "LabStruct_4_LeftDome";
-                Vector2 leftOrigin = new(origin.X - 32 - middlePadding, origin.Y - 14);
+                leftSide = "LabStruct_D";
+                Vector2 leftOrigin = new(origin.X - 37 - middlePadding, origin.Y - 14);
                 StructureHelper.API.Generator.GenerateStructure(path + leftSide + fileType, leftOrigin.ToPoint16(), ABMod.Instance);
             }
             if (HasRightRoom)
             {
-                rightSide = "LabStruct_5_RightDome";
+                rightSide = "LabStruct_E";
                 Vector2 rightOrigin = new(origin.X + 1 + middlePadding, origin.Y - 14);
                 StructureHelper.API.Generator.GenerateStructure(path + rightSide + fileType, rightOrigin.ToPoint16(), ABMod.Instance);
             }
@@ -104,16 +71,16 @@ namespace ABMod.Content.Generation.Objects
                     //Left or right
                     if (WorldGen.genRand.NextBool())
                     {
-                        topLeftSide = "LabStruct_16_UpStairLeft";
-                        topRightSide = "LabStruct_11_UpRightLarge";
+                        topLeftSide = "LabStruct_P";
+                        topRightSide = "LabStruct_K";
 
                         topLeftOrigin = new(origin.X - 28 - topMiddlePadding, origin.Y - 26);
                         topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
                     }
                     else
                     {
-                        topLeftSide = "LabStruct_10_UpLeftLarge";
-                        topRightSide = "LabStruct_17_UpStairRight";
+                        topLeftSide = "LabStruct_J";
+                        topRightSide = "LabStruct_Q";
 
                         topLeftOrigin = new(origin.X - 19 - topMiddlePadding, origin.Y - 26);
                         topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
@@ -123,16 +90,16 @@ namespace ABMod.Content.Generation.Objects
                 {
                     if (WorldGen.genRand.NextBool())
                     {
-                        topLeftSide = "LabStruct_6_UpLeftSmall";
-                        topRightSide = "LabStruct_3_Right";
+                        topLeftSide = "LabStruct_F";
+                        topRightSide = "LabStruct_S";
 
                         topLeftOrigin = new(origin.X - 14 - topMiddlePadding, origin.Y - 26);
                         topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
                     }
                     else
                     {
-                        topLeftSide = "LabStruct_2_Left";
-                        topRightSide = "LabStruct_7_UpRightSmall";
+                        topLeftSide = "LabStruct_R";
+                        topRightSide = "LabStruct_G";
 
                         topLeftOrigin = new(origin.X - 14 - topMiddlePadding, origin.Y - 26);
                         topRightOrigin = new(origin.X + 1 + topMiddlePadding, origin.Y - 26);
@@ -165,16 +132,16 @@ namespace ABMod.Content.Generation.Objects
                     //Left or right
                     if (WorldGen.genRand.NextBool())
                     {
-                        bottomLeftSide = "LabStruct_14_DownStairLeft";
-                        bottomRightSide = "LabStruct_13_DownRightLarge";
+                        bottomLeftSide = "LabStruct_N";
+                        bottomRightSide = "LabStruct_M";
 
                         bottomLeftOrigin = new(origin.X - 28 - bottomMiddlePadding, origin.Y - 2);
                         bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);
                     }
                     else
                     {
-                        bottomLeftSide = "LabStruct_12_DownLeftLarge";
-                        bottomRightSide = "LabStruct_15_DownStairRight";
+                        bottomLeftSide = "LabStruct_L";
+                        bottomRightSide = "LabStruct_O";
 
                         bottomLeftOrigin = new(origin.X - 19 - bottomMiddlePadding, origin.Y - 2);
                         bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);
@@ -184,16 +151,16 @@ namespace ABMod.Content.Generation.Objects
                 {
                     if (WorldGen.genRand.NextBool())
                     {
-                        bottomLeftSide = "LabStruct_8_DownLeftSmall";
-                        bottomRightSide = "LabStruct_3_Right";
+                        bottomLeftSide = "LabStruct_H";
+                        bottomRightSide = "LabStruct_S";
 
                         bottomLeftOrigin = new(origin.X - 14 - bottomMiddlePadding, origin.Y - 2);
                         bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);
                     }
                     else
                     {
-                        bottomLeftSide = "LabStruct_2_Left";
-                        bottomRightSide = "LabStruct_9_DownRightSmall";
+                        bottomLeftSide = "LabStruct_R";
+                        bottomRightSide = "LabStruct_I";
 
                         bottomLeftOrigin = new(origin.X - 14 - bottomMiddlePadding, origin.Y - 2);
                         bottomRightOrigin = new(origin.X + 1 + bottomMiddlePadding, origin.Y - 2);

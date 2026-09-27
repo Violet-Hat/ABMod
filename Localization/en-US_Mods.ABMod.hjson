@@ -183,6 +183,16 @@ Items: {
 		Tooltip: ""
 		DisplayName: Lab Block Wall Item
 	}
+
+	LabDoorItem: {
+		DisplayName: Lab Door Item
+		Tooltip: ""
+	}
+
+	LabPlatformItem: {
+		DisplayName: Lab Platform Item
+		Tooltip: ""
+	}
 }
 
 Tiles: {

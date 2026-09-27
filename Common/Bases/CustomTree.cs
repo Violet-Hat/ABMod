@@ -81,7 +81,7 @@ namespace ABMod.Common.Bases
                     WorldGen.KillTile(i, j);
                 }
                 //Else change the frame to a cut frame if it's not the top of the tree or a cut segment
-                else if (up.TileType != Type || tile.TileFrameX != 0 || isCutFrame)
+                else if (up.TileType != Type && (tile.TileFrameX != 0 || !isCutFrame))
                 {
                     //Regular cut frames
                     if (tile.TileFrameX != 126 && tile.TileFrameX != 144)

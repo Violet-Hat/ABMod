@@ -10,7 +10,7 @@ using Terraria.Enums;
 
 namespace ABMod.Content.Tiles.Swamp.Furniture
 {
-    public class ScaleDoorOpen : ModTile
+    public class LabDoorOpen : ModTile
     {
         public override void SetStaticDefaults()
         {
@@ -22,7 +22,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileID.Sets.HousingWalls[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
-			TileID.Sets.CloseDoorID[Type] = ModContent.TileType<ScaleDoorClosed>();
+			TileID.Sets.CloseDoorID[Type] = ModContent.TileType<LabDoorClosed>();
 			TileID.Sets.DrawTileInSolidLayer[Type] = true;
 
             TileObjectData.newTile.Width = 2;
@@ -65,18 +65,15 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
 			TileObjectData.addAlternate(1);
 			TileObjectData.addTile(Type);
 
-            AddMapEntry(new Color(96, 109, 78), Language.GetText("MapObject.Door"));
+            AddMapEntry(new Color(105, 106, 85), Language.GetText("MapObject.Door"));
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
             //RegisterItemDrop is needed here since the modded door item places the closed door tile, not this tile.
-            RegisterItemDrop(ModContent.ItemType<ScaleDoorItem>(), 0);
+            RegisterItemDrop(ModContent.ItemType<LabDoorItem>(), 0);
 			DustType = DustID.Bone;
             AdjTiles = [TileID.OpenDoor];
         }
 
-        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) 
-        {
-            return true;
-        }
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
 		public override void NumDust(int i, int j, bool fail, ref int num) => num = 1;
 
@@ -85,7 +82,7 @@ namespace ABMod.Content.Tiles.Swamp.Furniture
             Player player = Main.LocalPlayer;
             player.noThrow = 2;
             player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<ScaleDoorItem>();
+            player.cursorItemIconID = ModContent.ItemType<LabDoorItem>();
         }
     }
 }

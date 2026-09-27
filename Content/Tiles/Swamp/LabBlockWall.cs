@@ -12,7 +12,7 @@ namespace ABMod.Content.Tiles.Swamp
         public override void SetStaticDefaults()
         {
             Main.wallHouse[Type] = false;
-            AddMapEntry(new Color(43, 48, 64));
+            AddMapEntry(new Color(88, 89, 71));
             DustType = DustID.Stone;
         }
 
