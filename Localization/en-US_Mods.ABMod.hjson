@@ -193,6 +193,11 @@ Items: {
 		DisplayName: Lab Platform Item
 		Tooltip: ""
 	}
+
+	CustomSaplingItem: {
+		DisplayName: Custom Sapling Item
+		Tooltip: ""
+	}
 }
 
 Tiles: {

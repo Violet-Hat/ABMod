@@ -1,3 +1,6 @@
+using System;
+using ABMod.Common.Tiles;
+using ABMod.Common.Visuals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -15,6 +18,9 @@ namespace ABMod.Common.Bases
         public virtual int WoodType => TileID.WoodBlock;
         public virtual int ValidGroundType => TileID.Grass;
 
+        public virtual int TreeDustType => DustID.Grass;
+        public virtual Color TreeColor => new(141, 107, 75);
+
         //Textures
 		protected Asset<Texture2D> TreeTex1; //Use it as desired, in this case the branches
         protected Asset<Texture2D> TreeTex2; //Use it as desired, in this case the tops
@@ -29,14 +35,15 @@ namespace ABMod.Common.Bases
 			Main.tileSolid[Type] = false;
 			Main.tileBlockLight[Type] = false;
 			LocalizedText name = CreateMapEntryName();
-			AddMapEntry(new Color(141, 107, 75), name);
-			DustType = DustID.Grass;
+			AddMapEntry(TreeColor, name);
+			DustType = TreeDustType;
 			HitSound = SoundID.Dig;
 		}
 
         //Update tile because it was placed or the neighbor got nuked
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
+            /*
             Tile tile = Framing.GetTileSafely(i, j);
             short originalFrameX = tile.TileFrameX;
             short originalFrameY = tile.TileFrameY;
@@ -106,8 +113,11 @@ namespace ABMod.Common.Bases
                 WorldGen.TileFrame(i, j - 1);
                 WorldGen.TileFrame(i, j + 1);
             }
+            */
 
-            return true;
+            resetFrame = false;
+			noBreak = true;
+			return false;
         }
 
         //Check if the tile is solid
@@ -270,8 +280,8 @@ namespace ABMod.Common.Bases
                                 tile.TileFrameX = 162;
                                 tile.TileFrameY = frameY;
 
-                                PlaceSideTile(i - 1, j, 216 + offset, frameY);
-                                PlaceSideTile(i + 1, j, 234 + offset, frameY);
+                                PlaceSideTile(i - 1, j - numSegments, 216 + offset, frameY);
+                                PlaceSideTile(i + 1, j - numSegments, 234 + offset, frameY);
 
                                 placedLeftBranch = true;
                                 placedRightBranch = true;
@@ -281,7 +291,7 @@ namespace ABMod.Common.Bases
                                 tile.TileFrameX = 180;
                                 tile.TileFrameY = frameY;
 
-                                PlaceSideTile(i - 1, j, 216 + offset, frameY);
+                                PlaceSideTile(i - 1, j - numSegments, 216 + offset, frameY);
                                 placedLeftBranch = true;
                                 break;
                                 
@@ -289,7 +299,7 @@ namespace ABMod.Common.Bases
                                 tile.TileFrameX = 198;
                                 tile.TileFrameY = frameY;
                                 
-                                PlaceSideTile(i + 1, j, 234 + offset, frameY);
+                                PlaceSideTile(i + 1, j - numSegments, 234 + offset, frameY);
                                 placedRightBranch = true;
                                 break;
                         }
@@ -415,6 +425,82 @@ namespace ABMod.Common.Bases
                 }
             }
             */
+        }
+
+        //Draw the tree
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+            //Get the textures
+            TreeTex1 ??= ModContent.Request<Texture2D>(Texture + "_Branches");
+            TreeTex2 ??= ModContent.Request<Texture2D>(Texture + "_Tops");
+            TreeTrunkTex = ModContent.Request<Texture2D>(Texture);
+
+            //Get the tile on this position, color and offsets
+            Tile tile = Framing.GetTileSafely(i, j);
+			Color col = Lighting.GetColor(i, j);
+
+            Vector2 pos = TileGlobal.TileCustomPosition(i, j);
+            Vector2 trunkOffset = new(2, 0);
+            
+            //Time to draw the actual tree
+            int frameX = tile.TileFrameX / 18;
+            int frameY = tile.TileFrameY / 18;
+
+			spriteBatch.Draw(
+                TreeTrunkTex.Value,
+                pos,
+                new Rectangle(frameX * 22, frameY * 22, 20, 20),
+                new Color(col.R, col.G, col.B, 255),
+                0f,
+                trunkOffset,
+                1f,
+                SpriteEffects.None,
+                0f
+            );
+
+            //Draw top
+            if (tile.TileFrameX == 0)
+            {
+                Vector2 topOffset = new(32, 64);
+
+                //Tree wind sway
+				Vector2 treeTopPos = pos;
+				float sway = Main.instance.TilesRenderer.GetWindCycle(i, j, TreeSwayHelper.TreeWindCounter);
+				treeTopPos.Y += Math.Abs(sway) * 2;
+
+                Main.spriteBatch.Draw(
+                    TreeTex2.Value,
+                    treeTopPos,
+                    new Rectangle(frameY * 82, 0, 80, 80),
+                    new Color(col.R, col.G, col.B, 255),
+                    sway * 0.04f,
+                    topOffset,
+                    1f,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
+            //Draw large branches
+            if (tile.TileFrameX > 234 && tile.TileFrameY < 54)
+            {
+                int x = tile.TileFrameX == 252 ? 0 : 42;
+                Vector2 branchOffset = tile.TileFrameX == 252 ? new(24, 12) : new(0, 12);
+
+                Main.spriteBatch.Draw(
+                    TreeTex1.Value,
+                    pos,
+                    new Rectangle(x, frameY * 42, 40, 40),
+                    new Color(col.R, col.G, col.B, 255),
+                    0f,
+                    branchOffset,
+                    1f,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
+            return false;
         }
     }
 }
